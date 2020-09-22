@@ -7,15 +7,15 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {styles} from '../../contants/styles';
+import {styles} from '../../constants/styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {dataMovie} from '../../contants/datatest';
+import {dataMovie} from '../../constants/datatest';
 import styled from 'styled-components';
-import TextC from '../../contants/Text';
-import GroupA from '../../contants/Group';
-import ImageA from '../../contants/image';
+import TextC from '../../constants/Text';
+import GroupA from '../../constants/Group';
+import ImageA from '../../constants/image';
 export default function Home({navigation}) {
   console.log(dataMovie.length);
   return (
