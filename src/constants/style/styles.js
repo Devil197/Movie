@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     basic: {
         opacity: 0.5,
         paddingTop: 10,
-       
+
     },
     icon: {
         color: '#be2edd',
@@ -52,13 +52,13 @@ export const styles = StyleSheet.create({
         height: 170,
         marginVertical: '3%',
         marginHorizontal: 10,
-        
+
     },
     image_movie: {
         width: 230,
         height: 170,
         borderRadius: 10,
-      
+
     },
     boxTitle: {
         position: 'absolute',
@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
         backgroundColor: '#7158e2',
-        width:140,
+        width: 140,
         height: 80,
         zIndex: 1,
     },
