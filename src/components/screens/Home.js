@@ -241,13 +241,13 @@ const Title = styled.Text`
   color: #000;
 `;
 const Container = styled.View`
-  justifycontent: space-between;
-  flexdirection: row;
+  justify-content: space-between;
+  flex-direction: row;
   padding: 40px 20px;
 `;
 const ContainerA = styled.View`
-  justifycontent: space-between;
-  flexdirection: row;
+  justify-content: space-between;
+  flex-direction: row;
   padding: 10px 20px;
 `;
 const CategoryName = styled(TextC)`
@@ -265,14 +265,14 @@ const TouchableOpacityB = styled.TouchableOpacity`
   margin: 10px;
 `;
 const TouchableOpacityC = styled.TouchableOpacity`
-  borderradius: 5px;
-  borderwidth: 1px;
-  bordercolor: #be2edd;
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: #be2edd;
   width: 25%;
   height: 4%;
   margin: auto;
-  justifycontent: center;
-  alignitems: center;
+  justify-content: center;
+  align-items: center;
 `;
 const TouchableOpacityD = styled.TouchableOpacity`
   width: 30%;
@@ -281,36 +281,36 @@ const TouchableOpacityD = styled.TouchableOpacity`
 `;
 const ViewA = styled.View`
   position: absolute;
-  backgroundcolor: #7158e2;
+  background-color: #7158e2;
   right: -7%;
   bottom: 0%;
   width: 65%;
   height: 50%;
-  borderradius: 10px;
-  justifycontent: center;
-  zindex: 1;
+  border-radius: 10px;
+  justify-content: center;
+  z-index: 1;
 `;
 const ViewB = styled.View`
   position: absolute;
-  backgroundcolor: #e056fd;
+  background-color: #e056fd;
   right: 0%;
   bottom: -10%;
   width: 50px;
   height: 50px;
-  borderradius: 25px;
-  justifycontent: center;
-  alignitems: center;
-  zindex: 2;
+  border-radius: 25px;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
 `;
 const ViewC = styled.View`
   position: absolute;
-  backgroundcolor: #e056fd;
+  background-color: #e056fd;
   top: 40%;
   left: 45%;
   width: 50px;
   height: 50px;
-  borderradius: 15px;
-  justifycontent: center;
-  alignitems: center;
-  zindex: 2;
+  border-radius: 15px;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
 `;

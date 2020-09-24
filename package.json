@@ -13,8 +13,10 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/google-signin": "^4.0.3",
     "react": "16.13.1",
     "react-native": "0.63.2",
+    "react-native-fbsdk": "^2.0.0",
     "react-native-vector-icons": "^7.1.0",
     "styled-components": "^5.2.0"
   },

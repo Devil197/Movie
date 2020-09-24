@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "835610037209",
+    "firebase_url": "https://geapp-d5a80.firebaseio.com",
+    "project_id": "geapp-d5a80",
+    "storage_bucket": "geapp-d5a80.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:835610037209:android:9c99d93593ffbbba90e7c8",
+        "android_client_info": {
+          "package_name": "com.appmovie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvvGRLFiHwtRn4RhGtwEh3Bcf9_eDsSoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
