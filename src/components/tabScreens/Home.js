@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,16 +7,16 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {styles} from '../../constants/style/styles';
+import { styles } from '../../constants/style/styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Feather from 'react-native-vector-icons/Feather';
-import {dataMovie} from '../../constants/datatest';
+import { dataMovie } from '../../constants/datatest';
 import styled from 'styled-components';
 import TextC from '../../constants/style/Text';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
   console.log(dataMovie.length);
   return (
     <ScrollView style={styles.container}>
@@ -102,7 +102,7 @@ export default function Home({navigation}) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
-                <ImageA max xxl little source={{uri: c.albumArtUrl}} />
+                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
                 <ViewA>
                   <TextC large heavy p>
                     Title
@@ -122,7 +122,7 @@ export default function Home({navigation}) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityB>
-                <ImageA large xl little source={{uri: c.albumArtUrl}} />
+                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
                 <TextC color="#333" medium heavy>
                   Cast
                 </TextC>
@@ -149,7 +149,7 @@ export default function Home({navigation}) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
-                <ImageA max xxl little source={{uri: c.albumArtUrl}} />
+                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
                 <TextC color="#333" medium bold>
                   {c.title}
                 </TextC>
@@ -169,7 +169,7 @@ export default function Home({navigation}) {
               <TouchableOpacity>
                 <ContainerA>
                   <GroupA row ss>
-                    <ImageA little s medium source={{uri: c.albumArtUrl}} />
+                    <ImageA little s medium source={{ uri: c.albumArtUrl }} />
                   </GroupA>
                   <GroupA col s p>
                     <TextC color="#333" medium heavy>
@@ -210,7 +210,7 @@ export default function Home({navigation}) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
-                <ImageA max xxl little source={{uri: c.albumArtUrl}} />
+                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
                 <ViewC>
                   <Icon name={'play'} size={25} color="#fff" />
                 </ViewC>
@@ -228,7 +228,7 @@ export default function Home({navigation}) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityB>
-                <ImageA large xl little source={{uri: c.albumArtUrl}} />
+                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
               </TouchableOpacityB>
             );
           })}
@@ -241,13 +241,13 @@ const Title = styled.Text`
   color: #000;
 `;
 const Container = styled.View`
-  justifycontent: space-between;
-  flexdirection: row;
+  justifyContent: space-between;
+  flexDirection: row;
   padding: 40px 20px;
 `;
 const ContainerA = styled.View`
-  justifycontent: space-between;
-  flexdirection: row;
+  justifyContent: space-between;
+  flexDirection: row;
   padding: 10px 20px;
 `;
 const CategoryName = styled(TextC)`
@@ -265,14 +265,14 @@ const TouchableOpacityB = styled.TouchableOpacity`
   margin: 10px;
 `;
 const TouchableOpacityC = styled.TouchableOpacity`
-  borderradius: 5px;
-  borderwidth: 1px;
-  bordercolor: #be2edd;
+  borderRadius: 5px;
+  borderWidth: 1px;
+  borderColor: #be2edd;
   width: 25%;
   height: 4%;
   margin: auto;
-  justifycontent: center;
-  alignitems: center;
+  justifyContent: center;
+  alignItems: center;
 `;
 const TouchableOpacityD = styled.TouchableOpacity`
   width: 30%;
@@ -281,36 +281,36 @@ const TouchableOpacityD = styled.TouchableOpacity`
 `;
 const ViewA = styled.View`
   position: absolute;
-  backgroundcolor: #7158e2;
+  backgroundColor: #7158e2;
   right: -7%;
   bottom: 0%;
   width: 65%;
   height: 50%;
-  borderradius: 10px;
-  justifycontent: center;
-  zindex: 1;
+  borderRadius: 10px;
+  justifyContent: center;
+  zIndex: 1;
 `;
 const ViewB = styled.View`
   position: absolute;
-  backgroundcolor: #e056fd;
+  backgroundColor: #e056fd;
   right: 0%;
   bottom: -10%;
   width: 50px;
   height: 50px;
-  borderradius: 25px;
-  justifycontent: center;
-  alignitems: center;
-  zindex: 2;
+  borderRadius: 25px;
+  justifyContent: center;
+  alignItems: center;
+  zIndex: 2;
 `;
 const ViewC = styled.View`
   position: absolute;
-  backgroundcolor: #e056fd;
+  backgroundColor: #e056fd;
   top: 40%;
   left: 45%;
   width: 50px;
   height: 50px;
-  borderradius: 15px;
-  justifycontent: center;
-  alignitems: center;
-  zindex: 2;
+  borderRadius: 15px;
+  justifyContent: center;
+  alignItems: center;
+  zIndex: 2;
 `;
