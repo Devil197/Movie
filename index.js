@@ -2,8 +2,15 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
-import App from './App';
+import { AppRegistry, LogBox, Platform, StatusBar, Text, TextInput } from 'react-native';
+import Orientation from 'react-native-orientation-locker';
+import App from './src/App';
 import {name as appName} from './app.json';
-
+import 'react-native-gesture-handler';
+if (Platform.OS === 'android') {
+  StatusBar.setTranslucent(true);
+  StatusBar.setBackgroundColor('transparent');
+}
+StatusBar.setBarStyle('dark-content');
+Orientation.lockToPortrait();
 AppRegistry.registerComponent(appName, () => App);

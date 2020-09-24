@@ -98,7 +98,7 @@ export default function Home({ navigation }) {
         <TextC large heavy color="#000" p>
           Continue Watching
         </TextC>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false}  horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
@@ -118,7 +118,7 @@ export default function Home({ navigation }) {
       </GroupA>
 
       <GroupA col>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityB>
@@ -145,7 +145,7 @@ export default function Home({ navigation }) {
       </GroupA>
 
       <GroupA col s b>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
@@ -163,7 +163,7 @@ export default function Home({ navigation }) {
         <TextC large heavy color="#000" p>
           Cartoon
         </TextC>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={false}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacity>
@@ -206,7 +206,7 @@ export default function Home({ navigation }) {
           Trailer
         </TextC>
 
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA>
@@ -224,7 +224,7 @@ export default function Home({ navigation }) {
         <TextC medium heavy color="#000" p t>
           Cast
         </TextC>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityB>

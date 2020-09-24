@@ -22,7 +22,7 @@ GoogleSignin.configure({
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
 });
 
-export default function login() {
+export default function Login() {
   const transformerY = new Animated.Value(0);
 
   Animated.timing(

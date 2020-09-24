@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import {ROUTE_KEY} from './constants/constants'
 
-import Home from './components/tabScreens/Home'
-import Profile from './components/tabScreens/Profile'
-import Setting from './components/tabScreens/Setting'
-import Favorite from './components/tabScreens/Favorite'
+import {Home,Profile,Setting, Favorite} from './components/tabScreens'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Fontisto from 'react-native-vector-icons/Fontisto'
+
 const Tab = createBottomTabNavigator();
 
 function MyBottomTab() {
@@ -27,7 +26,7 @@ function MyBottomTab() {
             }}
         >
             <Tab.Screen
-                name="Home"
+                name={ROUTE_KEY.Home}
                 component={Home}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -36,7 +35,7 @@ function MyBottomTab() {
                 }}
             />
             <Tab.Screen
-                name="Profile"
+                name={ROUTE_KEY.Profile}
                 component={Profile}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -46,7 +45,7 @@ function MyBottomTab() {
             />
 
             <Tab.Screen
-                name="Setting"
+                name={ROUTE_KEY.Setting}
                 component={Setting}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -55,7 +54,7 @@ function MyBottomTab() {
                 }}
             />
             <Tab.Screen
-                name="Favorite"
+                name={ROUTE_KEY.Favorite}
                 component={Favorite}
                 options={{
                     tabBarIcon: ({ color, size }) => (

@@ -21,6 +21,11 @@ const avatarSize = 50 * WIDTH_SCALE;
 
 const ROUTE_KEY = {
   Home: 'Home',
+  Profile:'Profile',
+  Setting:'Setting',
+  Favorite:'Favorite',
+  BottomNavigation:'BottomNavigation',
+  Login:'Login'
 };
 
 export {
