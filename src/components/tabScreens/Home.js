@@ -16,7 +16,10 @@ import styled from 'styled-components';
 import TextC from '../../constants/style/Text';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
-export default function Home({ navigation }) {
+import { useNavigation } from '@react-navigation/native';
+export default function Home({  }) {
+
+  const  navigation  = useNavigation()
   console.log(dataMovie.length);
   return (
     <ScrollView style={styles.container}>
@@ -77,7 +80,7 @@ export default function Home({ navigation }) {
           />
         </GroupA>
         <GroupA col s p>
-          <TextC color="#333" medium heavy>
+          <TextC color="#333" medium heavy >
             Thanh Phụng
           </TextC>
           <TextC a color="#333" medium light>
@@ -85,7 +88,9 @@ export default function Home({ navigation }) {
           </TextC>
         </GroupA>
         <GroupA row>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={()=>navigation.navigate("Details")}
+          >
             <FontAwesome5 name={'search'} size={15} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
@@ -95,13 +100,17 @@ export default function Home({ navigation }) {
       </Container>
 
       <GroupA col s>
-        <TextC large heavy color="#000" p>
+        <TextC large bold color="#000" p  >
           Continue Watching
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false}  horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityA>
+              <TouchableOpacityA
+              
+              onPress={()=>alert("f")}
+
+              >
                 <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
                 <ViewA>
                   <TextC large heavy p>

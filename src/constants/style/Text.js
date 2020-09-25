@@ -9,7 +9,7 @@ export default TextStyle = ({ ...props }) => {
  
 const Text = styled.Text`
 
-    font-family:"Avenir Next";
+ 
     color:${props => props.color ?? "#fff" }
     
     ${({ title, large, medium, small }) => {
@@ -32,9 +32,9 @@ const Text = styled.Text`
     ${({ light, bold, heavy }) => {
         switch (true) {
             case light:
-                return `font-weight: 200`;
+                return `font-family: ProductSans-Bold`;
             case bold:
-                return `font-weight: 600`;
+                return `font-family: ProductSans-Bold`;
 
             case heavy:
                 return `font-weight: 700`;
