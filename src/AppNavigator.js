@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 function MyStack() {
     return (
         <Stack.Navigator
-            initialRouteName={ROUTE_KEY.Login}
+            initialRouteName={ROUTE_KEY.BottomNavigation}
             headerMode="none"
             screenOptions={{
                 headerTintColor: 'white',
