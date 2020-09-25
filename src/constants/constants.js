@@ -19,6 +19,14 @@ const textInputHeight = 36 * HEIGHT_SCALE;
 const heightButton = 50 * HEIGHT_SCALE;
 const avatarSize = 50 * WIDTH_SCALE;
 
+const GOOGLE_CONFIGURE =  {
+  webClientId:
+    '835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+  offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+  hostedDomain: '', // specifies a hosted domain restriction
+  forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below
+}
+
 const ROUTE_KEY = {
   Home: 'Home',
   Profile:'Profile',

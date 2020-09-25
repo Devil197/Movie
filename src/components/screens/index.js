@@ -1,4 +1,4 @@
 
 import Login from './Login'
 
-export {Home,Login};
+export {Login};
