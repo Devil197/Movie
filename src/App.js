@@ -6,12 +6,15 @@ import {
     DarkTheme as PaperDarkTheme,
     DefaultTheme as PaperDefaultTheme,
     Provider as PaperProvider,
-  } from 'react-native-paper';
+} from 'react-native-paper';
+import { Provider as StoreProvider } from 'react-redux';
 import AppNavigator from './AppNavigator'
+import { store } from './Redux/store';
 export default function App() {
     return (
-        <AppNavigator/>
+        <StoreProvider store={store}>
+            <AppNavigator />
+        </StoreProvider>
     )
 }
 
-const styles = StyleSheet.create({})
