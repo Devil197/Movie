@@ -16,19 +16,19 @@ const Tab = createBottomTabNavigator();
 
 const Stack = createStackNavigator();
 
-function HomeStack (){
-return(
-    <Stack.Navigator>
-     <Stack.Screen
-                name ="Home"
+function HomeStack({route,navigation}) {
+    return (
+        <Stack.Navigator>
+            <Stack.Screen
+                name="Home"
                 component={Home}
             />
             <Stack.Screen
                 name="Details"
                 component={Details}
             />
-    </Stack.Navigator>
-)
+        </Stack.Navigator>
+    )
 }
 
 function MyBottomTab() {

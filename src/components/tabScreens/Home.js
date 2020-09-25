@@ -17,9 +17,9 @@ import TextC from '../../constants/style/Text';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
 import { useNavigation } from '@react-navigation/native';
-export default function Home({  }) {
+export default function Home({ }) {
 
-  const  navigation  = useNavigation()
+  const navigation = useNavigation()
   console.log(dataMovie.length);
   return (
     <ScrollView style={styles.container}>
@@ -89,7 +89,7 @@ export default function Home({  }) {
         </GroupA>
         <GroupA row>
           <TouchableOpacity
-            onPress={()=>navigation.navigate("Details")}
+            onPress={() => navigation.navigate("Details")}
           >
             <FontAwesome5 name={'search'} size={15} color="#be2edd" />
           </TouchableOpacity>
@@ -103,12 +103,12 @@ export default function Home({  }) {
         <TextC large bold color="#000" p  >
           Continue Watching
         </TextC>
-        <ScrollView showsHorizontalScrollIndicator={false}  horizontal={true}>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacityA
-              
-              onPress={()=>alert("f")}
+
+                onPress={() => alert("f")}
 
               >
                 <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
