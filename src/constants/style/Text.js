@@ -29,18 +29,14 @@ const Text = styled.Text`
 
     }}
 
-    ${({ light, bold, heavy }) => {
+    ${({ semi, bold }) => {
         switch (true) {
-            case light:
-                return `font-family: ProductSans-Bold`;
             case bold:
-                return `font-family: ProductSans-Italic`;
-
-            case heavy:
-                return `font-weight: 700`;
-         
+                return `font-family: ProductSans-Bold`;
+            case semi:
+                return `font-family: ProductSans-Medium`;     
             default:
-                return `font-weight: 400`;
+                return `font-family: ProductSans-Regular`;
         }
 
     }}

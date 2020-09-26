@@ -15,7 +15,7 @@ const Image = styled.Image`
                 return `width: 100%`;
 
             case medium:
-                return `width: 40px`;
+                return `width: 44px`;
             case small: 
                 return `width: 20px`;
             case max: 

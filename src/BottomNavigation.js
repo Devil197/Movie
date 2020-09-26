@@ -9,6 +9,7 @@ import Details from './components/screens/Details';
 
 import Icon from 'react-native-vector-icons/Feather';
 import Music from './components/tabScreens/Music';
+import Category from './components/tabScreens/Category';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -54,7 +55,15 @@ function MyBottomTab() {
                     ),
                 }}
             />
-
+    <Tab.Screen
+                name={"Category"}
+                component={Category}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="grid" color={color} size={size} />
+                    ),
+                }}
+            />
             <Tab.Screen
                 name={"Favorite"}
                 component={Favorite}

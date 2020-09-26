@@ -5,7 +5,7 @@ import {
   View,
   ScrollView,
   Image,
-  TouchableOpacity,
+  TouchableOpacity, StatusBar
 } from 'react-native';
 import { styles } from '../../constants/style/styles';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -23,193 +23,17 @@ export default function Home({ }) {
 
   return (
     <ScrollView style={styles.container}>
-  
-      <Container>
-        <GroupA row ss>
-          <ImageA
-            little
-            s
-            medium
-            source={{
-              uri:
-                'https://firebasestorage.googleapis.com/v0/b/asmmob306-78bf4.appspot.com/o/picture%2Fpsmcg.png?alt=media&token=795fbbdc-2612-4a14-a248-b9b4259fb5b4',
-            }}
-          />
-        </GroupA>
-        <GroupA col s p>
-          <TextC color="#333" medium heavy >
-            Thanh Phụng
-          </TextC>
-          <TextC a color="#333" medium light>
-            Basic
-          </TextC>
-        </GroupA>
-        <GroupA row>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Details")}
-          >
-            <FontAwesome5 name={'search'} size={15} color="#be2edd" />
-          </TouchableOpacity>
-          <TouchableOpacity>
-            <Icon name={'notifications'} size={15} color="#be2edd" />
-          </TouchableOpacity>
-        </GroupA>
-      </Container>
-
-      <GroupA col s>
-        <TextC large bold color="#000" p  >
-          Continue Watching
-        </TextC>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacityA
-
-                onPress={() => alert("f")}
-
-              >
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <ViewA>
-                  <TextC large heavy p>
-                    Title
-                  </TextC>
-                </ViewA>
-                <ViewB>
-                  <Icon name={'play'} size={25} color="#fff" />
-                </ViewB>
-              </TouchableOpacityA>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
-
-      <GroupA col>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacityB>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
-                <TextC color="#333" medium heavy>
-                  Cast
-                </TextC>
-              </TouchableOpacityB>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
-
-      <GroupA row ss>
-        <TextC medium bold color="#000" p>
-          New
-        </TextC>
-        <TextC medium heavy color="#000" p>
-          Recommed
-        </TextC>
-        <TextC medium heavy color="#000" p>
-          Trending
-        </TextC>
-      </GroupA>
-
-      <GroupA col s b>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacityA>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <TextC color="#333" medium bold>
-                  {c.title}
-                </TextC>
-              </TouchableOpacityA>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
-
-      <GroupA col s b>
-        <TextC large heavy color="#000" p>
-          Cartoon
-        </TextC>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacity>
-                <ContainerA>
-                  <GroupA row ss>
-                    <ImageA little s medium source={{ uri: c.albumArtUrl }} />
-                  </GroupA>
-                  <GroupA col s p>
-                    <TextC color="#333" medium heavy>
-                      Thanh Phụng
-                    </TextC>
-                    <TextC a color="#333" medium light>
-                      Basic
-                    </TextC>
-                  </GroupA>
-                  <GroupA row>
-                    <TouchableOpacity>
-                      <Feather
-                        name={'more-horizontal'}
-                        size={30}
-                        color="#be2edd"
-                      />
-                    </TouchableOpacity>
-                  </GroupA>
-                </ContainerA>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
-
-      <TouchableOpacityC>
-        <TextC small light color="#be2edd">
-          View more
-        </TextC>
-      </TouchableOpacityC>
-
-      <GroupA col s t>
-        <TextC medium heavy color="#000" p t>
-          Trailer
-        </TextC>
-
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacityA>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <ViewC>
-                  <Icon name={'play'} size={25} color="#fff" />
-                </ViewC>
-              </TouchableOpacityA>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
-
-      <GroupA col s t>
-        <TextC medium heavy color="#000" p t>
-          Cast
-        </TextC>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
-            return (
-              <TouchableOpacityB>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
-              </TouchableOpacityB>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
+      <StatusBar backgroundColor ="#fff" translucent={false} barStyle = "dark-content" />
+      
+      
     </ScrollView>
   );
 }
-const Title = styled.Text`
-  color: #000;
-`;
+ 
 const Container = styled.View`
   justifyContent: space-between;
   flexDirection: row;
-  padding: 40px 20px;
+  padding: 16px;
 `;
 const ContainerA = styled.View`
   justifyContent: space-between;
@@ -223,12 +47,12 @@ const CategoryName = styled(TextC)`
 const TouchableOpacityA = styled.TouchableOpacity`
   width: 280px;
   height: 200px;
-  margin: 20px;
+  margin: 16px;
 `;
 const TouchableOpacityB = styled.TouchableOpacity`
   width: 80px;
   height: 110px;
-  margin: 10px;
+  margin: 16px;
 `;
 const TouchableOpacityC = styled.TouchableOpacity`
   borderRadius: 5px;
