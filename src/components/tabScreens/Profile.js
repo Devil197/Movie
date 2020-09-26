@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
 export default function Profile() {
     return (
-        <ScrollView style={{ backgroundColor: "#fff", flex: 1 }}
+        <ScrollView style={styles.container}
             showsVerticalScrollIndicator={false}
         
         >
@@ -90,6 +90,7 @@ export default function Profile() {
 }
 
 const styles = StyleSheet.create({
+    container:{ backgroundColor: "#fff", flex: 1 },
     pageTitle: {
         fontSize: 20,
         padding: 16,
