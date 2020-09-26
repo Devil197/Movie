@@ -20,53 +20,10 @@ import { useNavigation } from '@react-navigation/native';
 export default function Home({ }) {
 
   const navigation = useNavigation()
-  console.log(dataMovie.length);
+
   return (
     <ScrollView style={styles.container}>
-      {/* <View style={styles.header}>
-        <Image source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/asmmob306-78bf4.appspot.com/o/picture%2Fpsmcg.png?alt=media&token=795fbbdc-2612-4a14-a248-b9b4259fb5b4' }} style={styles.image_header} />
-        <View style={styles.box1_header}>
-          <Text style={styles.name}>Thanh Phung</Text>
-          <Text style={styles.basic}>Basic Subscription</Text>
-        </View>
-        <View style={styles.row}>
-          <TouchableOpacity>
-            <FontAwesome5 style={styles.icon} name={'search'} size={15} />
-          </TouchableOpacity>
-
-          <TouchableOpacity>
-            <Icon style={styles.icon} name={'notifications'} size={15} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.boxWatching}>
-        <Text style={styles.name}>Continue Wathching</Text>
-        <ScrollView showsVerticalScrollIndicator={false} horizontal={true}>
-          {
-            dataMovie.map((c, i) => {
-              return (
-                <TouchableOpacity style={styles.movie}>
-                  <Image style={styles.image_movie} source={{ uri: c.albumArtUrl }} />
-                  <View style={styles.boxTitle}>
-                    <Text style={styles.name_boxtitle}>Title</Text>
-                  </View>
-                  <View style={styles.box_icon}>
-                    <Icon name={'play'} size={15} style={{color: 'white'}} />
-                  </View>
-                </TouchableOpacity>
-
-              )
-            })
-          }
-        </ScrollView>
-      </View> */}
-
-      {/* <Title>fff</Title>
-      <TextC color='#9239ff' title heavy >fasfsa</TextC>
-      <CategoryName selected={true}>ffafasfasfasf</CategoryName>
-      <CategoryName selected={false}>ffafasfasfasf</CategoryName> */}
-
+  
       <Container>
         <GroupA row ss>
           <ImageA
@@ -142,7 +99,7 @@ export default function Home({ }) {
       </GroupA>
 
       <GroupA row ss>
-        <TextC medium heavy color="#000" p>
+        <TextC medium bold color="#000" p>
           New
         </TextC>
         <TextC medium heavy color="#000" p>

@@ -28,7 +28,7 @@ const GOOGLE_CONFIGURE =  {
 }
 
 const ROUTE_KEY = {
-  Home: 'Home',
+  Film: 'Film',
   Profile:'Profile',
   Setting:'Setting',
   Favorite:'Favorite',

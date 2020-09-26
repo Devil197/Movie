@@ -1,24 +1,21 @@
 import * as React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ROUTE_KEY } from './constants/constants'
+
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { Home, Profile, Setting, Favorite } from './components/tabScreens'
-
-import Entypo from 'react-native-vector-icons/Entypo'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Fontisto from 'react-native-vector-icons/Fontisto'
 import Details from './components/screens/Details';
 
-const Tab = createBottomTabNavigator();
+import Icon from 'react-native-vector-icons/Feather';
+import Music from './components/tabScreens/Music';
 
+const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-function HomeStack({route,navigation}) {
+function HomeStack({ route, navigation }) {
     return (
-        <Stack.Navigator>
+        <Stack.Navigator headerMode="none">
             <Stack.Screen
                 name="Home"
                 component={Home}
@@ -30,54 +27,53 @@ function HomeStack({route,navigation}) {
         </Stack.Navigator>
     )
 }
+const tabBarOptions = {
+    activeTintColor: "#000",
+    showLabel: false,
 
+}
 function MyBottomTab() {
     return (
-        <Tab.Navigator
-            tabBarOptions={{
-                activeTintColor: "#6c5ce7",
-                inactiveTintColor: '#bebebe',
-                showIcon: true,
-                showLabel: false,
-                style: {
-                    backgroundColor: '#fff',
-                }
-            }}
+        <Tab.Navigator tabBarOptions={tabBarOptions}
         >
             <Tab.Screen
-                name={ROUTE_KEY.Home}
+                name={"Film"}
                 component={HomeStack}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Entypo name="home" color={color} size={size} />
+                        <Icon name="film" color={color} size={size} />
                     ),
                 }}
             />
             <Tab.Screen
-                name={ROUTE_KEY.Profile}
-                component={Profile}
+                name={"Music"}
+                component={Music}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <MaterialCommunityIcons name="account-settings" color={color} size={size} />
+                        <Icon name="music" color={color} size={size} />
                     ),
                 }}
             />
 
             <Tab.Screen
-                name={ROUTE_KEY.Setting}
-                component={Setting}
-                options={{
-                    tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="settings-outline" color={color} size={size} />
-                    ),
-                }}
-            />
-            <Tab.Screen
-                name={ROUTE_KEY.Favorite}
+                name={"Favorite"}
                 component={Favorite}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Fontisto name="favorite" color={color} size={size} />
+                        <Icon name="heart" color={color} size={size} />
+                    ),
+                }}
+            />
+
+
+
+
+            <Tab.Screen
+                name={"Profile"}
+                component={Profile}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Icon name="user" color={color} size={size} />
                     ),
                 }}
             />

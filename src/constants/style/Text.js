@@ -34,7 +34,7 @@ const Text = styled.Text`
             case light:
                 return `font-family: ProductSans-Bold`;
             case bold:
-                return `font-family: ProductSans-Bold`;
+                return `font-family: ProductSans-Italic`;
 
             case heavy:
                 return `font-weight: 700`;
