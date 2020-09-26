@@ -16,6 +16,9 @@ import styled from 'styled-components';
 import TextC from '../../constants/style/Text';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
+import Container from '../../constants/style/Container';
+import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity'
+import MyView from '../../constants/style/MyView'
 import { useNavigation } from '@react-navigation/native';
 export default function Home({ }) {
 
@@ -67,7 +70,7 @@ export default function Home({ }) {
       <CategoryName selected={true}>ffafasfasfasf</CategoryName>
       <CategoryName selected={false}>ffafasfasfasf</CategoryName> */}
 
-      <Container>
+      <Container xxl>
         <GroupA row ss>
           <ImageA
             little
@@ -106,21 +109,21 @@ export default function Home({ }) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityA
+              <MyTouchableOpacity max s long
 
                 onPress={() => alert("f")}
 
               >
                 <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <ViewA>
+                <MyView rightm bottoms large xxl backgroundColor="#7158e2" alignItems="flex-start">
                   <TextC large heavy p>
                     Title
                   </TextC>
-                </ViewA>
-                <ViewB>
+                </MyView>
+                <MyView more rights bottomm z2>
                   <Icon name={'play'} size={25} color="#fff" />
-                </ViewB>
-              </TouchableOpacityA>
+                </MyView>
+              </MyTouchableOpacity> 
             );
           })}
         </ScrollView>
@@ -130,12 +133,12 @@ export default function Home({ }) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityB>
+              <MyTouchableOpacity small m little>
                 <ImageA large xl little source={{ uri: c.albumArtUrl }} />
                 <TextC color="#333" medium heavy>
                   Cast
                 </TextC>
-              </TouchableOpacityB>
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -157,12 +160,12 @@ export default function Home({ }) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityA>
+              <MyTouchableOpacity max s long>
                 <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
                 <TextC color="#333" medium bold>
                   {c.title}
                 </TextC>
-              </TouchableOpacityA>
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -176,7 +179,7 @@ export default function Home({ }) {
           {dataMovie.map((c, i) => {
             return (
               <TouchableOpacity>
-                <ContainerA>
+                <Container m>
                   <GroupA row ss>
                     <ImageA little s medium source={{ uri: c.albumArtUrl }} />
                   </GroupA>
@@ -197,18 +200,18 @@ export default function Home({ }) {
                       />
                     </TouchableOpacity>
                   </GroupA>
-                </ContainerA>
+                </Container>
               </TouchableOpacity>
             );
           })}
         </ScrollView>
       </GroupA>
 
-      <TouchableOpacityC>
+      <MyTouchableOpacityA selected={true} smaller n>
         <TextC small light color="#be2edd">
           View more
         </TextC>
-      </TouchableOpacityC>
+      </MyTouchableOpacityA>
 
       <GroupA col s t>
         <TextC medium heavy color="#000" p t>
@@ -218,12 +221,12 @@ export default function Home({ }) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityA>
+              <MyTouchableOpacity max s long>
                 <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <ViewC>
+                <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
-                </ViewC>
-              </TouchableOpacityA>
+                </MyView>
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -236,9 +239,9 @@ export default function Home({ }) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie.map((c, i) => {
             return (
-              <TouchableOpacityB>
+              <MyTouchableOpacity small m little>
                 <ImageA large xl little source={{ uri: c.albumArtUrl }} />
-              </TouchableOpacityB>
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -249,77 +252,15 @@ export default function Home({ }) {
 const Title = styled.Text`
   color: #000;
 `;
-const Container = styled.View`
-  justifyContent: space-between;
-  flexDirection: row;
-  padding: 40px 20px;
-`;
-const ContainerA = styled.View`
-  justifyContent: space-between;
-  flexDirection: row;
-  padding: 10px 20px;
-`;
 const CategoryName = styled(TextC)`
   color: ${(props) => (props.selected ? '#819ee5' : '#9a9a9a')};
   font-weight: ${(props) => (props.selected ? '700' : '500')};
 `;
-const TouchableOpacityA = styled.TouchableOpacity`
-  width: 280px;
-  height: 200px;
-  margin: 20px;
-`;
-const TouchableOpacityB = styled.TouchableOpacity`
-  width: 80px;
-  height: 110px;
-  margin: 10px;
-`;
-const TouchableOpacityC = styled.TouchableOpacity`
-  borderRadius: 5px;
-  borderWidth: 1px;
-  borderColor: #be2edd;
-  width: 25%;
-  height: 4%;
-  margin: auto;
-  justifyContent: center;
-  alignItems: center;
-`;
-const TouchableOpacityD = styled.TouchableOpacity`
-  width: 30%;
-  height: 30%;
-  margin: 20px;
-`;
-const ViewA = styled.View`
-  position: absolute;
-  backgroundColor: #7158e2;
-  right: -7%;
-  bottom: 0%;
-  width: 65%;
-  height: 50%;
-  borderRadius: 10px;
-  justifyContent: center;
-  zIndex: 1;
-`;
-const ViewB = styled.View`
-  position: absolute;
-  backgroundColor: #e056fd;
-  right: 0%;
-  bottom: -10%;
-  width: 50px;
-  height: 50px;
-  borderRadius: 25px;
-  justifyContent: center;
-  alignItems: center;
-  zIndex: 2;
-`;
-const ViewC = styled.View`
-  position: absolute;
-  backgroundColor: #e056fd;
-  top: 40%;
-  left: 45%;
-  width: 50px;
-  height: 50px;
-  borderRadius: 15px;
-  justifyContent: center;
-  alignItems: center;
-  zIndex: 2;
+
+const MyTouchableOpacityA = styled(MyTouchableOpacity)`
+  justifyContent: ${(props) => (props.selected ? 'center' : 'flex-start')};
+  alignItems: ${(props) => (props.selected ? 'center' : 'flex-start')};
+  borderWidth: ${(props) => (props.selected ? '1px' : '0px')};
+  borderRadius: ${(props) => (props.selected ? '5px' : '0px')};
+  borderColor: ${(props) => (props.selected ? '#be2edd' : '#000')};
 `;

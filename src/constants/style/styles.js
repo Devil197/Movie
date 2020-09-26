@@ -23,11 +23,8 @@ export const styles = StyleSheet.create({
     image_header: {
         width: "20%",
         height: "100%",
-        borderRadius: 10
-    },
-    box1_header: {
-        paddingHorizontal: 15,
-
+        borderRadius: 10,
+    
     },
     name: {
         fontSize: 14,

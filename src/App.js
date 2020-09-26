@@ -9,7 +9,7 @@ import {
 } from 'react-native-paper';
 import { Provider as StoreProvider } from 'react-redux';
 import AppNavigator from './AppNavigator'
-import { store } from './Redux/store';
+import { store } from './redux/store';
 export default function App() {
     return (
         <StoreProvider store={store}>

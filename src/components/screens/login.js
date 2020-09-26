@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
 import {AccessToken, LoginManager} from 'react-native-fbsdk';
-import {LoginGoogle} from '../../Redux/actions/userAction'
+import {LoginGoogle} from '../../redux/actions/userAction'
 import { useDispatch, useSelector } from 'react-redux';
 const LOGIN_LOGO_HEIGHT = 80;
 
