@@ -3,6 +3,7 @@ import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
+
 export default function Profile() {
     return (
         <ScrollView style={styles.container}
