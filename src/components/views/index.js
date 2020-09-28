@@ -1,5 +1,6 @@
 
 
 import FilmItem from '../views/FilmItem'
+import FilmFollowItem from '../views/FilmFollowItem'
 
-export {FilmItem}
+export {FilmItem,FilmFollowItem}
