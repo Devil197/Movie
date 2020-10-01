@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -20,10 +20,32 @@ import Container from '../../constants/style/Container';
 import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity'
 import MyView from '../../constants/style/MyView'
 import { useNavigation } from '@react-navigation/native';
-export default function Home({ }) {
 
+import axiosConfig from '../../api/axios';
+import LottieView from 'lottie-react-native'
+
+export default function Home({ }) {
+  const [loading, setLoading] = useState(true);
+
+  const [data, setData] = useState();
+  const [page, setPage] = useState(1);
   const navigation = useNavigation()
-  console.log(dataMovie.length);
+  // console.log(dataMovie.length);
+
+
+  useEffect(() => {
+    axiosConfig.get(`/api/movie/v3/all`)
+      .then((response) => {
+        // setData((oldData) => oldData.concat(response.data.results));
+        setData(response.data)
+        setLoading(false);
+      }, [page])
+      .catch((err) => console.log(err));
+
+  });
+  if (loading) {
+    return <LottieView style={{ backgroundColor: '#ffffff' }} source={require('../../assets/890-loading-animation.json')} autoPlay loop />;
+  }
   return (
     <ScrollView style={styles.container}>
       {/* <View style={styles.header}>
@@ -104,14 +126,14 @@ export default function Home({ }) {
           Continue Watching
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {data.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long
 
                 onPress={() => alert("f")}
 
               >
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <MyView rightm bottoms large xxl backgroundColor="#7158e2" alignItems="flex-start">
                   <TextC large heavy p>
                     Title
@@ -120,7 +142,7 @@ export default function Home({ }) {
                 <MyView more rights bottomm z2>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
-              </MyTouchableOpacity> 
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -141,6 +163,20 @@ export default function Home({ }) {
         </ScrollView>
       </GroupA>
 
+      {/* <GroupA col>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
+          {data.items.map((c, i) => {
+            return (
+              <MyTouchableOpacity small m little key={i}>
+                <TextC color="#333" medium heavy>
+                 {c.name}
+                </TextC>
+              </MyTouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </GroupA> */}
+
       <GroupA row ss>
         <TextC medium heavy color="#000" p>
           New
@@ -155,12 +191,12 @@ export default function Home({ }) {
 
       <GroupA col s b>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {data.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <TextC color="#333" medium bold>
-                  {c.title}
+                  {c.name}
                 </TextC>
               </MyTouchableOpacity>
             );
@@ -216,10 +252,10 @@ export default function Home({ }) {
         </TextC>
 
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {data.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
