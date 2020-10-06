@@ -11,12 +11,12 @@ const _userAuthSuccess = (dispatch,googleInfo,facebookInfo)=>{
     })
 
     dispatch({
-        type:REDUX.GOOGLE_UPDATE_INFO,
+        type:REDUX.GOOGLE_LOGGED_IN,
         payload:googleInfo,
     })
 
     dispatch({
-        type:REDUX.FACEBOOK_UPDATE_INFO,
+        type:REDUX.FACEBOOK_LOGGED_IN,
         payload:facebookInfo
     })
 }
@@ -29,7 +29,7 @@ export const LoginGoogle = async (dispatch)=>{
     try {
         await GoogleSignin.hasPlayServices();
         const googleInfo = await GoogleSignin.signIn();
-        console.log(googleInfo);
+        console.log('0103->> info: ',googleInfo);
         _userAuthSuccess(dispatch,googleInfo)
       } catch (error) {
         console.log(error);

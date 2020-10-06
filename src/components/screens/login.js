@@ -5,32 +5,23 @@ import {
   StyleSheet,
   Animated,
   Easing,
-  Pressable,
+  ImageBackground,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
 import {AccessToken, LoginManager} from 'react-native-fbsdk';
-import {LoginGoogle} from '../../Redux/actions/userAction'
-import { useDispatch, useSelector } from 'react-redux';
+import {LoginGoogle} from '../../Redux/actions/userAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {Fonts} from '../../utils/Fonts';
+
 const LOGIN_LOGO_HEIGHT = 80;
+const IMAGE = {
+  uri:
+    'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
+};
 
 export default function Login() {
   const dispatch = useDispatch();
-  const transformerY = new Animated.Value(0);
-
-  Animated.timing(
-    transformerY,
-    {
-      toValue: 1,
-      duration: 1000,
-      easing: Easing.cubic,
-    },
-    {useNativeDriver: false},
-  ).start();
-
-  const anim = transformerY.interpolate({
-    inputRange: [0, 1],
-    outputRange: [0, -LOGIN_LOGO_HEIGHT],
-  });
 
   const onLoginFacebook = () => {
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(
@@ -43,9 +34,12 @@ export default function Login() {
               result.grantedPermissions.toString(),
           );
           AccessToken.getCurrentAccessToken().then(async (data) => {
-            let token = data.accessToken.toString();
-            let urlGet = `https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cpicture%7Burl%7D,email&access_token=${token}`;
-            console.log(urlGet);
+
+            console.log(data);
+
+            // let token = data.accessToken.toString();
+            // let urlGet = `https://graph.facebook.com/v6.0/me?fields=id%2Cname%2Cpicture%7Burl%7D,email&access_token=${token}`;
+
             // let getData = await Axios.get(urlGet);
             // let LoginFace = await FetchLogin(null,null,'social',token,'FB');
 
@@ -69,26 +63,35 @@ export default function Login() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Text>LOGO</Text>
-      </View>
-      <Animated.View
-        style={[styles.loginContainer, {transform: [{translateY: anim}]}]}>
-        <Pressable onPress={() => onLoginFacebook()}>
-          <View style={styles.childLoginContainer}>
-            <Icons name="sc-facebook" size={30} color={'#FFF'} />
-          </View>
-        </Pressable>
-        <View style={{width: 50}} />
-        <Pressable
-          onPress={() => {
-            LoginGoogle(dispatch);
-          }}>
-          <View style={styles.childLoginContainer}>
-            <Icons name="sc-google-plus" size={30} color={'#FFF'} />
-          </View>
-        </Pressable>
-      </Animated.View>
+      <ImageBackground source={IMAGE} style={styles.imageBackground}>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.title1}>Welcome To</Text>
+          <Text style={styles.title2}>GEA</Text>
+        </View>
+
+        <View style={styles.loginContainer}>
+
+          <TouchableWithoutFeedback onPress={() => onLoginFacebook()}>
+            <View style={styles.buttonFB}>
+              <Icons name="sc-facebook" size={24} color="#fff" />
+              <View style={{width: 10}} />
+              <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+          <View style={{height: 15}} />
+
+          <TouchableWithoutFeedback>
+            <View style={styles.buttonGG}>
+              <Icons name="sc-google-plus" size={24} color="#fff" />
+              <View style={{width: 10}} />
+              <Text style={styles.titleBtnFB}>Sign In With Google</Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+        </View>
+
+      </ImageBackground>
     </View>
   );
 }
@@ -99,29 +102,56 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoContainer: {
-    flex: 9,
+  imageBackground: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
     width: '100%',
+  },
+  headerTitleContainer: {
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  title1: {
+    color: '#FFF',
+    fontSize: 16,
+    fontFamily: Fonts.SansLight,
+  },
+  title2: {
+    color: '#fff',
+    fontSize: 20,
+    fontFamily: Fonts.SansBold,
   },
   loginContainer: {
-    flexDirection: 'row',
-    backgroundColor: '#000000',
-    width: '100%',
-    height: LOGIN_LOGO_HEIGHT,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
-    borderBottomColor: '#FFF',
-    borderBottomWidth: 0.5,
-    marginBottom: -LOGIN_LOGO_HEIGHT,
   },
-  childLoginContainer: {
-    padding: 10,
-    borderWidth: 0.8,
-    borderRadius: 15,
-    borderColor: '#FFF',
+  buttonFB: {
+    flexDirection: 'row',
+    backgroundColor: '#4267B2',
+    height: 45,
+    width: '55%',
+    borderRadius: 20,
+    justifyContent: 'flex-start',
+    paddingLeft: 15,
+    alignItems: 'center',
   },
+  buttonGG: {
+    flexDirection: 'row',
+    backgroundColor: '#a81a13',
+    height: 45,
+    width: '55%',
+    borderRadius: 20,
+    justifyContent: 'flex-start',
+    paddingLeft: 15,
+    alignItems: 'center',
+  },
+  titleBtnFB: {
+    color: '#fff',
+    fontFamily: Fonts.SansLight,
+  },
+
+
 });

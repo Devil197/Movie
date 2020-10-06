@@ -28,6 +28,7 @@ const GOOGLE_CONFIGURE =  {
 }
 
 const ROUTE_KEY = {
+  Splash:'Splash',
   Film: 'Film',
   Profile:'Profile',
   Setting:'Setting',
