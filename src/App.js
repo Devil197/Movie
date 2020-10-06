@@ -15,17 +15,11 @@ import AsyncStorage from '@react-native-community/async-storage';
 import userReducer from './Redux/reducers/userReducer';
 import {MenuProvider} from 'react-native-popup-menu';
 
-export const AuthContext = React.createContext();
 export default function App() {
-  const [loginState, dispatch] = React.useReducer(userReducer);
   return (
     <StoreProvider store={store}>
-      <AuthContext.Provider>
-        <MenuProvider>
-          <MySpinner />
-          <AppNavigator />
-        </MenuProvider>
-      </AuthContext.Provider>
+      <MySpinner />
+      <AppNavigator />
     </StoreProvider>
   );
 }
