@@ -12,11 +12,13 @@ import {AccessToken, LoginManager} from 'react-native-fbsdk';
 import {LoginGoogle} from '../../Redux/actions/userAction'
 import { useDispatch, useSelector } from 'react-redux';
 const LOGIN_LOGO_HEIGHT = 80;
+import AsyncStorage from '@react-native-community/async-storage'
 
 export default function Login() {
   const dispatch = useDispatch();
   const transformerY = new Animated.Value(0);
-
+  const user = useSelector((state) => state.userReducer?.googleInfo)
+  console.log('0103-> user : ',user);
   Animated.timing(
     transformerY,
     {

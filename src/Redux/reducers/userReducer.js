@@ -13,13 +13,13 @@ const userReducer = (state = initialState, action) => {
         loggedIn: true,
       };
     }
-    case REDUX.GOOGLE_UPDATE_INFO:{
+    case REDUX.GOOGLE_LOGGED_IN:{
         return{
             ...state,
             googleInfo:action.payload,
         };
     }
-    case REDUX.FACEBOOK_UPDATE_INFO: {
+    case REDUX.FACEBOOK_LOGGED_IN: {
      return {
         ...state,
         facebookInfo: action.payload,

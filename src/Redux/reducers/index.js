@@ -2,14 +2,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {combineReducers} from 'redux';
 import {persistReducer} from 'redux-persist';
 // import
-import userAuthReducer from './userAuthReducer';
+import userReducer from './userReducer';
 const reducers = combineReducers({
-  userAuthReducer: persistReducer(
+  userReducer: persistReducer(
     {
-      key: 'userAuthReducer',
+      key: 'userReducer',
       storage: AsyncStorage,
     },
-    userAuthReducer,
+    
   ),
 });
 // Exports
