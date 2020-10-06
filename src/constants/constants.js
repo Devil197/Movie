@@ -1,4 +1,5 @@
 import {Dimensions, NativeModules, Platform} from 'react-native';
+import { Home } from '../components/tabScreens';
 //
 
 const {width, height} = Dimensions.get('window');
@@ -33,7 +34,12 @@ const ROUTE_KEY = {
   Setting:'Setting',
   Favorite:'Favorite',
   BottomNavigation:'BottomNavigation',
-  Login:'Login'
+  Login:'Login',
+  Home:'Home',
+  Details:'Details',
+  Music:'Music',
+  Category:'Category',
+  Follow:'Follow'
 };
 
 export {

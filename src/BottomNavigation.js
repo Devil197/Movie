@@ -3,32 +3,14 @@ import { ROUTE_KEY } from './constants/constants'
 
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
-import { Home, Profile, Setting, Favorite } from './components/tabScreens'
-import Details from './components/screens/Details';
-
 import Icon from 'react-native-vector-icons/Feather';
-import Music from './components/tabScreens/Music';
-import Category from './components/tabScreens/Category';
-import Follow from './components/tabScreens/Follow';
+
+import { Home, Profile, Music, Category,Follow } from './components/tabScreens'
+import {Details} from './components/screens';
+
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
-function HomeStack({ route, navigation }) {
-    return (
-        <Stack.Navigator headerMode="none">
-            <Stack.Screen
-                name="Home"
-                component={Home}
-            />
-            <Stack.Screen
-                name="Details"
-                component={Details}
-            />
-        </Stack.Navigator>
-    )
-}
 const tabBarOptions = {
     activeTintColor: "#000",
     showLabel: false,
@@ -39,8 +21,8 @@ function MyBottomTab() {
         <Tab.Navigator tabBarOptions={tabBarOptions}
         >
             <Tab.Screen
-                name={"Film"}
-                component={HomeStack}
+                name={ROUTE_KEY.Film}
+                component={Home}
                 options={{
                     tabBarIcon: ({ color, size }) => (
                         <Icon name="film" color={color} size={size} />
@@ -48,7 +30,7 @@ function MyBottomTab() {
                 }}
             />
             <Tab.Screen
-                name={"Music"}
+                name={ROUTE_KEY.Music}
                 component={Music}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -57,7 +39,7 @@ function MyBottomTab() {
                 }}
             />
             <Tab.Screen
-                name={"Category"}
+                name={ROUTE_KEY.Category}
                 component={Category}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -66,7 +48,7 @@ function MyBottomTab() {
                 }}
             />
             <Tab.Screen
-                name={"Follow"}
+                name={ROUTE_KEY.Follow}
                 component={Follow}
                 options={{
                     tabBarIcon: ({ color, size }) => (
@@ -80,7 +62,7 @@ function MyBottomTab() {
 
 
             <Tab.Screen
-                name={"Profile"}
+                name={ROUTE_KEY.Profile}
                 component={Profile}
                 options={{
                     tabBarIcon: ({ color, size }) => (
