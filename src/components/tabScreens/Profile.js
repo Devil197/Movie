@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
         marginRight: 16
     },
     name: {
-        fontFamily: Fonts.Sans
-    },
+        fontFamily: Fonts.SansMedium,
+        },
     group: {
         padding: 16
     },
@@ -129,6 +129,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 16,
         fontSize: 14,
-        fontFamily: Fonts.Sans  
+        fontFamily: Fonts.SansMedium,
     }
 })

@@ -1,29 +1,45 @@
-import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import { styles } from '../../constants/style/styles';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
-import { dataMovie } from '../../constants/datatest';
 import styled from 'styled-components';
-import TextC from '../../constants/style/Text';
+import { HEIGHT, WIDTH,WIDTH_SCALE } from '../../constants/constants';
+import Container from '../../constants/style/Container';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
-import Container from '../../constants/style/Container';
-import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity'
-import MyView from '../../constants/style/MyView'
-import { useNavigation } from '@react-navigation/native';
-export default function Home({ }) {
+import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
+import MyView from '../../constants/style/MyView';
+import { styles } from '../../constants/style/styles';
+import TextC from '../../constants/style/Text';
+import { getAllMovie } from '../../Redux/actions/movieAction';
+import { MySpinner } from '../views';
 
-  const navigation = useNavigation()
-  console.log(dataMovie.length);
+export default function Home({}) {
+  const [loading, setLoading] = useState(true);
+
+  const [dataMovie, setDataMovie] = useState();
+  const [page, setPage] = useState(1);
+  const navigation = useNavigation();
+  // console.log(dataMovie.length);
+
+  useEffect(() => {
+    getAllMovie()
+      .then((movie) => {
+        console.log('movie', movie), setLoading(false), setDataMovie(movie);
+      })
+      .catch((err) => console.log('Failed'));
+  }, []);
+  console.log('map ', dataMovie);
+  if (loading) {
+    MySpinner.show();
+    return(
+      <View style={{flex:1,width:WIDTH,height:HEIGHT,position:'absolute',zIndex:9999}}/>
+    )
+  }else{
+    MySpinner.hide()
+  }
   return (
     <ScrollView style={styles.container}>
       {/* <View style={styles.header}>
@@ -80,7 +96,7 @@ export default function Home({ }) {
           />
         </GroupA>
         <GroupA col s p>
-          <TextC color="#333" medium heavy >
+          <TextC color="#333" medium heavy>
             Thanh Phụng
           </TextC>
           <TextC a color="#333" medium light>
@@ -88,9 +104,7 @@ export default function Home({ }) {
           </TextC>
         </GroupA>
         <GroupA row>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Details")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Details')}>
             <FontAwesome5 name={'search'} size={15} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
@@ -100,19 +114,21 @@ export default function Home({ }) {
       </Container>
 
       <GroupA col s>
-        <TextC large bold color="#000" p  >
+        <TextC large bold color="#000" p>
           Continue Watching
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity max s long
-
-                onPress={() => alert("f")}
-
-              >
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
-                <MyView rightm bottoms large xxl backgroundColor="#7158e2" alignItems="flex-start">
+              <MyTouchableOpacity max s long onPress={() => alert('f')}>
+                <ImageA max xxl little source={{uri: c.cover_img}} />
+                <MyView
+                  rightm
+                  bottoms
+                  large
+                  xxl
+                  backgroundColor="#7158e2"
+                  alignItems="flex-start">
                   <TextC large heavy p>
                     Title
                   </TextC>
@@ -120,7 +136,7 @@ export default function Home({ }) {
                 <MyView more rights bottomm z2>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
-              </MyTouchableOpacity> 
+              </MyTouchableOpacity>
             );
           })}
         </ScrollView>
@@ -128,10 +144,10 @@ export default function Home({ }) {
 
       <GroupA col>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
+                <ImageA large xl little source={{uri: c.albumArtUrl}} />
                 <TextC color="#333" medium heavy>
                   Cast
                 </TextC>
@@ -140,6 +156,20 @@ export default function Home({ }) {
           })}
         </ScrollView>
       </GroupA>
+
+      {/* <GroupA col>
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
+          {data.items.map((c, i) => {
+            return (
+              <MyTouchableOpacity small m little key={i}>
+                <TextC color="#333" medium heavy>
+                 {c.name}
+                </TextC>
+              </MyTouchableOpacity>
+            );
+          })}
+        </ScrollView>
+      </GroupA> */}
 
       <GroupA row ss>
         <TextC medium heavy color="#000" p>
@@ -155,12 +185,12 @@ export default function Home({ }) {
 
       <GroupA col s b>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
+                <ImageA max xxl little source={{uri: c.cover_img}} />
                 <TextC color="#333" medium bold>
-                  {c.title}
+                  {c.name}
                 </TextC>
               </MyTouchableOpacity>
             );
@@ -173,12 +203,12 @@ export default function Home({ }) {
           Cartoon
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
               <TouchableOpacity>
                 <Container m>
                   <GroupA row ss>
-                    <ImageA little s medium source={{ uri: c.albumArtUrl }} />
+                    <ImageA little s medium source={{uri: c.albumArtUrl}} />
                   </GroupA>
                   <GroupA col s p>
                     <TextC color="#333" medium heavy>
@@ -216,10 +246,10 @@ export default function Home({ }) {
         </TextC>
 
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.albumArtUrl }} />
+                <ImageA max xxl little source={{uri: c.cover_img}} />
                 <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
@@ -234,10 +264,10 @@ export default function Home({ }) {
           Cast
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie.map((c, i) => {
+          {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
+                <ImageA large xl little source={{uri: c.albumArtUrl}} />
               </MyTouchableOpacity>
             );
           })}

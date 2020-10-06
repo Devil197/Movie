@@ -1,0 +1,70 @@
+{
+  "[dart]": {
+    "editor.formatOnSave": true,
+    "editor.formatOnType": true,
+    "editor.rulers": [80],
+    "editor.selectionHighlight": false,
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.suggestSelection": "first",
+    "editor.tabCompletion": "onlySnippets",
+    "editor.wordBasedSuggestions": false
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "breadcrumbs.enabled": true,
+  "dart.debugExternalLibraries": false,
+  "dart.debugSdkLibraries": false,
+  "dart.lineLength": 150,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": true,
+    "source.organizeImports": false,
+    "source.fixAll.eslint": true
+  },
+  "editor.find.addExtraSpaceOnTop": false,
+  // "editor.fontLigatures": false,
+  // "editor.fontSize": 15,
+  // "editor.formatOnSave": true,
+  "editor.minimap.scale": 2,
+  "editor.semanticHighlighting.enabled": false,
+  "editor.suggestSelection": "first",
+  "eslint.format.enable": true,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "faker.locale": "en",
+  "files.associations": {
+    "*.js": "javascriptreact",
+    "*.dart": "dart"
+  },
+  "files.autoSave": "onWindowChange",
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  "gitlens.advanced.messages": {
+    "suppressCommitHasNoPreviousCommitWarning": true,
+    "suppressShowKeyBindingsNotice": true
+  },
+  "gitlens.defaultDateFormat": "dddd, MMMM YYYY, h:mm:ss a",
+  "javascript.suggest.completeFunctionCalls": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "javascript.validate.enable": false,
+  "oneDarkPro.bold": true,
+  "path-autocomplete.extensionOnImport": true,
+  "terminal.integrated.confirmOnExit": true,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "vsintellicode.modify.editor.suggestSelection": "automaticallyOverrodeDefaultValue",
+  "window.zoomLevel": -1,
+  "workbench.activityBar.visible": true,
+  "workbench.colorTheme": "One Dark Pro",
+  "workbench.iconTheme": "material-icon-theme",
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}

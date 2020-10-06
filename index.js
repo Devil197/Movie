@@ -7,6 +7,9 @@ import Orientation from 'react-native-orientation-locker';
 import App from './src/App';
 import {name as appName} from './app.json';
 import 'react-native-gesture-handler';
+
+console.disableYellowBox = true;
+
 if (Platform.OS === 'android') {
   StatusBar.setTranslucent(true);
   StatusBar.setBackgroundColor('transparent');
