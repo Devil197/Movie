@@ -1,10 +1,11 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity } from 'react-native';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components';
+import { HEIGHT, WIDTH,WIDTH_SCALE } from '../../constants/constants';
 import Container from '../../constants/style/Container';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
@@ -33,6 +34,11 @@ export default function Home({}) {
   console.log('map ', dataMovie);
   if (loading) {
     MySpinner.show();
+    return(
+      <View style={{flex:1,width:WIDTH,height:HEIGHT,position:'absolute',zIndex:9999}}/>
+    )
+  }else{
+    MySpinner.hide()
   }
   return (
     <ScrollView style={styles.container}>

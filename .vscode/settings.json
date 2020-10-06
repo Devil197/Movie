@@ -25,7 +25,7 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.codeActionsOnSave": {
     "source.addMissingImports": true,
-    "source.organizeImports": true,
+    "source.organizeImports": false,
     "source.fixAll.eslint": true
   },
   "editor.find.addExtraSpaceOnTop": false,
