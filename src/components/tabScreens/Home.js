@@ -1,53 +1,38 @@
-import React, { Component, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
-import { styles } from '../../constants/style/styles';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, TouchableOpacity } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
-import { dataMovie } from '../../constants/datatest';
 import styled from 'styled-components';
-import TextC from '../../constants/style/Text';
+import Container from '../../constants/style/Container';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
-import Container from '../../constants/style/Container';
-import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity'
-import MyView from '../../constants/style/MyView'
-import { useNavigation } from '@react-navigation/native';
-import { getAllMovie } from '../../Redux/actions/movieAction'
+import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
+import MyView from '../../constants/style/MyView';
+import { styles } from '../../constants/style/styles';
+import TextC from '../../constants/style/Text';
+import { getAllMovie } from '../../Redux/actions/movieAction';
+import { MySpinner } from '../views';
 
-import axiosConfig from '../../api/axios';
-import LottieView from 'lottie-react-native'
-
-export default function Home({ }) {
+export default function Home({}) {
   const [loading, setLoading] = useState(true);
 
   const [dataMovie, setDataMovie] = useState();
   const [page, setPage] = useState(1);
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   // console.log(dataMovie.length);
 
-
   useEffect(() => {
-    getAllMovie().then(
-      movie => {
-        console.log('movie', movie),
-        setLoading(false),
-        setDataMovie(movie)
+    getAllMovie()
+      .then((movie) => {
+        console.log('movie', movie), setLoading(false), setDataMovie(movie);
       })
-      .catch(err => console.log('Failed')
-      )
-
+      .catch((err) => console.log('Failed'));
   }, []);
-  console.log('map ',dataMovie);
+  console.log('map ', dataMovie);
   if (loading) {
-    return <LottieView style={{ backgroundColor: '#ffffff' }} source={require('../../assets/890-loading-animation.json')} autoPlay loop />;
+    MySpinner.show();
   }
   return (
     <ScrollView style={styles.container}>
@@ -105,7 +90,7 @@ export default function Home({ }) {
           />
         </GroupA>
         <GroupA col s p>
-          <TextC color="#333" medium heavy >
+          <TextC color="#333" medium heavy>
             Thanh Phụng
           </TextC>
           <TextC a color="#333" medium light>
@@ -113,9 +98,7 @@ export default function Home({ }) {
           </TextC>
         </GroupA>
         <GroupA row>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("Details")}
-          >
+          <TouchableOpacity onPress={() => navigation.navigate('Details')}>
             <FontAwesome5 name={'search'} size={15} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
@@ -125,19 +108,21 @@ export default function Home({ }) {
       </Container>
 
       <GroupA col s>
-        <TextC large bold color="#000" p  >
+        <TextC large bold color="#000" p>
           Continue Watching
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity max s long
-
-                onPress={() => alert("f")}
-
-              >
-                <ImageA max xxl little source={{ uri: c.cover_img }} />
-                <MyView rightm bottoms large xxl backgroundColor="#7158e2" alignItems="flex-start">
+              <MyTouchableOpacity max s long onPress={() => alert('f')}>
+                <ImageA max xxl little source={{uri: c.cover_img}} />
+                <MyView
+                  rightm
+                  bottoms
+                  large
+                  xxl
+                  backgroundColor="#7158e2"
+                  alignItems="flex-start">
                   <TextC large heavy p>
                     Title
                   </TextC>
@@ -156,7 +141,7 @@ export default function Home({ }) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
+                <ImageA large xl little source={{uri: c.albumArtUrl}} />
                 <TextC color="#333" medium heavy>
                   Cast
                 </TextC>
@@ -197,7 +182,7 @@ export default function Home({ }) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.cover_img }} />
+                <ImageA max xxl little source={{uri: c.cover_img}} />
                 <TextC color="#333" medium bold>
                   {c.name}
                 </TextC>
@@ -217,7 +202,7 @@ export default function Home({ }) {
               <TouchableOpacity>
                 <Container m>
                   <GroupA row ss>
-                    <ImageA little s medium source={{ uri: c.albumArtUrl }} />
+                    <ImageA little s medium source={{uri: c.albumArtUrl}} />
                   </GroupA>
                   <GroupA col s p>
                     <TextC color="#333" medium heavy>
@@ -258,7 +243,7 @@ export default function Home({ }) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.cover_img }} />
+                <ImageA max xxl little source={{uri: c.cover_img}} />
                 <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
@@ -276,7 +261,7 @@ export default function Home({ }) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.albumArtUrl }} />
+                <ImageA large xl little source={{uri: c.albumArtUrl}} />
               </MyTouchableOpacity>
             );
           })}

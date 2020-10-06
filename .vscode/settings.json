@@ -25,20 +25,20 @@
   "diffEditor.ignoreTrimWhitespace": false,
   "editor.codeActionsOnSave": {
     "source.addMissingImports": true,
-    // "source.organizeImports": true,
+    "source.organizeImports": true,
     "source.fixAll.eslint": true
   },
   "editor.find.addExtraSpaceOnTop": false,
-  "editor.fontLigatures": true,
-  "editor.fontSize": 15,
-  "editor.formatOnSave": true,
+  // "editor.fontLigatures": false,
+  // "editor.fontSize": 15,
+  // "editor.formatOnSave": true,
   "editor.minimap.scale": 2,
   "editor.semanticHighlighting.enabled": false,
   "editor.suggestSelection": "first",
   "eslint.format.enable": true,
   "explorer.confirmDelete": false,
   "explorer.confirmDragAndDrop": false,
-  "faker.locale": "vi",
+  "faker.locale": "en",
   "files.associations": {
     "*.js": "javascriptreact",
     "*.dart": "dart"
