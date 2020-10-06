@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { set } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -13,25 +14,46 @@ import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
 import MyView from '../../constants/style/MyView';
 import { styles } from '../../constants/style/styles';
 import TextC from '../../constants/style/Text';
-import { getAllMovie } from '../../Redux/actions/movieAction';
+import { getAllMovie,getCartoon,getCast } from '../../Redux/actions/movieAction';
 import { MySpinner } from '../views';
 
 export default function Home({}) {
   const [loading, setLoading] = useState(true);
-
+  const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();
+  const [dataCartoon, setDataCartoon] = useState();
   const [page, setPage] = useState(1);
   const navigation = useNavigation();
   // console.log(dataMovie.length);
 
   useEffect(() => {
+    // xet data cho cartoon
+    getCartoon()
+    .then((cartoon) => {
+      setLoading(false), 
+      setDataCartoon(cartoon);
+    })
+    .catch((err) => console.log('Failed'));
+
     getAllMovie()
       .then((movie) => {
-        console.log('movie', movie), setLoading(false), setDataMovie(movie);
+        // console.log('movie', movie), 
+        setLoading(false), 
+        setDataMovie(movie);
       })
       .catch((err) => console.log('Failed'));
+
+    getCast().then((cast) => {
+      // console.log('movie', movie), 
+      setLoading(false), 
+      setDataCast(cast);
+    }).catch((err) => console.log('failed'));
+
   }, []);
-  console.log('map ', dataMovie);
+
+  // console.log('map ', dataMovie);
+
+  // loading
   if (loading) {
     MySpinner.show();
     return(
@@ -142,20 +164,6 @@ export default function Home({}) {
         </ScrollView>
       </GroupA>
 
-      <GroupA col>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie?.items.map((c, i) => {
-            return (
-              <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{uri: c.albumArtUrl}} />
-                <TextC color="#333" medium heavy>
-                  Cast
-                </TextC>
-              </MyTouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </GroupA>
 
       {/* <GroupA col>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
@@ -203,19 +211,19 @@ export default function Home({}) {
           Cartoon
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
-          {dataMovie?.items.map((c, i) => {
+          {dataCartoon?.items.map((c, i) => {
             return (
               <TouchableOpacity>
                 <Container m>
                   <GroupA row ss>
-                    <ImageA little s medium source={{uri: c.albumArtUrl}} />
+                    <ImageA little s medium source={{uri: c.movie_id.cover_img}} />
                   </GroupA>
                   <GroupA col s p>
                     <TextC color="#333" medium heavy>
-                      Thanh Phụng
+                      {c.movie_id.name}
                     </TextC>
                     <TextC a color="#333" medium light>
-                      Basic
+                      {c.movie_id.episode} Tập
                     </TextC>
                   </GroupA>
                   <GroupA row>
@@ -264,10 +272,13 @@ export default function Home({}) {
           Cast
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {dataMovie?.items.map((c, i) => {
+          {dataCast?.cast.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{uri: c.albumArtUrl}} />
+                <ImageA large xl little source={{uri: c.cover_image}} />
+                <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="middle">
+                  {c.name}
+                </TextC>
               </MyTouchableOpacity>
             );
           })}

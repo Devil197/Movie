@@ -18,7 +18,7 @@ const heightBottomBar = 69 * HEIGHT_SCALE;
 const textInputHeight = 36 * HEIGHT_SCALE;
 const heightButton = 50 * HEIGHT_SCALE;
 const avatarSize = 50 * WIDTH_SCALE;
-const URL = "https://ph2t.herokuapp.com/"
+const URL = "https://ph2t.herokuapp.com"
 const GOOGLE_CONFIGURE =  {
   webClientId:
     '835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
