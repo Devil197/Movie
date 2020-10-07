@@ -11,7 +11,7 @@ function StackNavigator() {
   return (
     <Stack.Navigator
       headerMode="none"
-      initialRouteName={ROUTE_KEY.Login}>
+      initialRouteName={ROUTE_KEY.Splash}>
       <Stack.Screen
         name={ROUTE_KEY.BottomNavigation}
         component={BottomNavigation}

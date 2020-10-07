@@ -22,6 +22,8 @@ const IMAGE = {
 
 export default function Login() {
   const dispatch = useDispatch();
+  const user = useSelector((state)=>state.userReducer)
+  console.log('0103-> user: ',user);
 
   const onLoginFacebook = () => {
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(
@@ -81,7 +83,7 @@ export default function Login() {
 
           <View style={{height: 15}} />
 
-          <TouchableWithoutFeedback>
+          <TouchableWithoutFeedback onPress={()=> LoginGoogle(dispatch)}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
               <View style={{width: 10}} />
