@@ -1,5 +1,5 @@
-import {applyMiddleware, createStore} from 'redux';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import { applyMiddleware, createStore } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
 // import logger, { createLogger } from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import reducers from '../reducers';
@@ -11,7 +11,4 @@ const middlewares = [thunkMiddleware];
 
 // create store
 
-export const store = createStore(
-  reducers,
-  composeWithDevTools(applyMiddleware(...middlewares)),
-);
+export const store = createStore(reducers, composeWithDevTools(applyMiddleware(...middlewares)));

@@ -22,7 +22,7 @@ ${({ row, col }) => {
 ${({ p , t,b }) => {
     switch (true) {
         case p:
-            return `paddingRight: 45%`;
+            return `paddingRight: 30%`;
         case t:
             return `marginTop: 5%`;
         case b:

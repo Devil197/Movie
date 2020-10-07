@@ -11,6 +11,10 @@ import {Provider as StoreProvider} from 'react-redux';
 import AppNavigator from './AppNavigator';
 import {MySpinner} from './components/views';
 import {store} from './Redux/store';
+import AsyncStorage from '@react-native-community/async-storage';
+import userReducer from './Redux/reducers/userReducer';
+import {MenuProvider} from 'react-native-popup-menu';
+
 export default function App() {
   return (
     <StoreProvider store={store}>
