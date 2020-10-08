@@ -2,7 +2,7 @@ import * as React from 'react';
 import 'react-native-gesture-handler';
 import {ROUTE_KEY} from './constants/constants';
 import {createStackNavigator} from '@react-navigation/stack';
-import {Login, Details,Splash} from './components/screens';
+import {Login, Details, Splash} from './components/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
 const Stack = createStackNavigator();
