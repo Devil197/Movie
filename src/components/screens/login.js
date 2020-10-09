@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,7 @@ import {AccessToken, LoginManager} from 'react-native-fbsdk';
 import {LoginGoogle} from '../../Redux/actions/userAction';
 import {useDispatch, useSelector} from 'react-redux';
 import {Fonts} from '../../utils/Fonts';
+import {ROUTE_KEY} from '../../constants/constants'
 
 const LOGIN_LOGO_HEIGHT = 80;
 const IMAGE = {
@@ -20,10 +21,16 @@ const IMAGE = {
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-export default function Login() {
+export default function Login({navigation}) {
   const dispatch = useDispatch();
-  const user = useSelector((state)=>state.userReducer)
-  console.log('0103-> user: ',user);
+  const isLogin = useSelector((state)=>state.userReducer?.loggedIn)
+  // console.log('0103-> user: ',user);
+
+  useEffect(()=>{
+    if (isLogin){
+      navigation.push(ROUTE_KEY.BottomNavigation)
+    }
+  },[])
 
   const onLoginFacebook = () => {
     LoginManager.logInWithPermissions(['public_profile', 'email']).then(

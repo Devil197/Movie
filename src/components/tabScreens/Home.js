@@ -16,14 +16,15 @@ import { styles } from '../../constants/style/styles';
 import TextC from '../../constants/style/Text';
 import { getAllMovie,getCartoon,getCast } from '../../Redux/actions/movieAction';
 import { MySpinner } from '../views';
+import {ROUTE_KEY} from '../../constants/constants';
 
-export default function Home({}) {
+export default function Home({navigation}) {
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();
   const [dataCartoon, setDataCartoon] = useState();
   const [page, setPage] = useState(1);
-  const navigation = useNavigation();
+  // const navigation = useNavigation();
   // console.log(dataMovie.length);
 
   useEffect(() => {
@@ -126,7 +127,7 @@ export default function Home({}) {
           </TextC>
         </GroupA>
         <GroupA row>
-          <TouchableOpacity onPress={() => navigation.navigate('Details')}>
+          <TouchableOpacity onPress={() => navigation.navigate('Videos')}>
             <FontAwesome5 name={'search'} size={15} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
@@ -142,7 +143,7 @@ export default function Home({}) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity max s long onPress={() => alert('f')}>
+              <MyTouchableOpacity max s long onPress={() => navigation.push(ROUTE_KEY.Details,{_id:c._id})}>
                 <ImageA max xxl little source={{uri: c.cover_img}} />
                 <MyView
                   rightm

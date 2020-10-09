@@ -36,10 +36,11 @@ const ROUTE_KEY = {
   BottomNavigation:'BottomNavigation',
   Login:'Login',
   Home:'Home',
-  Details:'Details',
+  Videos:'Videos',
   Music:'Music',
   Category:'Category',
-  Follow:'Follow'
+  Follow:'Follow',
+  Details: 'Details',
 };
 
 export {

@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { Home, Profile, Music, Category,Follow } from './components/tabScreens'
-import {Details} from './components/screens';
+import {Videos} from './components/screens';
 
 
 const Tab = createBottomTabNavigator();
