@@ -3,6 +3,7 @@ import {GOOGLE_CONFIGURE} from '../../constants/constants';
 import moment from 'moment';
 import {REDUX} from '../store/types';
 import {Alert} from 'react-native';
+import {AccessToken, LoginManager} from 'react-native-fbsdk';
 
 import axios from 'axios';
 import USER from '../../api/user'
@@ -38,9 +39,23 @@ export const LoginGoogle = async (dispatch) => {
 
   try {
     await GoogleSignin.hasPlayServices();
-    const googleInfo = await GoogleSignin.signIn();
-    console.log('0103->> info: ', googleInfo);
-    _userAuthSuccess(dispatch, googleInfo);
+    await GoogleSignin.signIn().then((googleInfo) => {
+      console.log(googleInfo);
+
+      _userAuthSuccess(dispatch, googleInfo);
+
+      let token = googleInfo.idToken;
+      let name = googleInfo.user.familyName + " " + googleInfo.user.givenName;
+      let photo = googleInfo.user.photo;
+      let email = googleInfo.user.email;
+
+      USER.saveUser(token, name, photo, email, 'gg').then((result) => {
+        if(result.data.result === false){
+          console.log("USER ADDED!");
+          return;
+        }
+      });
+    })
   } catch (error) {
     console.log(error);
     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -78,8 +93,13 @@ export const LoginFacebook = async (dispatch) => {
           let photo = data.data.picture.data.url;
 
           USER.saveUser(token, name, photo, null, 'fb').then((result) => {
-            console.log(result.data);
+            if(result.data.result === false){
+              console.log("USER ADDED!");
+              return;
+            }
           });
+
+          _userAuthSuccess(dispatch, null, data.data);
         });
       });
     }

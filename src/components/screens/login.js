@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,9 +9,7 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import {AccessToken, LoginManager} from 'react-native-fbsdk';
 import {LoginGoogle, LoginFacebook} from '../../Redux/actions/userAction';
-import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
 import {useDispatch, useSelector} from 'react-redux';
 import {Fonts} from '../../utils/Fonts';
 
@@ -23,8 +21,9 @@ const IMAGE = {
 
 export default function Login() {
   const dispatch = useDispatch();
+  const user = useSelector((state)=>state.userReducer)
 
-  
+  console.log('0103 -> USER: ',user);
 
   return (
     <View style={styles.container}>
@@ -36,7 +35,7 @@ export default function Login() {
 
         <View style={styles.loginContainer}>
 
-          <TouchableWithoutFeedback onPress={() => onLoginFacebook()}>
+          <TouchableWithoutFeedback onPress={() => LoginFacebook(dispatch)}>
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
               <View style={{width: 10}} />
@@ -46,7 +45,7 @@ export default function Login() {
 
           <View style={{height: 15}} />
 
-          <TouchableWithoutFeedback onPress={() => onLoginGoogle()}>
+          <TouchableWithoutFeedback onPress={()=> LoginGoogle(dispatch)}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
               <View style={{width: 10}} />
