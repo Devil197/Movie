@@ -1,291 +1,152 @@
-import React from 'react';
-import {StatusBar, Text, View, StyleSheet, FlatList} from 'react-native';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import {Fonts} from '../../utils/Fonts';
-const episodesData = [
-  {
-    id: 0,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 1,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 2,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 3,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 4,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 5,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 6,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 7,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 8,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 9,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 10,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 11,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 12,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 13,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 14,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 15,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 16,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 17,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 18,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 19,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 20,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 21,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 22,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 23,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-];
-const Details = ({params}) => (
-  <View style={{flex: 1, backgroundColor: '#F2F5FB'}}>
-    <StatusBar backgroundColor="#000" barStyle="dark-content" />
-    {/* Thay cái này = Youtube là đc */}
-    <View
-      style={{
-        width: '100%',
-        height: 240,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Text style={{color: '#fff'}}>{`1. Thay cái này bằng Youtube`}</Text>
-      <Text style={{color: '#fff'}}>
-        {' '}
-        2. Nhúng lại fonts đi, fonts Product Sans t đã để ở assets/font rồi
-      </Text>
-      <Text style={{color: '#fff'}}>
-        {' '}
-        3.T có tạo react-native-config.js rồi
-      </Text>
-    </View>
+import React, { useEffect, useState } from 'react';
+import {
+    StyleSheet,
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    PixelRatio,
+    Dimensions,
+    Platform,
+    FlatList,
+    Image
+} from 'react-native';
 
-    <ScrollView>
-      {/* Details of Movie */}
-      <View>
-        <View style={styles.card}>
-          <Text style={styles.header}>
-            [LỒNG TIẾNG] GLEIPNIR - SỢI XÍCH THẦN TẬP 1
-          </Text>
-          <View style={[styles.rowRating, styles.mr]}>
-            <Text>0.0 </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-            </View>
-          </View>
-          <Text style={styles.mr}>Thể loại: Hành động, Siêu Nhiên</Text>
-          <Text style={[styles.mr, {color: '#555'}]}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry.{' '}
-          </Text>
-        </View>
-      </View>
+import {getFullMovie} from '../../Redux/actions/movieAction'
+import {WIDTH_SCALE,HEIGHT_SCALE,WIDTH,HEIGHT} from '../../constants/constants'
+import Icon from 'react-native-vector-icons/Ionicons';
+import Play from '../views/Play'
+export default function Details({navigation,route}) {
 
-      {/* Episode of Move */}
-      <Episodes episodes={episodesData} />
-    </ScrollView>
-  </View>
-);
+    const _id = route.params._id;
+    console.log("hhh",_id);
+    const [dataMovie, setDataMovie] = useState();
+    const [loading, setLoading] = useState(true);
 
-const Episodes = (props) => {
-  const {episodes} = props;
-  const renderEp = (item, index) => {
+  
+    useEffect(() => {
+
+        getFullMovie(_id).then((fullMovie) => {
+            setLoading(false);
+            console.log('0001 ',fullMovie);
+            setDataMovie(fullMovie);
+        }).catch((err) => console.log("Failed",err))
+        
+    },[])
+    console.log("yyyyy",dataMovie?.movie[0].name )
     return (
-      <TouchableOpacity style={styles.itemEp}>
-        <Text style={{color: '#0984e3'}}>{index + 1}</Text>
-      </TouchableOpacity>
-    );
-  };
+        <ScrollView style={styles.container}>
 
-  return (
-    <View style={styles.card}>
-      <Text style={styles.header}>Chọn tập</Text>
-      <Text style={{fontFamily: Fonts.Sans, marginBottom: 16, color: '#555'}}>
-        Cập nhật vào thứ 3 hàng tuần vào lúc 12:00:22
-      </Text>
-      <FlatList
-        keyExtractor={(item, index) => {
-          return index.toString();
-        }}
-        data={episodes}
-        renderItem={({item, index}) => renderEp(item, index)}
-        //Setting the number of column
-        numColumns={6}
-      />
-    </View>
-  );
-};
+            <View style={styles.header}>
 
-export default Details;
+                <View style={styles.boxHeader}>
+                    <Icon name="chevron-back" size={30} color="#fff"/>
+                    <Text style={{color: '#fff'}}>Back</Text>
+                </View> 
+
+                <View style={styles.header1}></View>  
+
+                <Image source={{uri:dataMovie?.movie[0].cover_img}} style={styles.imageHeader}/>
+                
+                <View style={styles.header2}>
+
+                    <View style={styles.boxContent}>
+                        <Text style={{fontWeight:'bold'}}>{dataMovie?.movie[0].name}</Text>
+                        <Text>{dataMovie?.category[0].name}</Text>
+                        
+                        <View style={{flexDirection: 'row'}}>
+                            <Icon name="ios-calendar-outline" size={20} color="#000"/>
+                            <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].duration}</Text>
+                        </View>
+                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].directer}</Text>
+                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].country}</Text>
+                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].episode}</Text>
+                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].status}</Text>
+                    </View>
+
+                </View> 
+
+            </View>
+
+            <View style={styles.content}>
+                <Text style={{fontWeight: 'bold',color: '#e55039', margin: 10* WIDTH_SCALE}}>Overview</Text>
+                <Text style={{margin:10*WIDTH_SCALE}}>{dataMovie?.movie[0].introduction}</Text>
+            </View>
+
+            <View style={styles.content}>
+                <Text style={{fontWeight: 'bold',color: '#e55039', margin: 10* WIDTH_SCALE}}>Cast</Text>
+                <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
+                    {dataMovie?.cast.map((c, i) => {
+                        return (
+                            <TouchableOpacity style={styles.touchopa}>
+                                <Image source={{uri: c.cover_img}} style={styles.imageCast}/>
+                                <Text color="#333">{c.name}</Text>
+                            </TouchableOpacity>
+                            );
+                    })}
+                </ScrollView>
+            </View>
+
+            <View  style={styles.content}>
+                <Text>aaaa</Text>
+                <Play _id="j__Q13iAxNk"/>
+            </View>
+
+        </ScrollView>
+    )
+}
 
 const styles = StyleSheet.create({
-  card: {
-    backgroundColor: '#fff',
-    marginTop: 16,
-    marginHorizontal: 8,
-    marginBottom: 8,
-    borderRadius: 8,
-    padding: 16,
-  },
-  rowRating: {flexDirection: 'row', alignItems: 'center', marginVertical: 4},
-  mr: {
-    marginVertical: 4,
-  },
-  header: {
-    fontSize: 22,
-    fontFamily: Fonts.SansBold,
-    marginVertical: 4,
-  },
-  itemEp: {
-    width: 44,
-    height: 44,
-    justifyContent: 'center',
-    borderRadius: 4,
-    alignItems: 'center',
-    backgroundColor: '#F2F5FB',
-    marginRight: 16,
-    marginBottom: 16,
-  },
-});
+    container: {
+        flex: 1,
+        backgroundColor: '#c8d6e5',
+    },
+    // header
+    boxHeader: {
+        flexDirection: 'row',
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+        top:40*WIDTH_SCALE,
+        left:20*WIDTH_SCALE,
+        zIndex: 1,
+    },
+    imageHeader: {
+        width:  150* WIDTH_SCALE,
+        height: 200 * HEIGHT_SCALE,
+        position: 'absolute',
+        top:170*WIDTH_SCALE,
+        left:20*WIDTH_SCALE,
+        zIndex: 1
+    },
+    header1: {
+        width:  WIDTH,
+        height: 200 * HEIGHT_SCALE,
+        backgroundColor: '#222f3e',
+    },
+    header2: {
+        width: WIDTH,
+        height: 200 * HEIGHT_SCALE,
+        backgroundColor: '#fff',
+    },
+    boxContent:{
+        position: 'absolute',
+        right:0, 
+        width: WIDTH-200,
+        alignItems: 'flex-start',
+        padding: 5 * WIDTH_SCALE,
+    },
+    //content 
+    content: {
+        backgroundColor: '#fff',
+        marginTop: 5*WIDTH_SCALE,
+    },
+    //cast
+    touchopa: {
+        margin: 5* WIDTH_SCALE,
+    },
+    imageCast: {
+        width:  150* WIDTH_SCALE,
+        height: 200 * HEIGHT_SCALE,
+    }
+})
