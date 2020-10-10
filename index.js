@@ -15,5 +15,5 @@ if (Platform.OS === 'android') {
   StatusBar.setBackgroundColor('transparent');
 }
 StatusBar.setBarStyle('dark-content');
-Orientation.lockToPortrait();
+// Orientation.lockToPortrait();
 AppRegistry.registerComponent(appName, () => App);
