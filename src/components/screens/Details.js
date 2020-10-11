@@ -12,24 +12,28 @@ import {
     Image
 } from 'react-native';
 
+import {ROUTE_KEY} from '../../constants/constants';
 import {getFullMovie} from '../../Redux/actions/movieAction'
 import {WIDTH_SCALE,HEIGHT_SCALE,WIDTH,HEIGHT} from '../../constants/constants'
 import Icon from 'react-native-vector-icons/Ionicons';
 import Play from '../views/Play'
+import {MySpinner} from '../views';
 export default function Details({navigation,route}) {
 
     const _id = route.params._id;
     console.log("hhh",_id);
     const [dataMovie, setDataMovie] = useState();
     const [loading, setLoading] = useState(true);
-
+  
   
     useEffect(() => {
-
+        MySpinner.show();
         getFullMovie(_id).then((fullMovie) => {
-            setLoading(false);
+          
             console.log('0001 ',fullMovie);
             setDataMovie(fullMovie);
+            setLoading(false);
+            MySpinner.hide();
         }).catch((err) => console.log("Failed",err))
         
     },[])
@@ -62,6 +66,9 @@ export default function Details({navigation,route}) {
                         <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].country}</Text>
                         <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].episode}</Text>
                         <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].status}</Text>
+                        <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Videos,{_id:_id})}>
+                            <Text>Xem Phim</Text>
+                        </TouchableOpacity>
                     </View>
 
                 </View> 

@@ -32,14 +32,7 @@ const Play = ({_id}) =>{
     const [containerWidth, setContainerWidth] = useState();
 
 
-    YouTubeStandaloneAndroid.playVideo({
-        apiKey:"YOUR API KEY", // Your YouTube Developer API Key
-        videoId: 'iDgoqe-v-io', // YouTube video ID
-        autoplay: false, // Autoplay the video
-        startTime: 120, // Starting point of video (in seconds)
-    })
-        .then(() => console.log('Standalone Player Exited'))
-        .catch(errorMessage => console.error(errorMessage));
+
     return (
         <View style={styles.container}>
               {containerMounted && (
@@ -79,10 +72,10 @@ const Play = ({_id}) =>{
         //         }
         //     />
         <YouTube
-        videoId="iDgoqe-v-io" // The YouTube video ID
-        play // control playback of video with true/false
-        fullscreen // control whether the video should play in fullscreen or inline
-        loop // control whether the video should loop when ended
+            videoId="KVZ-P-ZI6W4" // The YouTube video ID
+            play // control playback of video with true/false
+            fullscreen // control whether the video should play in fullscreen or inline
+            loop // control whether the video should loop when ended
             onReady={e => setIsReadly(true)}
             onChangeState={e => setStatus(e.state)}
             onChangeQuality={e => setQuality(e.quality)}
