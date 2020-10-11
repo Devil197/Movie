@@ -249,7 +249,7 @@ const Videos = ({ navigation, params, route }) => {
         <View>
           <View style={styles.card}>
             <Text style={styles.header}>
-              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} {title? title: dataVideo?.items[0]?.title}
+              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title? title: dataVideo?.items[0]?.title}
             </Text>
             <View style={[styles.rowRating, styles.mr]}>
               <Text>0.0 </Text>
@@ -288,8 +288,8 @@ const Videos = ({ navigation, params, route }) => {
                   console.log(index);
                   setTitle(item.title)
                 }}
-                style={{ ...styles.itemEp, backgroundColor: idx === index ? '#636e72' : 'white' }}>
-                <Text style={{ color: idx=== index ? 'white': '#0984e3' }}>{item.title}</Text>
+                style={{ ...styles.itemEp, backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB' }}>
+                <Text style={{ color: idx=== index ? '#0984e3': 'black' }}>{item.title}</Text>
               </TouchableOpacity>
             }
             //Setting the number of column

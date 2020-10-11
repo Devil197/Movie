@@ -17,6 +17,7 @@ import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/consta
 import Icon from 'react-native-vector-icons/Ionicons';
 import YouTube from 'react-native-youtube';
 import { MySpinner } from '../views';
+import {ROUTE_KEY} from '../../constants/constants'
 export default function Details({ navigation, route }) {
     // video ====
     const [height, setHeight] = useState();
