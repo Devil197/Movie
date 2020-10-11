@@ -109,6 +109,7 @@ export default function Details({ navigation, route }) {
                     apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
                     videoId={trailer}
                     controls={2}
+                    play={false}
                     style={{ alignSelf: 'stretch', height: 250 * WIDTH_SCALE }}
                     onReady={() => {
                         setHeight(221);
