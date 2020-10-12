@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import {
     StyleSheet,
     View,
@@ -11,57 +11,97 @@ import {
     FlatList,
     Image
 } from 'react-native';
-import YouTube from 'react-native-youtube';
+import { set } from 'react-native-reanimated';
+import YouTube, {
+    YouTubeStandaloneIOS,
+    YouTubeStandaloneAndroid,
+} from 'react-native-youtube';
+import {WIDTH_SCALE,HEIGHT_SCALE,WIDTH,HEIGHT} from '../../constants/constants'
+const Play = ({_id}) =>{
 
-export default function Play({ video_Id }) {
-  const [player, setPlayer] = useState(false)
-  const [fullscreen, setFullCreen] = useState(false)
-  const [containerWidth, setContainerWidth] = useState()
-  const [onError, setOnError] = useState()
-  const [isReady, setIsReady] = useState(false)
-  const [status, setStatus] = useState()
-  const [quality, setQuality] = useState()
-  const [duration, setDuration] = useState(0)
-  const [currentTime, setCurrentTime] = useState(0)
-  return (
-    <View style={{ flex: 1 }}>
-      <YouTube
-        ref={component => {
-          this._youTubeRef = component;
-        }}
+    const [isReadly, setIsReadly] = useState(false);
+    const [status, setStatus] = useState(null);
+    const [quality, setQuality] = useState(null);
+    const [error, setError] = useState(null);
+    const [isPlaying, setIsPlaying] = useState(true);
+    const [isLooping, setIsLooping] = useState(true);
+    const [duration, setDuration] = useState(0);
+    const [currentTime, setCurrentTime] = useState(0);
+    const [fullscreen, setFullscreen] = useState(false);
+    const [containerMounted, setContainerMounted] = useState(false);
+    const [containerWidth, setContainerWidth] = useState();
 
-        videoId={video_Id}
-        play={player}
-        fullscreen={fullscreen}
-        controls={1}
-        style={[
-          {
-            height: PixelRatio.roundToNearestPixel(
-              containerWidth / (16 / 9)
-            ),
-          },
-          styles.player,
-        ]}
-        onError={e => setOnError(e.error)}
-        onReady={e => setIsReady(true)}
-        onChangeState={e => setStatus(e.state)}
-        onChangeQuality={e => setQuality(e.quality)}
-        onChangeFullscreen={e =>
-          setFullCreen(e.isFullscreen)
-        }
-        onProgress={e => {
-          setDuration(e.duration)
-          setCurrentTime(e.currentTime)
-        }
-        }
-      />
-    </View>
-  )
+
+    YouTubeStandaloneAndroid.playVideo({
+        apiKey:"YOUR API KEY", // Your YouTube Developer API Key
+        videoId: 'iDgoqe-v-io', // YouTube video ID
+        autoplay: false, // Autoplay the video
+        startTime: 120, // Starting point of video (in seconds)
+    })
+        .then(() => console.log('Standalone Player Exited'))
+        .catch(errorMessage => console.error(errorMessage));
+    return (
+        <View style={styles.container}>
+              {containerMounted && (
+        //    <YouTube
+        //         ref={component => {
+        //             this._youTubeRef = component    }}
+        //         // You must have an API Key for the player to load in Android
+        //         apiKey="YOUR_API_KEY"  
+        //         // Un-comment one of videoId / videoIds / playlist.
+        //         // You can also edit these props while Hot-Loading in development mode to see how
+        //         // it affects the loaded native module
+        //         videoId={_id}
+        //         // videoIds={['HcXNPI-IPPM', 'XXlZfc1TrD0', 'czcjU1w-c6k', 'uMK0prafzw0']}  
+        //         // playlistId="PLF797E961509B4EB5"
+        //         play={isPlaying}
+        //         loop={isLooping}
+        //         fullscreen={fullscreen}
+        //         controls={1}
+        //         style={[
+        //             {
+        //                 height: PixelRatio.roundToNearestPixel(
+        //                     containerWidth / (16 / 9)
+        //                 ),
+        //             },
+        //             styles.player,
+        //         ]}
+        //         onError={e => setError(e.error)}
+        //         onReady={e => setisReady(true)}
+        //         onChangeState={e => setStatus(e.state)}
+        //         onChangeQuality={e => setQuality(e.quality)}
+        //         onChangeFullscreen={e =>
+        //           setFullscreen(e.isFullscreen)
+        //         }
+        //         onProgress={e =>
+        //             setDuration(e.duration),
+        //             setCurrentTime(e.currentTime)
+        //         }
+        //     />
+        <YouTube
+        videoId="iDgoqe-v-io" // The YouTube video ID
+        play // control playback of video with true/false
+        fullscreen // control whether the video should play in fullscreen or inline
+        loop // control whether the video should loop when ended
+            onReady={e => setIsReadly(true)}
+            onChangeState={e => setStatus(e.state)}
+            onChangeQuality={e => setQuality(e.quality)}
+            onError={e => setError(e.error)}
+            style={{ alignSelf: 'stretch', height: 300 }}
+/>
+            )}
+        </View>
+    )
+    
 }
-
+export default Play;
 const styles = StyleSheet.create({
-  player: {
-    alignSelf: 'stretch',
-    marginVertical: 10,
-  },
+    container:{
+        width: WIDTH,
+        height: 200* HEIGHT_SCALE,
+    },
+    player: {
+        alignSelf: 'stretch',
+        marginVertical: 10,
+    },
 })

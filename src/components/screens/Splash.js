@@ -5,8 +5,10 @@ import { persistStore } from 'redux-persist';
 import {ROUTE_KEY} from '../../constants/constants'
 export default function Splash({navigation}) {
     useEffect(()=>{
-        persistStore(store, null, async () => {})
-        setTimeout(function(){navigation.navigate(ROUTE_KEY.Login)}, 1000);
+        persistStore(store, null, async () => {
+            
+        });
+        setTimeout(function(){navigation.navigate(ROUTE_KEY.Login)}, 3000);
     })
     return (
         <View>

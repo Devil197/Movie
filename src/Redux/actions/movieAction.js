@@ -48,14 +48,3 @@ export const getCartoon = () =>
             }
         }).catch(err => reject(err))
     })
-
-    export const getVideoByMovie = (_id) => 
-    new Promise((resolve, reject) => {
-        axiosConfig.get(`/v3/video/get/all/movie/id/${_id}`).then((response) =>{
-            if(response.data.result){
-                resolve(response.data)
-            } else {
-                Alert.alert('get cast failed')
-            }
-        }).catch(err => reject(err))
-    })
