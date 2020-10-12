@@ -1,8 +1,10 @@
-import React from 'react';
-import {StatusBar, Text, View, StyleSheet, FlatList} from 'react-native';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Text, View, StyleSheet, FlatList } from 'react-native';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Fonts} from '../../utils/Fonts';
+import { Fonts } from '../../utils/Fonts';
+import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
+import moment from 'moment';
 const episodesData = [
   {
     id: 0,
@@ -173,68 +175,148 @@ const episodesData = [
     time: '22 mins',
   },
 ];
-const Videos = ({params}) => (
-  <View style={{flex: 1, backgroundColor: '#F2F5FB'}}>
-    <StatusBar backgroundColor="#000" barStyle="dark-content" />
-    {/* Thay cái này = Youtube là đc */}
-    <View
-      style={{
-        width: '100%',
-        height: 240,
-        backgroundColor: '#000',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}>
-      <Text style={{color: '#fff'}}>{`1. Thay cái này bằng Youtube`}</Text>
-      <Text style={{color: '#fff'}}>
-        {' '}
+
+import { MySpinner } from '../views'
+
+function renderDays(idx) {
+  if (idx === 7) {
+    return 'Chủ Nhật'
+  } else {
+    return 'Thứ ' + (idx + 1)
+  }
+}
+
+const Videos = ({ navigation, params, route }) => {
+
+  const _id = route.params._id;
+
+  const [dataVideo, setDataVideo] = useState();
+  const [loading, setLoading] = useState(true);
+  const [dataFullMovie, setDataFullMovie] = useState();
+  const [idx, setIndex] = useState(0);
+  const [title, setTitle] = useState()
+  useEffect(() => {
+    MySpinner.show()
+    getVideoByMovie(_id).then((video) => {
+      console.log('00001 ', video);
+      setDataVideo(video);
+      setLoading(false);
+      MySpinner.hide()
+    }).catch((err) => console.log("Failed", err));
+
+    getFullMovie(_id).then((fullmovie) => {
+      setDataFullMovie(fullmovie);
+      setLoading(false);
+      MySpinner.hide();
+    }).catch((err) => console.log("Failed", err))
+  }, [])
+
+
+  // console.log('1120 -> ',moment('5-10-2020', 'YYYY-MM-DDTHH:mm:ss').day());
+  // console.log('10002 ', moment(dataFullMovie?.movie[0]?.update_at).format('HH:mm:ss'));
+  // console.log("hhh",_id);
+  const day = renderDays(moment(dataFullMovie?.movie[0]?.update_at, 'YYYY-MM-DDTHH:mm:ss').day())
+  const time = moment(dataFullMovie?.movie[0]?.update_at).format('HH:mm');
+  //   console.log("time ", time);
+  //   console.log('1001-> day', day);
+  // console.log('ngay -> ', dataFullMovie?.movie[0]?.update_at);
+  // console.log("dataaaaa ", dataV.ideo.items);
+  return (
+    <View style={{ flex: 1, backgroundColor: '#F2F5FB' }}>
+      <StatusBar backgroundColor="#000" barStyle="dark-content" />
+      {/* Thay cái này = Youtube là đc */}
+      <View
+        style={{
+          width: '100%',
+          height: 240,
+          backgroundColor: '#000',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+        <Text style={{ color: '#fff' }}>{`1. Thay cái này bằng Youtube`}</Text>
+        <Text style={{ color: '#fff' }}>
+          {' '}
         2. Nhúng lại fonts đi, fonts Product Sans t đã để ở assets/font rồi
       </Text>
-      <Text style={{color: '#fff'}}>
-        {' '}
+        <Text style={{ color: '#fff' }}>
+          {' '}
         3.T có tạo react-native-config.js rồi
       </Text>
-    </View>
-
-    <ScrollView>
-      {/* Videos of Movie */}
-      <View>
-        <View style={styles.card}>
-          <Text style={styles.header}>
-            [LỒNG TIẾNG] GLEIPNIR - SỢI XÍCH THẦN TẬP 1
-          </Text>
-          <View style={[styles.rowRating, styles.mr]}>
-            <Text>0.0 </Text>
-            <View style={{flexDirection: 'row'}}>
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-              <Icon name="star" size={20} color="#a5a5a5" />
-            </View>
-          </View>
-          <Text style={styles.mr}>Thể loại: Hành động, Siêu Nhiên</Text>
-          <Text style={[styles.mr, {color: '#555'}]}>
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum is simply dummy text of the printing and
-            typesetting industry. Lorem Ipsum is simply dummy text of the
-            printing and typesetting industry.{' '}
-          </Text>
-        </View>
       </View>
 
-      {/* Episode of Move */}
-      <Episodes episodes={episodesData} />
-    </ScrollView>
-  </View>
-);
+      <ScrollView>
+        {/* Videos of Movie */}
+        <View>
+          <View style={styles.card}>
+            <Text style={styles.header}>
+              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title? title: dataVideo?.items[0]?.title}
+            </Text>
+            <View style={[styles.rowRating, styles.mr]}>
+              <Text>0.0 </Text>
+              <View style={{ flexDirection: 'row' }}>
+                <Icon name="star" size={20} color="#a5a5a5" />
+                <Icon name="star" size={20} color="#a5a5a5" />
+                <Icon name="star" size={20} color="#a5a5a5" />
+                <Icon name="star" size={20} color="#a5a5a5" />
+                <Icon name="star" size={20} color="#a5a5a5" />
+              </View>
+            </View>
+            <Text style={styles.mr}>Thể loại: {dataFullMovie?.category[0]?.name}</Text>
+            <Text style={[styles.mr, { color: '#555' }]}>
+              {dataFullMovie?.movie[0]?.introduction}.{' '}
+            </Text>
+          </View>
+        </View>
 
+        {/* Episode of Move */}
+        <View style={styles.card}>
+          <Text style={styles.header}>Chọn tập</Text>
+          <Text style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
+            Cập nhật vào {day} hàng tuần vào lúc {time}
+          </Text>
+          <FlatList
+            keyExtractor={(item) => {
+              return item._id;
+            }}
+            data={dataVideo?.items}
+            renderItem={({ item, index }) =>
+              <TouchableOpacity
+              
+                onPress={() => {
+                  setIndex(index)
+                  console.log(item._id);
+                  console.log(index);
+                  setTitle(item.title)
+                }}
+                style={{ ...styles.itemEp, backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB' }}>
+                <Text style={{ color: idx=== index ? '#0984e3': 'black' }}>{item.title}</Text>
+              </TouchableOpacity>
+            }
+            //Setting the number of column
+            numColumns={6}
+          />
+        </View>
+
+        {/* <Episodes episodes={dataVideo} day= {day} time ={time} clickHandler={(id)=>{console.log('id',id);}} /> */}
+      </ScrollView>
+    </View>
+  )
+}
 const Episodes = (props) => {
-  const {episodes} = props;
-  const renderEp = (item, index) => {
+  const { episodes, day, time } = props;
+  const [index, setIndex] = useState(0);
+
+
+  const renderEp = (item, idx) => {
+    console.log('1001 -> index: ', item._id);
     return (
-      <TouchableOpacity style={styles.itemEp}>
-        <Text style={{color: '#0984e3'}}>{index + 1}</Text>
+      <TouchableOpacity
+        onPress={() => {
+          clickHandler(item._id)
+          setIndex(idx)
+        }}
+        style={{ ...styles.itemEp, backgroundColor: index === idx ? 'aqua' : 'white' }}>
+        <Text style={{ color: '#0984e3' }}>{item.title}</Text>
       </TouchableOpacity>
     );
   };
@@ -242,15 +324,15 @@ const Episodes = (props) => {
   return (
     <View style={styles.card}>
       <Text style={styles.header}>Chọn tập</Text>
-      <Text style={{fontFamily: Fonts.Sans, marginBottom: 16, color: '#555'}}>
-        Cập nhật vào thứ 3 hàng tuần vào lúc 12:00:22
+      <Text style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
+        Cập nhật vào {day} hàng tuần vào lúc {time}
       </Text>
       <FlatList
-        keyExtractor={(item, index) => {
-          return index.toString();
+        keyExtractor={(item) => {
+          return item._id;
         }}
-        data={episodes}
-        renderItem={({item, index}) => renderEp(item, index)}
+        data={episodes?.items}
+        renderItem={({ item, index }) => renderEp(item, index)}
         //Setting the number of column
         numColumns={6}
       />
@@ -269,7 +351,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
   },
-  rowRating: {flexDirection: 'row', alignItems: 'center', marginVertical: 4},
+  rowRating: { flexDirection: 'row', alignItems: 'center', marginVertical: 4 },
   mr: {
     marginVertical: 4,
   },

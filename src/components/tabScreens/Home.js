@@ -18,6 +18,7 @@ import { getAllMovie,getCartoon,getCast } from '../../Redux/actions/movieAction'
 import { MySpinner } from '../views';
 import {ROUTE_KEY} from '../../constants/constants';
 
+
 export default function Home({navigation}) {
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
@@ -120,7 +121,7 @@ export default function Home({navigation}) {
         </GroupA>
         <GroupA col s p>
           <TextC color="#333" medium heavy>
-            Thanh Phụng
+            Thanh Phung
           </TextC>
           <TextC a color="#333" medium light>
             Basic
