@@ -5,7 +5,7 @@ import { axiosConfig } from '../../utils/api';
 
 export const getAllMovie = () =>
     new Promise((resolve, reject) =>{
-        axiosConfig.get('/v3/movie//get/all').then((response) =>{
+        axiosConfig.get('/v3/movie/get/all').then((response) =>{
             // console.log('data : ',response.data.result);
             if (response.data.result) {
                 resolve(response.data)

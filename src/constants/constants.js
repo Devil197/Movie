@@ -41,6 +41,7 @@ const ROUTE_KEY = {
   Category:'Category',
   Follow:'Follow',
   Details: 'Details',
+  History:'History'
 };
 
 export {
