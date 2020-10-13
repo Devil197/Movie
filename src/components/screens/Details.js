@@ -17,7 +17,7 @@ import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/consta
 import Icon from 'react-native-vector-icons/Ionicons';
 import YouTube from 'react-native-youtube';
 import { MySpinner } from '../views';
-import {ROUTE_KEY} from '../../constants/constants'
+import { ROUTE_KEY } from '../../constants/constants'
 export default function Details({ navigation, route }) {
     // video ====
     const [height, setHeight] = useState();
@@ -28,7 +28,7 @@ export default function Details({ navigation, route }) {
     console.log("hhh", _id);
     const [dataMovie, setDataMovie] = useState();
     const [loading, setLoading] = useState(true);
-  
+
 
     useEffect(() => {
         MySpinner.show();
@@ -75,12 +75,12 @@ export default function Details({ navigation, route }) {
                             <Icon name="ios-calendar-outline" size={20} color="#000" />
                             <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].duration}</Text>
                         </View>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].directer}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].country}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].episode}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].status}</Text>
-                        <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Videos,{_id:_id})}>
-                            <Text>Xem Phim</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].directer}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].country}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].episode}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].status}</Text>
+                        <TouchableOpacity style={{marginTop:10*WIDTH_SCALE, width: 80 * WIDTH_SCALE, height: 40 * WIDTH_SCALE, backgroundColor: 'gray', alignItems: 'center', justifyContent: 'center',borderRadius:15*WIDTH_SCALE }} onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
+                            <Text style={{color:'white'}}>Xem Phim</Text>
                         </TouchableOpacity>
                     </View>
 

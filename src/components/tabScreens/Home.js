@@ -6,7 +6,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components';
-import { HEIGHT, WIDTH,WIDTH_SCALE } from '../../constants/constants';
+import { HEIGHT, WIDTH, WIDTH_SCALE } from '../../constants/constants';
 import Container from '../../constants/style/Container';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
@@ -14,12 +14,15 @@ import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
 import MyView from '../../constants/style/MyView';
 import { styles } from '../../constants/style/styles';
 import TextC from '../../constants/style/Text';
-import { getAllMovie,getCartoon,getCast } from '../../Redux/actions/movieAction';
+import { getAllMovie, getCartoon, getCast } from '../../Redux/actions/movieAction';
 import { MySpinner } from '../views';
-import {ROUTE_KEY} from '../../constants/constants';
+import { ROUTE_KEY } from '../../constants/constants';
+import { useDispatch, useSelector } from 'react-redux';
 
 
-export default function Home({navigation}) {
+export default function Home({ navigation }) {
+  const userReducer = useSelector((state) => state.userReducer)
+  console.log('image,: ', userReducer);
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();
@@ -31,24 +34,24 @@ export default function Home({navigation}) {
   useEffect(() => {
     // xet data cho cartoon
     getCartoon()
-    .then((cartoon) => {
-      setLoading(false), 
-      setDataCartoon(cartoon);
-    })
-    .catch((err) => console.log('Failed'));
+      .then((cartoon) => {
+        setLoading(false),
+          setDataCartoon(cartoon);
+      })
+      .catch((err) => console.log('Failed'));
 
     getAllMovie()
       .then((movie) => {
         // console.log('movie', movie), 
-        setLoading(false), 
-        setDataMovie(movie);
+        setLoading(false),
+          setDataMovie(movie);
       })
       .catch((err) => console.log('Failed'));
 
     getCast().then((cast) => {
       // console.log('movie', movie), 
-      setLoading(false), 
-      setDataCast(cast);
+      setLoading(false),
+        setDataCast(cast);
     }).catch((err) => console.log('failed'));
 
   }, []);
@@ -58,10 +61,10 @@ export default function Home({navigation}) {
   // loading
   if (loading) {
     MySpinner.show();
-    return(
-      <View style={{flex:1,width:WIDTH,height:HEIGHT,position:'absolute',zIndex:9999}}/>
+    return (
+      <View style={{ flex: 1, width: WIDTH, height: HEIGHT, position: 'absolute', zIndex: 9999 }} />
     )
-  }else{
+  } else {
     MySpinner.hide()
   }
   return (
@@ -114,17 +117,16 @@ export default function Home({navigation}) {
             s
             medium
             source={{
-              uri:
-                'https://firebasestorage.googleapis.com/v0/b/asmmob306-78bf4.appspot.com/o/picture%2Fpsmcg.png?alt=media&token=795fbbdc-2612-4a14-a248-b9b4259fb5b4',
+              uri: userReducer.facebookInfo !=={} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo,
             }}
           />
         </GroupA>
-        <GroupA col s p>
+        <GroupA col s l p>
           <TextC color="#333" medium heavy>
-            Thanh Phung
+            {userReducer.facebookInfo !=={} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}
           </TextC>
           <TextC a color="#333" medium light>
-            Basic
+           ID: {userReducer.facebookInfo !=={} ? userReducer.facebookInfo?.id : userReducer.googleInfo.user.id}
           </TextC>
         </GroupA>
         <GroupA row>
@@ -144,8 +146,8 @@ export default function Home({navigation}) {
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity max s long onPress={() => navigation.push(ROUTE_KEY.Details,{_id:c._id})}>
-                <ImageA max xxl little source={{uri: c.cover_img}} />
+              <MyTouchableOpacity max s long onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <MyView
                   rightm
                   bottoms
@@ -198,7 +200,7 @@ export default function Home({navigation}) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{uri: c.cover_img}} />
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <TextC color="#333" medium bold>
                   {c.name}
                 </TextC>
@@ -218,7 +220,7 @@ export default function Home({navigation}) {
               <TouchableOpacity>
                 <Container m>
                   <GroupA row ss>
-                    <ImageA little s medium source={{uri: c.movie_id.cover_img}} />
+                    <ImageA little s medium source={{ uri: c.movie_id.cover_img }} />
                   </GroupA>
                   <GroupA col s p>
                     <TextC color="#333" medium heavy>
@@ -259,7 +261,7 @@ export default function Home({navigation}) {
           {dataMovie?.items.map((c, i) => {
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{uri: c.cover_img}} />
+                <ImageA max xxl little source={{ uri: c.cover_img }} />
                 <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView>
@@ -277,7 +279,7 @@ export default function Home({navigation}) {
           {dataCast?.cast.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{uri: c.cover_image}} />
+                <ImageA large xl little source={{ uri: c.cover_image }} />
                 <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="middle">
                   {c.name}
                 </TextC>

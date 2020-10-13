@@ -6,7 +6,7 @@ import {ROUTE_KEY} from '../../constants/constants'
 export default function Splash({navigation}) {
     useEffect(()=>{
         persistStore(store, null, async () => {})
-        setTimeout(function(){navigation.navigate(ROUTE_KEY.Login)}, 1000);
+        setTimeout(function(){navigation.navigate(ROUTE_KEY.Login)}, 1000*1);
     })
     return (
         <View>
