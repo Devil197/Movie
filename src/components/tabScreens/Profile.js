@@ -3,19 +3,29 @@ import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
-import {ROUTE_KEY} from '../../constants/constants'
-export default function Profile({navigation}) {
+import { useDispatch, useSelector } from 'react-redux';
+import {WIDTH_SCALE} from '../../constants/constants'
+export default function Profile() {
+    const userReducer = useSelector((state) => state.userReducer)
     return (
         <ScrollView style={styles.container}
             showsVerticalScrollIndicator={false}
-        
+
         >
             <StatusBar backgroundColor="#fff" barStyle="dark-content" translucent={false} />
 
             <Text style={styles.pageTitle}>Me</Text>
             <View style={[styles.row, styles.box]}>
-                <Image style={styles.image} source={{ uri: 'https://scontent.fhan5-1.fna.fbcdn.net/v/t1.0-9/39751540_2129413227303442_5439706793418686464_n.jpg?_nc_cat=109&_nc_sid=174925&_nc_ohc=0BAB5y3vJaQAX_ZylvE&_nc_ht=scontent.fhan5-1.fna&oh=fec1b6f0202632de562f220e72aea601&oe=5F93E342' }} />
-                <Text style={styles.name}>Hi !, Phung Tran</Text>
+                <Image style={styles.image} source={{ uri: userReducer.facebookInfo !== {} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo }} />
+                <Text style={styles.name}>Hi !,   {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}</Text>
+                <TouchableOpacity style={{alignItems:'center',alignSelf:'flex-end'}}>
+                    {
+                        userReducer.googleInfo ? 
+                        <Icon name={'facebook'} size={30*WIDTH_SCALE}/>
+                        :
+                        <Icon name={'google'} size={30*WIDTH_SCALE}/>
+                    }
+                </TouchableOpacity>
             </View>
 
             <View style={styles.group}>
@@ -28,7 +38,6 @@ export default function Profile({navigation}) {
                         <Icon name="chevron-right" />
                     </View>
                 </TouchableOpacity>
-             
 
                 
                 <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.History)}>
@@ -39,7 +48,7 @@ export default function Profile({navigation}) {
                     </View>
                 </TouchableOpacity>
 
-                
+
                 <TouchableOpacity>
                     <View style={[styles.row, styles.groupItem]}>
                         <Icon name="heart" color="#999999" size={16} />
@@ -58,10 +67,10 @@ export default function Profile({navigation}) {
                         <Icon name="chevron-right" />
                     </View>
                 </TouchableOpacity>
-                
-        
 
-                
+
+
+
                 <TouchableOpacity>
                     <View style={[styles.row, styles.groupItem]}>
                         <Icon name="alert-circle" color="#999999" size={16} />
@@ -70,7 +79,7 @@ export default function Profile({navigation}) {
                     </View>
                 </TouchableOpacity>
 
-                
+
                 <TouchableOpacity>
                     <View style={[styles.row, styles.groupItem]}>
                         <Icon name="phone-call" color="#999999" size={16} />
@@ -91,7 +100,7 @@ export default function Profile({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    container:{ backgroundColor: "#fff", flex: 1 },
+    container: { backgroundColor: "#fff", flex: 1 },
     pageTitle: {
         fontSize: 20,
         padding: 16,
@@ -111,7 +120,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontFamily: Fonts.SansMedium,
-        },
+    },
     group: {
         padding: 16
     },

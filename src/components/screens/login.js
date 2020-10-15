@@ -9,10 +9,12 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import {LoginGoogle, LoginFacebook} from '../../Redux/actions/userAction';
-import {useDispatch, useSelector} from 'react-redux';
-import {Fonts} from '../../utils/Fonts';
-import {ROUTE_KEY} from '../../constants/constants'
+import { LoginGoogle, LoginFacebook } from '../../Redux/actions/userAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { Fonts } from '../../utils/Fonts';
+import { ROUTE_KEY } from '../../constants/constants'
+import { LoginButton, AccessToken, LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
+import { MySpinner } from '../views';
 
 const LOGIN_LOGO_HEIGHT = 80;
 const IMAGE = {
@@ -20,16 +22,25 @@ const IMAGE = {
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state)=>state.userReducer?.loggedIn)
-  // console.log('0103-> user: ',user);
-
-  useEffect(()=>{
-    if (isLogin){
+  const isLogin = useSelector((state) => state.userReducer?.loggedIn)
+  const user = useSelector((state) => state.userReducer)
+  console.log('1001 user ',user);
+  console.log('islogin, ',isLogin);
+  useEffect(() => {
+    MySpinner.show()
+    if (isLogin) {
       navigation.push(ROUTE_KEY.BottomNavigation)
+      MySpinner.hide()
+    }else{
+      MySpinner.hide()
     }
+<<<<<<< HEAD
   },[isLogin])
+=======
+  }, [isLogin])
+>>>>>>> 0a1bd832f13f77b0b9b2875b2081081ad8c763b7
 
   // console.log('0103 -> USER: ',user);
 
@@ -46,17 +57,17 @@ export default function Login({navigation}) {
           <TouchableWithoutFeedback onPress={() => LoginFacebook(dispatch)}>
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
-              <View style={{width: 10}} />
+              <View style={{ width: 10 }} />
               <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
             </View>
           </TouchableWithoutFeedback>
 
-          <View style={{height: 15}} />
+          <View style={{ height: 15 }} />
 
-          <TouchableWithoutFeedback onPress={()=> LoginGoogle(dispatch)}>
+          <TouchableWithoutFeedback onPress={() => LoginGoogle(dispatch)}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
-              <View style={{width: 10}} />
+              <View style={{ width: 10 }} />
               <Text style={styles.titleBtnFB}>Sign In With Google</Text>
             </View>
           </TouchableWithoutFeedback>

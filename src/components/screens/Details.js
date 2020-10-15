@@ -16,8 +16,8 @@ import { getFullMovie } from '../../Redux/actions/movieAction'
 import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/constants'
 import Icon from 'react-native-vector-icons/Ionicons';
 import YouTube from 'react-native-youtube';
-import { MySpinner } from '../views';
-import {ROUTE_KEY} from '../../constants/constants'
+import { MySpinner,MyHighLightButton } from '../views';
+import { ROUTE_KEY } from '../../constants/constants'
 export default function Details({ navigation, route }) {
     // video ====
     const [height, setHeight] = useState();
@@ -28,7 +28,7 @@ export default function Details({ navigation, route }) {
     console.log("hhh", _id);
     const [dataMovie, setDataMovie] = useState();
     const [loading, setLoading] = useState(true);
-  
+
 
     useEffect(() => {
         MySpinner.show();
@@ -55,11 +55,10 @@ export default function Details({ navigation, route }) {
         <ScrollView style={styles.container}>
 
             <View style={styles.header}>
-
-                <TouchableOpacity style={styles.boxHeader} onPress={() => navigation.goBack()}>
+                <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
                     <Icon name="chevron-back" size={30} color="#fff" />
                     <Text style={{ color: '#fff' }}>Back</Text>
-                </TouchableOpacity>
+                </MyHighLightButton>
 
                 <View style={styles.header1}></View>
 
@@ -75,13 +74,13 @@ export default function Details({ navigation, route }) {
                             <Icon name="ios-calendar-outline" size={20} color="#000" />
                             <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].duration}</Text>
                         </View>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].directer}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].country}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].episode}</Text>
-                        <Text style={{marginLeft: 5* WIDTH_SCALE}}>{dataMovie?.movie[0].status}</Text>
-                        <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Videos,{_id:_id})}>
-                            <Text>Xem Phim</Text>
-                        </TouchableOpacity>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].directer}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].country}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].episode}</Text>
+                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].status}</Text>
+                        <MyHighLightButton style={{marginTop:10*WIDTH_SCALE, width: 80 * WIDTH_SCALE, height: 40 * WIDTH_SCALE, backgroundColor: 'gray', alignItems: 'center', justifyContent: 'center',borderRadius:15*WIDTH_SCALE }} onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
+                            <Text style={{color:'white'}}>Xem Phim</Text>
+                        </MyHighLightButton>
                     </View>
 
                 </View>
@@ -98,10 +97,10 @@ export default function Details({ navigation, route }) {
                 <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
                     {dataMovie?.cast.map((c, i) => {
                         return (
-                            <TouchableOpacity style={styles.touchopa}>
+                            <MyHighLightButton style={styles.touchopa}>
                                 <Image source={{ uri: c.cover_img }} style={styles.imageCast} />
                                 <Text color="#333">{c.name}</Text>
-                            </TouchableOpacity>
+                            </MyHighLightButton>
                         );
                     })}
                 </ScrollView>
