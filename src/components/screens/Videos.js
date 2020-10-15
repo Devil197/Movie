@@ -4,6 +4,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Fonts } from '../../utils/Fonts';
 import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
+import { Play } from '../views'
 import moment from 'moment';
 const episodesData = [
   {
@@ -177,6 +178,8 @@ const episodesData = [
 ];
 
 import { MySpinner } from '../views'
+import { HEIGHT, WIDTH } from '../../constants/constants'
+import Orientation from 'react-native-orientation-locker';
 
 function renderDays(idx) {
   if (idx === 7) {
@@ -188,13 +191,22 @@ function renderDays(idx) {
 
 const Videos = ({ navigation, params, route }) => {
 
-  const _id = route.params._id;
-
+  const _id = route.params?._id;
+  const [typePlayVideo, setTypePlayVideo] = useState(false)
   const [dataVideo, setDataVideo] = useState();
   const [loading, setLoading] = useState(true);
   const [dataFullMovie, setDataFullMovie] = useState();
   const [idx, setIndex] = useState(0);
   const [title, setTitle] = useState()
+  useEffect(() => {
+    if (typePlayVideo) {
+      Orientation.lockToLandscape()
+
+    } else {
+      Orientation.lockToPortrait()
+    }
+    
+  }, [typePlayVideo])
   useEffect(() => {
     MySpinner.show()
     getVideoByMovie(_id).then((video) => {
@@ -228,28 +240,19 @@ const Videos = ({ navigation, params, route }) => {
       <View
         style={{
           width: '100%',
-          height: 240,
+          height: typePlayVideo ? HEIGHT : HEIGHT * 0.4,
           backgroundColor: '#000',
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Text style={{ color: '#fff' }}>{`1. Thay cái này bằng Youtube`}</Text>
-        <Text style={{ color: '#fff' }}>
-          {' '}
-        2. Nhúng lại fonts đi, fonts Product Sans t đã để ở assets/font rồi
-      </Text>
-        <Text style={{ color: '#fff' }}>
-          {' '}
-        3.T có tạo react-native-config.js rồi
-      </Text>
+        <Play typePlay={typePlayVideo} onChange={(val) => setTypePlayVideo(val)} />
       </View>
-
-      <ScrollView>
+      {!typePlayVideo ? <ScrollView>
         {/* Videos of Movie */}
         <View>
           <View style={styles.card}>
             <Text style={styles.header}>
-              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title? title: dataVideo?.items[0]?.title}
+              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title ? title : dataVideo?.items[0]?.title}
             </Text>
             <View style={[styles.rowRating, styles.mr]}>
               <Text>0.0 </Text>
@@ -281,7 +284,7 @@ const Videos = ({ navigation, params, route }) => {
             data={dataVideo?.items}
             renderItem={({ item, index }) =>
               <TouchableOpacity
-              
+
                 onPress={() => {
                   setIndex(index)
                   console.log(item._id);
@@ -289,7 +292,7 @@ const Videos = ({ navigation, params, route }) => {
                   setTitle(item.title)
                 }}
                 style={{ ...styles.itemEp, backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB' }}>
-                <Text style={{ color: idx=== index ? '#0984e3': 'black' }}>{item.title}</Text>
+                <Text style={{ color: idx === index ? '#0984e3' : 'black' }}>{item.title}</Text>
               </TouchableOpacity>
             }
             //Setting the number of column
@@ -299,6 +302,9 @@ const Videos = ({ navigation, params, route }) => {
 
         {/* <Episodes episodes={dataVideo} day= {day} time ={time} clickHandler={(id)=>{console.log('id',id);}} /> */}
       </ScrollView>
+        :
+        null}
+
     </View>
   )
 }

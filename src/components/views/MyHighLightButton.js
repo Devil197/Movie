@@ -204,7 +204,7 @@ class MyHighLightButton extends PureComponent {
         rippleColor || this.props?.style?.backgroundColor || ptColor.black,
       ).isLight()
         ? ptColor.black
-        : ptColor.appColor,
+        : ptColor.white,
 
       transform: [
         {
