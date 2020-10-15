@@ -39,9 +39,8 @@ export default function Profile() {
                     </View>
                 </TouchableOpacity>
 
-
-
-                <TouchableOpacity>
+                
+                <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.History)}>
                     <View style={[styles.row, styles.groupItem]}>
                         <Icon name="bookmark" color="#999999" size={16} />
                         <Text style={styles.groupItemText} >History</Text>

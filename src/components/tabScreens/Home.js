@@ -279,8 +279,8 @@ export default function Home({ navigation }) {
           {dataCast?.cast.map((c, i) => {
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.cover_image }} />
-                <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="middle">
+                <ImageA large xl little source={{uri: c.cover_image}} />
+                <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="tail">
                   {c.name}
                 </TextC>
               </MyTouchableOpacity>
