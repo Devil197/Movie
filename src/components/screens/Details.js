@@ -55,7 +55,6 @@ export default function Details({ navigation, route }) {
         <ScrollView style={styles.container}>
 
             <View style={styles.header}>
-
                 <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
                     <Icon name="chevron-back" size={30} color="#fff" />
                     <Text style={{ color: '#fff' }}>Back</Text>
