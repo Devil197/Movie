@@ -56,10 +56,10 @@ export default function Details({ navigation, route }) {
 
             <View style={styles.header}>
 
-                <View style={styles.boxHeader}>
+                <TouchableOpacity style={styles.boxHeader} onPress={() => navigation.goBack()}>
                     <Icon name="chevron-back" size={30} color="#fff" />
                     <Text style={{ color: '#fff' }}>Back</Text>
-                </View>
+                </TouchableOpacity>
 
                 <View style={styles.header1}></View>
 

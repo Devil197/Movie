@@ -3,8 +3,8 @@ import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
-
-export default function Profile() {
+import {ROUTE_KEY} from '../../constants/constants'
+export default function Profile({navigation}) {
     return (
         <ScrollView style={styles.container}
             showsVerticalScrollIndicator={false}
@@ -31,7 +31,7 @@ export default function Profile() {
              
 
                 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.History)}>
                     <View style={[styles.row, styles.groupItem]}>
                         <Icon name="bookmark" color="#999999" size={16} />
                         <Text style={styles.groupItemText} >History</Text>

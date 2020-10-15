@@ -29,9 +29,9 @@ export default function Login({navigation}) {
     if (isLogin){
       navigation.push(ROUTE_KEY.BottomNavigation)
     }
-  },[])
+  },[isLogin])
 
-  console.log('0103 -> USER: ',user);
+  // console.log('0103 -> USER: ',user);
 
   return (
     <View style={styles.container}>
