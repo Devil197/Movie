@@ -9,12 +9,11 @@ import MediaControls, { PLAYER_STATES } from 'react-native-media-controls';
 //Media Controls to control Play/Pause/Seek and full 
 import { WIDTH, WIDTH_SCALE, HEIGHT } from '../../constants/constants'
 import { onChange } from 'react-native-reanimated';
-
+import { set } from 'lodash';
 
 interface PickItemProps {
   onChange: (value: Boolean) => {};
-  typePlay?: Boolean
-
+  typePlay?: Boolean,
 }
 
 class App extends PureComponent<PickItemProps> {
@@ -23,6 +22,7 @@ class App extends PureComponent<PickItemProps> {
   constructor(props) {
     super(props);
     this.state = {
+      typePlay: this.props.typePlay,
       currentTime: 0,
       duration: 0,
       isFullScreen: false,
@@ -32,6 +32,9 @@ class App extends PureComponent<PickItemProps> {
       screenType: 'cover',
       video_id: 'https://r7---sn-8pxuuxa-nbozl.googlevideo.com/videoplayback?expire=1602765717&ei=Ne-HX8mZHYrV4-EP8K6BuAY&ip=128.199.92.238&id=o-ACkwMuOvTkOmnFIy6yMdkbEJ2AIl5_bo4PLvcMmS3-Do&itag=18&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&gir=yes&clen=428472856&ratebypass=yes&dur=5250.983&lmt=1595593160316501&fvip=3&fexp=9466588,23915654&beids=9466588&c=WEB&txp=5531422&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRQIhAMfggt2DBIgWyWfwB-iZC5LBWrrCQ0j3v4zWwZAtPmyJAiBE35lLBdWKECF9b9masLqTEdmHGt_1UAfRE_YUfkh4Dg==&title=best-music-2020-mix-best-of-edm-best-gaming-music-trap-rap-bass-dubstep-electro-house&redirect_counter=1&rm=sn-nposk7s&req_id=8af79051c830a3ee&cms_redirect=yes&ipbypass=yes&mh=s7&mip=27.74.244.88&mm=31&mn=sn-8pxuuxa-nbozl&ms=au&mt=1602743928&mv=m&mvi=7&pl=21&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRAIgHJ9grhuXcMHLNVl4bnRVhUpIaIDz7co3fUCB8d2sUT0CIGr6VJT6mtUG7LAaL0xrot70nFy_iaSJ5Cq4ievBE8Et'
     };
+  }
+  componentDidMount(){
+    console.log('1001 nhan ben play ',this.state.typePlay);
   }
 
   onSeek = seek => {
@@ -83,24 +86,22 @@ class App extends PureComponent<PickItemProps> {
   onSeeking = currentTime => this.setState({ currentTime });
 
   render() {
-    const { onChange, typePlay } = this.props
-    let typeVideo = typePlay
-
+    const { onChange } = this.props
+    
     const onFullScreen = () => {
-      if (this.state.screenType == 'cover') {
-        this.setState({ screenType: 'contain' })
-        typeVideo = true
+      if (this.state.typePlay === false) {
+        this.setState({ typePlay: true })
+        console.log('1001 co dc ne set true');
         onChange(true)
-        console.log('type video ',typeVideo);
-      } else {
-        typeVideo=false
-        this.setState({ screenType: 'cover' });
+        
+      }else{
+        this.setState({ typePlay: false })
+        console.log('1001 co dc ne set false');
         onChange(false)
-        console.log('type video ',typeVideo);
       }
     };
     return (
-      <View style={{ width:WIDTH}} >
+      <View style={{ flex: 1, zIndex: 99999, }} >
         <Video
           onEnd={this.onEnd}
           onLoad={this.onLoad}
@@ -108,23 +109,20 @@ class App extends PureComponent<PickItemProps> {
           onProgress={this.onProgress}
           paused={this.state.paused}
           ref={videoPlayer => (this.videoPlayer = videoPlayer)}
-          resizeMode={this.state.screenType}
-          onFullScreen={typeVideo}
-          fullscreenOrientation={typeVideo}
+          resizeMode={this.state.typePlay ? 'cover':'contain'}
+          fullscreen={this.state.typePlay}
+          fullscreenOrientation={'landscape'}
+          toggleResizeModeOnFullscreen={this.state.typePlay}
           source={{ uri: this.state.video_id }}
-          style={{ 
-            width:WIDTH,
-            height:typeVideo? HEIGHT: HEIGHT*0.4,
-            backgroundColor:'red',
-            alignItems:'center',
-            justifyContent:'center'
-           }}
+          style={{
+            flex: 1,
+            width: WIDTH
+          }}
           volume={10}
         />
         <MediaControls
           duration={this.state.duration}
           isLoading={this.state.isLoading}
-          mainColor="#333"
           onFullScreen={onFullScreen}
           onPaused={this.onPaused}
           onReplay={this.onReplay}
@@ -138,19 +136,5 @@ class App extends PureComponent<PickItemProps> {
     );
   }
 }
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  toolbar: {
-    marginTop: 30,
-    backgroundColor: 'white',
-    padding: 10,
-    borderRadius: 5,
-  },
-  mediaPlayer: {
-    flex: 1,
-    width: WIDTH
-  },
-});
+
 export default App;

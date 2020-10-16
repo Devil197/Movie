@@ -1,185 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { StatusBar, Text, View, StyleSheet, FlatList } from 'react-native';
+import { StatusBar, Text, View, StyleSheet, FlatList, BackHandler } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Fonts } from '../../utils/Fonts';
 import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
 import { Play } from '../views'
+
 import moment from 'moment';
-const episodesData = [
-  {
-    id: 0,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 1,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 2,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 3,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 4,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 5,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 6,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 7,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 8,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 9,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 10,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 11,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 12,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 13,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 14,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 15,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 16,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 17,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 18,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 19,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 20,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 21,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 22,
-    title: 'Tập 1 - Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-  {
-    id: 23,
-    title: 'Tập 2- Thứ ở trong tôi',
-    thumb:
-      'https://i.vdicdn.com/vg/2020/08/14/f8aba3d9640ae5bf_7e0be89bebc2370c_2204615974162954580120.jpg',
-    time: '22 mins',
-  },
-];
+
 
 import { MySpinner } from '../views'
 import { HEIGHT, WIDTH } from '../../constants/constants'
 import Orientation from 'react-native-orientation-locker';
+
 
 function renderDays(idx) {
   if (idx === 7) {
@@ -190,7 +23,6 @@ function renderDays(idx) {
 }
 
 const Videos = ({ navigation, params, route }) => {
-
   const _id = route.params?._id;
   const [typePlayVideo, setTypePlayVideo] = useState(false)
   const [dataVideo, setDataVideo] = useState();
@@ -198,15 +30,16 @@ const Videos = ({ navigation, params, route }) => {
   const [dataFullMovie, setDataFullMovie] = useState();
   const [idx, setIndex] = useState(0);
   const [title, setTitle] = useState()
-  useEffect(() => {
-    if (typePlayVideo) {
-      Orientation.lockToLandscape()
-
-    } else {
-      Orientation.lockToPortrait()
-    }
-    
-  }, [typePlayVideo])
+  // useEffect(() => {
+  //   console.log('abc chay');
+  //   if (typePlayVideo) {
+  //     Orientation.lockToLandscapeLeft()
+     
+  //   } else {
+  //     Orientation.lockToPortrait()
+  //   }
+  // }, [typePlayVideo])
+  console.log('1001 type play video screen ', typePlayVideo);
   useEffect(() => {
     MySpinner.show()
     getVideoByMovie(_id).then((video) => {
@@ -222,6 +55,31 @@ const Videos = ({ navigation, params, route }) => {
       MySpinner.hide();
     }).catch((err) => console.log("Failed", err))
   }, [])
+  useEffect(() => {
+
+    const backAction = () => {
+      if (typePlayVideo === true) {
+        setTypePlayVideo(false)
+
+      }
+      return true;
+    };
+
+    BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () =>
+      BackHandler.removeEventListener("hardwareBackPress", backAction);
+  }, []);
+
+  const fullScreenClick = (val) => {
+    console.log('1001 -> click type video screen val ',val);
+    setTypePlayVideo(val)
+    if (val === true) {
+      Orientation.lockToPortrait()
+    } else {
+      Orientation.lockToLandscapeLeft()
+    }
+  }
 
 
   // console.log('1120 -> ',moment('5-10-2020', 'YYYY-MM-DDTHH:mm:ss').day());
@@ -239,13 +97,13 @@ const Videos = ({ navigation, params, route }) => {
       {/* Thay cái này = Youtube là đc */}
       <View
         style={{
-          width: '100%',
+          position: typePlayVideo ? 'absolute' : 'relative',
           height: typePlayVideo ? HEIGHT : HEIGHT * 0.4,
           backgroundColor: '#000',
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Play typePlay={typePlayVideo} onChange={(val) => setTypePlayVideo(val)} />
+        <Play typePlay={typePlayVideo} onChange={(val) => fullScreenClick(val)}  />
       </View>
       {!typePlayVideo ? <ScrollView>
         {/* Videos of Movie */}
