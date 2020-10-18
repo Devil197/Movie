@@ -4,8 +4,9 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
 import { useDispatch, useSelector } from 'react-redux';
-import {WIDTH_SCALE} from '../../constants/constants'
-export default function Profile() {
+import {WIDTH_SCALE} from '../../constants/constants';
+import {ROUTE_KEY} from '../../constants/constants'
+export default function Profile({navigation}) {
     const userReducer = useSelector((state) => state.userReducer)
     return (
         <ScrollView style={styles.container}

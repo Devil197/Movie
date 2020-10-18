@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { ScrollView, TouchableOpacity, View,Text ,StyleSheet} from 'react-native';
 import { set } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -18,7 +18,7 @@ import { getAllMovie, getCartoon, getCast } from '../../Redux/actions/movieActio
 import { MySpinner } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
-
+import YouTube from 'react-native-youtube';
 
 export default function Home({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer)
@@ -27,6 +27,7 @@ export default function Home({ navigation }) {
   const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();
   const [dataCartoon, setDataCartoon] = useState();
+  const [height, setHeight] = useState();
   const [page, setPage] = useState(1);
   // const navigation = useNavigation();
   // console.log(dataMovie.length);
@@ -42,9 +43,11 @@ export default function Home({ navigation }) {
 
     getAllMovie()
       .then((movie) => {
-        // console.log('movie', movie), 
+        console.log('movie', movie.items[0].trailer), 
         setLoading(false),
           setDataMovie(movie);
+      
+        // setDataTrailer();
       })
       .catch((err) => console.log('Failed'));
 
@@ -117,16 +120,16 @@ export default function Home({ navigation }) {
             s
             medium
             source={{
-              uri: userReducer.facebookInfo !=={} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo,
+              uri: userReducer.facebookInfo !== {} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo,
             }}
           />
         </GroupA>
         <GroupA col s l p>
           <TextC color="#333" medium heavy>
-            {userReducer.facebookInfo !=={} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}
+            {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}
           </TextC>
           <TextC a color="#333" medium light>
-           ID: {userReducer.facebookInfo !=={} ? userReducer.facebookInfo?.id : userReducer.googleInfo.user.id}
+            ID: {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.id : userReducer.googleInfo.user.id}
           </TextC>
         </GroupA>
         <GroupA row>
@@ -259,13 +262,26 @@ export default function Home({ navigation }) {
 
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
+            console.log('00006 -> trailer', c.trailer);
             return (
               <MyTouchableOpacity max s long>
-                <ImageA max xxl little source={{ uri: c.cover_img }} />
-                <MyView tops leftm light>
+                {/* <ImageA max xxl little source={{ uri: c.cover_img }} /> */}
+               {/* <Text>{c.name}</Text> */}
+                <YouTube
+                  apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
+                  videoId={c.trailer}
+                  controls={2}
+                  play={false}
+                  style={{ alignSelf: 'stretch', height: 250 * WIDTH_SCALE }}
+                  onReady={() => {
+                    setHeight(221);
+                  }}
+                />
+                {/* <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
-                </MyView>
+                </MyView> */}
               </MyTouchableOpacity>
+            
             );
           })}
         </ScrollView>
@@ -277,9 +293,10 @@ export default function Home({ navigation }) {
         </TextC>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataCast?.cast.map((c, i) => {
+           
             return (
               <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{uri: c.cover_image}} />
+                <ImageA large xl little source={{ uri: c.cover_image }} />
                 <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="tail">
                   {c.name}
                 </TextC>

@@ -96,6 +96,7 @@ export const LoginGoogle = async (dispatch) => {
         gmail: googleInfo.user.email ? googleInfo.user.email : '_',
         id:googleInfo.user.id
       }
+      console.log('00011 -> gg info: ', google_info);
       _addApiLoginGoogle(google_info,dispatch)
       
     })
@@ -169,6 +170,7 @@ export const LoginFacebook = async (dispatch) => {
             id: data.data?.id,
             photo: data.data?.picture?.data?.url
           }
+          console.log('0003 -> facebookInfo',facebookInfo );
           _addApiLoginFacebook(facebookInfo, dispatch)
         });
       });
