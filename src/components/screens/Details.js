@@ -15,7 +15,7 @@ import {
 import { getFullMovie } from '../../Redux/actions/movieAction'
 import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/constants'
 import Icon from 'react-native-vector-icons/Ionicons';
-import YouTube from 'react-native-youtube';
+
 import { MySpinner,MyHighLightButton } from '../views';
 import { ROUTE_KEY } from '../../constants/constants'
 export default function Details({ navigation, route }) {
@@ -108,16 +108,7 @@ export default function Details({ navigation, route }) {
 
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Trailer</Text>
-                <YouTube
-                    apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
-                    videoId={trailer}
-                    controls={2}
-                    play={false}
-                    style={{ alignSelf: 'stretch', height: 250 * WIDTH_SCALE }}
-                    onReady={() => {
-                        setHeight(221);
-                    }}
-                />
+            
             </View>
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Phim liên quan : </Text>

@@ -11,7 +11,7 @@ import moment from 'moment';
 
 import { MySpinner } from '../views'
 import { HEIGHT, WIDTH } from '../../constants/constants'
-import Orientation from 'react-native-orientation-locker';
+import { onChange } from 'react-native-reanimated';
 
 
 function renderDays(idx) {
@@ -30,15 +30,7 @@ const Videos = ({ navigation, params, route }) => {
   const [dataFullMovie, setDataFullMovie] = useState();
   const [idx, setIndex] = useState(0);
   const [title, setTitle] = useState()
-  // useEffect(() => {
-  //   console.log('abc chay');
-  //   if (typePlayVideo) {
-  //     Orientation.lockToLandscapeLeft()
-     
-  //   } else {
-  //     Orientation.lockToPortrait()
-  //   }
-  // }, [typePlayVideo])
+
   console.log('1001 type play video screen ', typePlayVideo);
   useEffect(() => {
     MySpinner.show()
@@ -55,31 +47,6 @@ const Videos = ({ navigation, params, route }) => {
       MySpinner.hide();
     }).catch((err) => console.log("Failed", err))
   }, [])
-  useEffect(() => {
-
-    const backAction = () => {
-      if (typePlayVideo === true) {
-        setTypePlayVideo(false)
-
-      }
-      return true;
-    };
-
-    BackHandler.addEventListener("hardwareBackPress", backAction);
-
-    return () =>
-      BackHandler.removeEventListener("hardwareBackPress", backAction);
-  }, []);
-
-  const fullScreenClick = (val) => {
-    console.log('1001 -> click type video screen val ',val);
-    setTypePlayVideo(val)
-    if (val === true) {
-      Orientation.lockToPortrait()
-    } else {
-      Orientation.lockToLandscapeLeft()
-    }
-  }
 
 
   // console.log('1120 -> ',moment('5-10-2020', 'YYYY-MM-DDTHH:mm:ss').day());
@@ -103,9 +70,12 @@ const Videos = ({ navigation, params, route }) => {
           alignItems: 'center',
           justifyContent: 'center',
         }}>
-        <Play typePlay={typePlayVideo} onChange={(val) => fullScreenClick(val)}  />
+        <Play onChange={(val) => {
+         setTypePlayVideo(val)
+          console.log(val)
+        }} />
       </View>
-      {!typePlayVideo ? <ScrollView>
+      {typePlayVideo == false ? <ScrollView>
         {/* Videos of Movie */}
         <View>
           <View style={styles.card}>
@@ -166,44 +136,6 @@ const Videos = ({ navigation, params, route }) => {
     </View>
   )
 }
-const Episodes = (props) => {
-  const { episodes, day, time } = props;
-  const [index, setIndex] = useState(0);
-
-
-  const renderEp = (item, idx) => {
-    console.log('1001 -> index: ', item._id);
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          clickHandler(item._id)
-          setIndex(idx)
-        }}
-        style={{ ...styles.itemEp, backgroundColor: index === idx ? 'aqua' : 'white' }}>
-        <Text style={{ color: '#0984e3' }}>{item.title}</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  return (
-    <View style={styles.card}>
-      <Text style={styles.header}>Chọn tập</Text>
-      <Text style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
-        Cập nhật vào {day} hàng tuần vào lúc {time}
-      </Text>
-      <FlatList
-        keyExtractor={(item) => {
-          return item._id;
-        }}
-        data={episodes?.items}
-        renderItem={({ item, index }) => renderEp(item, index)}
-        //Setting the number of column
-        numColumns={6}
-      />
-    </View>
-  );
-};
-
 export default Videos;
 
 const styles = StyleSheet.create({

@@ -18,7 +18,7 @@ import { getAllMovie, getCartoon, getCast } from '../../Redux/actions/movieActio
 import { MySpinner } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import YouTube from 'react-native-youtube';
+// import YouTube from 'react-native-youtube';
 
 export default function Home({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer)
@@ -267,7 +267,7 @@ export default function Home({ navigation }) {
               <MyTouchableOpacity max s long>
                 {/* <ImageA max xxl little source={{ uri: c.cover_img }} /> */}
                {/* <Text>{c.name}</Text> */}
-                <YouTube
+                {/* <YouTube
                   apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
                   videoId={c.trailer}
                   controls={2}
@@ -276,7 +276,7 @@ export default function Home({ navigation }) {
                   onReady={() => {
                     setHeight(221);
                   }}
-                />
+                /> */}
                 {/* <MyView tops leftm light>
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView> */}
