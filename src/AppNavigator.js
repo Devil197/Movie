@@ -5,8 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {Login, Videos,Splash,Details, History} from './components/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
-import Play from './components/views/Player'
-
+import Play from './components/views/Play'
 const Stack = createStackNavigator();
 
 function StackNavigator() {
