@@ -15,7 +15,7 @@ const TouchableOpacity = styled.TouchableOpacity`
                 return `width: 80px`;
 
             case medium:
-                return `width: 200px`;
+                return `width: 190px`;
             case large: 
                 return `width: 250px`;
             case max: 
@@ -26,7 +26,7 @@ const TouchableOpacity = styled.TouchableOpacity`
 
     }}
 
-    ${({ n,m, s, xl,xxl }) => {
+    ${({ n,m, s, xl,xxl,xs }) => {
         switch (true) {
             case m:
                 return `height: 110px`;
@@ -36,6 +36,8 @@ const TouchableOpacity = styled.TouchableOpacity`
                 return `height: 250px`;
             case xxl:
                 return `height: 300px`;
+            case xs: 
+                return `height: 270px`
             case n:
                 return `height: 50px`;
         }
@@ -44,7 +46,7 @@ const TouchableOpacity = styled.TouchableOpacity`
     ${({ little, long, more }) => {
         switch (true) {
             case little:
-                return `margin: 10px`;
+                return `margin : 5px`;
             case long:
                 return `margin: 20px`;
             case more:

@@ -22,19 +22,22 @@ ${({ row, col }) => {
 ${({ p, t, b, }) => {
         switch (true) {
             case p:
-                return `paddingRight: 30%`;
+                return `paddingRight: 15%`;
             case t:
                 return `marginTop: 5%`;
             case b:
-                return `marginBottom: 10%`;
+                return `marginBottom: 5%`;
 
         }
 
     }} 
-${({ l }) => {
+  
+${({ l,l1 }) => {
         switch (true) {
             case l:
                 return `marginLeft: 2%`;
+            case l1:
+                return `marginLeft: 10%`;
         }
 
     }} 
@@ -61,6 +64,19 @@ ${({ ss, mm, ll }) => {
                 return `justifyContent: flex-end`;
             default:
                 return `justifyContent: center`;
+        }
+
+    }}
+
+    ${({ h1, h2, h3 }) => {
+        switch (true) {
+            case h1:
+                return `height: 100px`;
+            case h2:
+                return `height: 200px`;
+            case h3:
+                return `height: 300px`;
+          
         }
 
     }}

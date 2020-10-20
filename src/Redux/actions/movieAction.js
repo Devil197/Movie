@@ -92,3 +92,15 @@ export const getCartoon = () =>
             }
         }).catch(err => reject(err))
     })
+
+    
+    export const getMovieByScore = () => 
+    new Promise((resolve, reject) => {
+        axiosConfig.get('/v3/movie/get/score').then((response) =>{
+            if(response.data.result){
+                resolve(response.data)
+            } else {
+                Alert.alert('get movie failed')
+            }
+        }).catch(err => reject(err))
+    })

@@ -20,11 +20,11 @@ const View = styled.View`
             case medium:
                 return `width: 150px`;
             case large:
-                return `width: 180px`;
+                return `width: 140px`;
             case max:
                 return `width: 250px`;
             default:
-                return `width: 50px`
+                return `width: 40px`
         }
 
     }}
@@ -40,7 +40,7 @@ const View = styled.View`
             case xxl:
                 return `height: 110px`;
             default:
-                return `height: 50px`;
+                return `height: 40px`;
         }
 
     }}
@@ -86,9 +86,9 @@ const View = styled.View`
     ${({ rights, rightm, rightl}) => {
         switch (true) {
             case rightm:
-                return `right: -7%`;
+                return `right: 0%`;
             case rights:
-                return `right: 5%`;
+                return `right: 10%`;
 
             case rightl:
                 return `right: 10%`;
@@ -98,7 +98,7 @@ const View = styled.View`
     ${({ bottomm, bottoms, bottoml}) => {
         switch (true) {
             case bottomm:
-                return `bottom: -10%`;
+                return `bottom: -5%`;
             case bottoms:
                 return `bottom: 0%`;
 
