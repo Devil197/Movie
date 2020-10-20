@@ -18,7 +18,7 @@ import { getAllMovie, getCartoon, getCast,getMovieByCreatAt } from '../../Redux/
 import { MySpinner, MyHighLightButton } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
-import YouTube from 'react-native-youtube';
+// import YouTube from 'react-native-youtube';
 
 export default function Home({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer)
@@ -280,6 +280,7 @@ return (
         Trailer
         </TextC>
 
+<<<<<<< HEAD
       <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
         {dataMovie?.items.map((c, i) => {
           console.log('00006 -> trailer', c.trailer);
@@ -298,6 +299,26 @@ return (
                 }}
               />
               {/* <MyView tops leftm light>
+=======
+        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
+          {dataMovie?.items.map((c, i) => {
+            console.log('00006 -> trailer', c.trailer);
+            return (
+              <MyTouchableOpacity max s long>
+                {/* <ImageA max xxl little source={{ uri: c.cover_img }} /> */}
+               {/* <Text>{c.name}</Text> */}
+                {/* <YouTube
+                  apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
+                  videoId={c.trailer}
+                  controls={2}
+                  play={false}
+                  style={{ alignSelf: 'stretch', height: 250 * WIDTH_SCALE }}
+                  onReady={() => {
+                    setHeight(221);
+                  }}
+                /> */}
+                {/* <MyView tops leftm light>
+>>>>>>> 7f8c7a17d09c4e7a147a7d81824b90b570abe2fb
                   <Icon name={'play'} size={25} color="#fff" />
                 </MyView> */}
             </MyTouchableOpacity>
