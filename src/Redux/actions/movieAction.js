@@ -81,3 +81,14 @@ export const getCartoon = () =>
             }
         }).catch(err => reject(err))
     })
+
+    export const getMovieByCreatAt = () => 
+    new Promise((resolve, reject) => {
+        axiosConfig.get('/v3/movie/get/create_at').then((response) =>{
+            if(response.data.result){
+                resolve(response.data)
+            } else {
+                Alert.alert('get movie failed')
+            }
+        }).catch(err => reject(err))
+    })
