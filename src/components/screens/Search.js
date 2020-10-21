@@ -9,14 +9,14 @@ import {
   ScrollView,
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
 import {HEIGHT, WIDTH} from '../../constants/constants';
 import {Fonts} from '../../utils/Fonts';
-import {SkypeIndicator} from 'react-native-indicators';
+import {SkypeIndicator} from 'react-native-indicators';//<==== không sử dụng cái này import MySpinner trong '../views' ra sài nhá chỉ cần set giá trị là MySpinner.hide() và MySpinner.show()
 import KeyWords from '../views/searchComponent';
 import {films} from '../../constants/data/fakeData';
-import AsyncStorage from '@react-native-community/async-storage';
-import {getDataByKeyword} from '../../Redux/actions/movieAction';
+import AsyncStorage from '@react-native-community/async-storage';//<==== sử dụng redux
+import {getDataByKeyword} from '../../Redux/actions/movieAction'; //<==== api của thằng nào thì viết trong reduxAction của thằng đó nhá
 
 const STATUS_BAR_CURRENT_HEIGHT =
   Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
@@ -31,7 +31,17 @@ export default function Search({navigation}) {
     inputRange: [0, HEADER_HEIGHT],
     outputRange: [0, -HEADER_HEIGHT],
   });
+  //<====
+  // hạn chế việc sử dụng nhiều ustate 
+  // các giá trị gọi từ json ra thì nên sử dụng ?. => ex : data?.movie
+  // cái cast vs movie tao trả về là json nên lưu 1 cái thôi  => ex: lưu json là data đi thì lấy cái thằng cast trong json mình gọi data?.cast là đc
 
+  // xem cại cách đặt tên biến => ex: nếu mà callback đó mình muốn chạy api tìm kiếm thì đặt là searchByAPI
+
+  // các hàm đọc api thì đều viết trong folder '../../Redux/actions'
+
+  //====>
+  
   const [keyword, setKeyword] = useState('');
   const [listKey, setListKey] = useState([]);
   const [castList, setCastList] = useState([]);
@@ -42,6 +52,7 @@ export default function Search({navigation}) {
   useEffect(() => {
     getKey();
   }, []);
+
 
   useEffect(() => {
     handleGetDataByKeyword();
@@ -116,6 +127,7 @@ export default function Search({navigation}) {
     }
   };
 
+  // <==== nếu chỉ thay đổi cái ustate thì viết setState ở trong luôn cần chi tạo thêm callback này nữa
   const handleSearchOnPress = () => {
     setVisible(false);
   };
@@ -163,8 +175,8 @@ export default function Search({navigation}) {
                   onPress={() => closeIconOnPress()}
                   style={styles.closeIcon}
                   name="close"
-                  size={22}
-                  color={'gray'}
+                  size={22} ///<==== cái này ko sử dụng giá trị cụ thể đc đâu nhá
+                  color={'gray'}// <==== cái màu này mình lấy trong contants hết nhá => sửa mấy cái trên luôn
                 />
               ) : null}
             </View>
@@ -186,6 +198,9 @@ export default function Search({navigation}) {
   );
 }
 
+// hạn chế chia style ra đây quá nhiều chỉ khi nào mình muốn sử dụng cái đó cho nhiều thằng thì mới viết
+// các giá trị ko nên để mạc định là 20 , 30 .... mà mình sẽ sử dụng 1 giá trị chung => ex: HEIGHT,WIDTH (cái này trong contants ) gọi nó ra để sài thì mình nhân vs 1 giá trọ nào đó 
+// còn mấy cái như fontsize hay size icon hoặc 1 giá trị nào đó nhỏ thì mình sử dụng WIDTH_SCALE và HEIGHT_SCALE trong contants
 const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,

@@ -34,6 +34,7 @@ export default function History({ navigation }) {
       console.log('000003 -> history', history);
       setDataHistory(history);
       setId(history.items[0]._id);
+      console.log('1001-> history ',history);
     }).catch((err) => console.log("Failed", err));
 
   
