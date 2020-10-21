@@ -16,11 +16,11 @@ export default function searchComponent() {
   const getKeyword = async () => {
     let stringify = await AsyncStorage.getItem(KEYWORDS);
     let obj = JSON.parse(stringify);
-    setListKey(obj);
+    await setListKey(obj);
     console.log('Keyword Searched! = ', listKey);
   };
 
-  if (listKey == []) {
+  if (listKey == null) {
     return (
       <View style={styles.withoutKeywords}>
         <FontAwesome5

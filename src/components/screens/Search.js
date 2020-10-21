@@ -7,21 +7,16 @@ import {
   TextInput,
   Animated,
   ScrollView,
-  TouchableOpacity,
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {HEIGHT, WIDTH} from '../../constants/constants';
-import ActorsList from '../views/listCustom/lists/actorList';
-import MoviesList from '../views/listCustom/lists/movieList';
 import {Fonts} from '../../utils/Fonts';
-import {MySpinner} from '../views';
-import SearchInput, {createFilter} from 'react-native-search-filter';
 import {SkypeIndicator} from 'react-native-indicators';
 import KeyWords from '../views/searchComponent';
-import actorDataTest from '../../constants/data/cast';
 import {films} from '../../constants/data/fakeData';
 import AsyncStorage from '@react-native-community/async-storage';
+import {getDataByKeyword} from '../../Redux/actions/movieAction';
 
 const STATUS_BAR_CURRENT_HEIGHT =
   Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
@@ -39,6 +34,9 @@ export default function Search({navigation}) {
 
   const [keyword, setKeyword] = useState('');
   const [listKey, setListKey] = useState([]);
+  const [castList, setCastList] = useState([]);
+  const [movieList, setMovieList] = useState([]);
+
   useEffect(() => {
     getKey();
   }, []);
@@ -47,15 +45,31 @@ export default function Search({navigation}) {
     //await AsyncStorage.removeItem(KEYWORDS)
     try {
       let string = await AsyncStorage.getItem(KEYWORDS);
-      let obj = await JSON.parse(string);
-      console.log("OBJ ", obj);
+      let obj = JSON.parse(string);
+      console.log('OBJ ', obj);
 
       setListKey(obj);
       console.log('LIST KEY Search.js ', listKey);
-      
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleGetDataByKeyword = async () => {
+    await getDataByKeyword(keyword).then((data) => {
+      if (data.cast != null) {
+        setCastList(data.cast);
+      }
+
+      if (data.movie != null) {
+        setMovieList(data.movie);
+      }
+    }).catch((err) => {
+      console.log(err);
+    })
+
+    console.log('CAST LIST ', castList);
+    console.log('MOVIE LIST ', movieList);
   };
 
   const handleAddNewKeyword = async () => {
@@ -70,9 +84,11 @@ export default function Search({navigation}) {
           await AsyncStorage.removeItem(KEYWORDS).then(() => {
             console.log('Keyword removed');
           });
-          AsyncStorage.setItem(KEYWORDS, JSON.stringify(listKey)).then(() => {
-            console.log('KEYWORDS updated.');
-          });
+          await AsyncStorage.setItem(KEYWORDS, JSON.stringify(listKey)).then(
+            () => {
+              console.log('KEYWORDS updated.');
+            },
+          );
         } catch (error) {
           console.log(error);
         }
@@ -83,9 +99,11 @@ export default function Search({navigation}) {
       let keywords = (await AsyncStorage.getItem(KEYWORDS)) || '[]';
       keywords = JSON.parse(keywords);
       keywords.push(keyword);
-      AsyncStorage.setItem(KEYWORDS, JSON.stringify(keywords)).then(() => {
-        console.log('KEYWORDS added.');
-      });
+      await AsyncStorage.setItem(KEYWORDS, JSON.stringify(keywords)).then(
+        () => {
+          console.log('KEYWORDS added.');
+        },
+      );
     } catch (error) {
       console.log(error);
     }
@@ -112,26 +130,12 @@ export default function Search({navigation}) {
               style={styles.searchInput}
               placeholder={'Tìm kiếm với GEA'}
               placeholderTextColor={'gray'}
-              onSubmitEditing={handleAddNewKeyword}
+              onSubmitEditing={handleGetDataByKeyword}
               returnKeyType="search"
             />
           </View>
         </View>
       </Animated.View>
-
-      {/* <View style={styles.contentContainer}> */}
-      {/* Actors */}
-      {/* <View style={styles.actorContainer}>
-          <Text style={styles.title}>Actors</Text>
-          <ActorsList data={actorDataTest} />
-        </View> */}
-
-      {/* Movies */}
-      {/* <View style={styles.movieContainer}>
-            <Text style={styles.title}>Movies</Text>
-            <MoviesList data={films} />
-        </View> */}
-      {/* </View> */}
 
       <View style={styles.contentContainer}>
         <ScrollView contentContainerStyle={styles.keyWordContainer}>
