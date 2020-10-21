@@ -36,40 +36,47 @@ export default function Search({navigation}) {
   const [listKey, setListKey] = useState([]);
   const [castList, setCastList] = useState([]);
   const [movieList, setMovieList] = useState([]);
+  const [data, setData] = useState([]);
+  const [isVisible, setVisible] = useState(true);
 
   useEffect(() => {
     getKey();
   }, []);
+
+  useEffect(() => {
+    handleGetDataByKeyword();
+  }, [keyword]);
 
   const getKey = async () => {
     //await AsyncStorage.removeItem(KEYWORDS)
     try {
       let string = await AsyncStorage.getItem(KEYWORDS);
       let obj = JSON.parse(string);
-      console.log('OBJ ', obj);
+      //console.log('OBJ ', obj);
 
       setListKey(obj);
-      console.log('LIST KEY Search.js ', listKey);
+      //console.log('LIST KEY Search.js ', listKey);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleGetDataByKeyword = async () => {
-    await getDataByKeyword(keyword).then((data) => {
-      if (data.cast != null) {
-        setCastList(data.cast);
-      }
+    if (keyword === '') {
+      return;
+    }
 
-      if (data.movie != null) {
-        setMovieList(data.movie);
-      }
-    }).catch((err) => {
-      console.log(err);
-    })
+    let data = await getDataByKeyword(keyword)
+      .then((data) => {
+        return data;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
 
-    console.log('CAST LIST ', castList);
-    console.log('MOVIE LIST ', movieList);
+    setData([...data.cast, ...data.movie]);
+    setCastList(data.cast);
+    setMovieList(data.movie);
   };
 
   const handleAddNewKeyword = async () => {
@@ -109,39 +116,72 @@ export default function Search({navigation}) {
     }
   };
 
+  const handleSearchOnPress = () => {
+    setVisible(false);
+  };
+
+  const renderSearchDataWithKeyword = data.map((data) => {
+    return (
+      <View style={styles.castContainer} key={data._id}>
+        <EvilIcon name="search" size={22} color={'gray'} />
+        <Text style={styles.castName}>{data.name}</Text>
+      </View>
+    );
+  });
+
+  const closeIconOnPress = () => {
+    setKeyword('');
+  };
+
   return (
     <View style={styles.container}>
-      {/* <StatusBar backgroundColor="rgba(0, 0, 0, 0.20)" /> */}
+      <StatusBar backgroundColor="rgba(0, 0, 0, 0.02)" />
       <Animated.View
         style={{
           transform: [{translateY: translateY}],
           zIndex: 10,
         }}>
-        <View style={styles.searchBar}>
-          <View style={styles.backIcon}>
-            <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+        <View style={styles.searchBarContainer}>
+          <View style={styles.searchBar}>
+            <View style={styles.backIcon}>
+              <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+            </View>
+            <View style={styles.searchInputContainer}>
+              <EvilIcon name="search" size={22} color={'gray'} />
+              <TextInput
+                autoFocus={true}
+                value={keyword}
+                onChangeText={(txt) => setKeyword(txt)}
+                style={styles.searchInput}
+                placeholder={'Tìm kiếm với GEA'}
+                placeholderTextColor={'gray'}
+                onSubmitEditing={handleSearchOnPress}
+                returnKeyType="search"
+              />
+              {keyword.length > 0 ? (
+                <EvilIcon
+                  onPress={() => closeIconOnPress()}
+                  style={styles.closeIcon}
+                  name="close"
+                  size={22}
+                  color={'gray'}
+                />
+              ) : null}
+            </View>
           </View>
-          <View style={styles.searchInputContainer}>
-            <EvilIcon name="search" size={22} color={'gray'} />
-            <TextInput
-              autoFocus={true}
-              value={keyword}
-              onChangeText={(txt) => setKeyword(txt)}
-              style={styles.searchInput}
-              placeholder={'Tìm kiếm với GEA'}
-              placeholderTextColor={'gray'}
-              onSubmitEditing={handleGetDataByKeyword}
-              returnKeyType="search"
-            />
-          </View>
+          <ScrollView style={{width: '100%', backgroundColor: '#fff'}}>
+            {keyword && isVisible ? renderSearchDataWithKeyword : null}
+          </ScrollView>
         </View>
       </Animated.View>
 
-      <View style={styles.contentContainer}>
-        <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords />
-        </ScrollView>
-      </View>
+      {keyword != '' ? null : (
+        <View style={styles.contentContainer}>
+          <ScrollView contentContainerStyle={styles.keyWordContainer}>
+            <KeyWords />
+          </ScrollView>
+        </View>
+      )}
     </View>
   );
 }
@@ -150,12 +190,17 @@ const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,
     flex: 1,
+    backgroundColor: '#fff'
+  },
+  searchBarContainer: {
+    backgroundColor: 'rgba(0, 0, 0, 0.03)',
+    borderBottomWidth: 0.2,
+    borderBottomColor: 'rgba(166, 164, 164, 0.1)',
+    alignItems: 'center',
   },
   searchBar: {
     height: HEADER_HEIGHT,
     flexDirection: 'row',
-    borderBottomWidth: 0.1,
-    borderBottomColor: 'rgba(166, 164, 164, 0.1)',
     alignItems: 'center',
   },
   backIcon: {
@@ -163,6 +208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  closeIcon: {},
   searchInputContainer: {
     flex: 5,
     justifyContent: 'flex-start',
@@ -170,12 +216,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgba(166, 164, 164, 0.3)',
     height: 40,
-    paddingLeft: 25,
+    paddingLeft: 20,
     marginRight: 10,
     borderRadius: 20,
   },
   searchInput: {
-    width: '85%',
+    width: '80%',
     color: 'gray',
     fontSize: 16,
     height: 41,
@@ -206,4 +252,16 @@ const styles = StyleSheet.create({
   //   borderRadius: 10,
   //   backgroundColor: '#fff',
   // },
+  castContainer: {
+    height: 41,
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingLeft: 15,
+  },
+  castName: {
+    color: '#000',
+    paddingLeft: 10,
+  },
 });

@@ -38,7 +38,7 @@ export default function searchComponent() {
   return (
     <View style={styles.container}>
       <View style={styles.oldKeyTitleContainer}>
-        <Text style={styles.oldKeyTitle}>KEYWORD SEARCHED</Text>
+        <Text style={styles.oldKeyTitle}>Từ khóa đã tìm kiếm</Text>
       </View>
       {listKey.map((value) => {
         <View style={{backgroundColor: 'green', width: '100%', height: 200}}>
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
   },
   oldKeyTitle: {
     fontFamily: Fonts.SansMedium,
-    fontSize: 16,
+    fontSize: 14,
     paddingLeft: 10,
   },
   withoutKeywords: {
