@@ -61,8 +61,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   oldKeyTitle: {
-    fontFamily: Fonts.SansMedium,
-    fontSize: 14,
+    fontFamily: Fonts.SansLight,
+    fontSize: 15,
     paddingLeft: 10,
   },
   withoutKeywords: {

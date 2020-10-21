@@ -7,6 +7,8 @@ import {
   TextInput,
   Animated,
   ScrollView,
+  FlatList,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -14,9 +16,9 @@ import {HEIGHT, WIDTH} from '../../constants/constants';
 import {Fonts} from '../../utils/Fonts';
 import {SkypeIndicator} from 'react-native-indicators';
 import KeyWords from '../views/searchComponent';
-import {films} from '../../constants/data/fakeData';
 import AsyncStorage from '@react-native-community/async-storage';
 import {getDataByKeyword} from '../../Redux/actions/movieAction';
+import {FilmItem, CastItem} from '../views';
 
 const STATUS_BAR_CURRENT_HEIGHT =
   Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
@@ -24,6 +26,25 @@ const HEADER_HEIGHT = 50;
 const KEYWORDS = 'keywords';
 
 export default function Search({navigation}) {
+  const tabLabel = [
+    {
+      _id: '01',
+      lable: 'Tất cả',
+    },
+    {
+      _id: '02',
+      lable: 'Phim',
+    },
+    {
+      _id: '03',
+      lable: 'Nhạc',
+    },
+    {
+      _id: '04',
+      lable: 'Nghệ sĩ',
+    },
+  ];
+
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
 
@@ -38,6 +59,7 @@ export default function Search({navigation}) {
   const [movieList, setMovieList] = useState([]);
   const [data, setData] = useState([]);
   const [isVisible, setVisible] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
 
   useEffect(() => {
     getKey();
@@ -131,11 +153,12 @@ export default function Search({navigation}) {
 
   const closeIconOnPress = () => {
     setKeyword('');
+    setVisible(true);
   };
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="rgba(0, 0, 0, 0.02)" />
+      <StatusBar backgroundColor="#fff" />
       <Animated.View
         style={{
           transform: [{translateY: translateY}],
@@ -182,6 +205,53 @@ export default function Search({navigation}) {
           </ScrollView>
         </View>
       )}
+
+      {!isVisible ? (
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          horizontal={true}
+          style={{flexGrow: 0}}>
+          {tabLabel.map((data) => {
+            return (
+              <TouchableWithoutFeedback
+                key={data._id}
+                onPress={() => setSelectedCategory(data.lable)}>
+                <View style={styles.topTabs}>
+                  <Text style={styles.txtLableContainer}>{data.lable}</Text>
+                  {selectedCategory === data.lable ? (
+                    <View style={styles.topTabsBar} />
+                  ) : null}
+                </View>
+              </TouchableWithoutFeedback>
+            );
+          })}
+        </ScrollView>
+      ) : null}
+
+      {selectedCategory === 'Tất cả' && !isVisible ? (
+        <View style={styles.listALLContainer}>
+          <View style={styles.list}>
+            <FlatList
+              horizontal
+              scrollEnabled
+              snapToAlignment="center"
+              showsHorizontalScrollIndicator={false}
+              data={castList}
+              keyExtractor={(item) => String(item._id)}
+              renderItem={(item) => <CastItem item={item} />}
+            />
+          </View>
+          <View style={styles.list}>
+            <FlatList
+              showsVerticalScrollIndicator={true}
+              numColumns={3}
+              data={movieList}
+              keyExtractor={(item) => String(item._id)}
+              renderItem={(item) => <FilmItem item={item} />}
+            />
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -190,10 +260,9 @@ const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   },
   searchBarContainer: {
-    backgroundColor: 'rgba(0, 0, 0, 0.03)',
     borderBottomWidth: 0.2,
     borderBottomColor: 'rgba(166, 164, 164, 0.1)',
     alignItems: 'center',
@@ -263,5 +332,34 @@ const styles = StyleSheet.create({
   castName: {
     color: '#000',
     paddingLeft: 10,
+  },
+  topTabs: {
+    height: 30,
+    width: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  topTabsBar: {
+    backgroundColor: '#819ee5',
+    width: '40%',
+    borderRadius: 8,
+    height: 2,
+  },
+  txtLableContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: 'gray',
+    fontFamily: Fonts.SansMedium,
+    fontSize: 16,
+  },
+  listALLContainer: {
+    flex: 1,
+    borderRadius: 10,
+    marginRight: 8,
+    marginLeft: 8,
+  },
+  list: {
+    borderRadius: 3,
+    marginTop: 5,
   },
 });
