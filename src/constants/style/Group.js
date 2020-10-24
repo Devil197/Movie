@@ -35,7 +35,7 @@ ${({ p, t, b, }) => {
 ${({ l,l1 }) => {
         switch (true) {
             case l:
-                return `marginLeft: 2%`;
+                return `marginLeft: 1%`;
             case l1:
                 return `marginLeft: 10%`;
         }

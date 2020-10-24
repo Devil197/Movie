@@ -13,119 +13,126 @@ import {
 } from 'react-native'
 import { Fonts } from '../../utils/Fonts';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/constants'
+import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY } from '../../constants/constants'
+import { ptColor } from '../../constants/styles'
 import { films, menu } from '../../constants/data/fakeData'
 import { SwipeListView } from 'react-native-swipe-list-view';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { useDispatch, useSelector } from 'react-redux';
-import { getHistoryByIdUser, getMovieById, getFullMovie } from '../../Redux/actions/movieAction';
+import { getHistoryByIdUser, deleteHistoryByInvite_ID, deleteHistoryByID } from '../../Redux/actions/historyAction';
+import { Appbar, useTheme } from 'react-native-paper';
+import { Icon as IconElement } from 'react-native-elements'
+import { MyHighLightButton, Divider, MySpinner } from '../views'
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+import { Avatar, Button, Card, Title, Paragraph } from 'react-native-paper';
+import { FlatList } from 'react-native-gesture-handler';
+
+
 export default function History({ navigation }) {
 
   const userReducer = useSelector((state) => state.userReducer)
   // console.log('image,: ', userReducer);
   const [dataHistory, setDataHistory] = useState();
-  const [dataMovie, setDataMovie] = useState();
 
-  const [id, setId] = useState("");
-  console.log('00009 -> user', userReducer);
   useEffect(() => {
-
-    getHistoryByIdUser("5f8a891887f5ef0004f46619").then((history) =>{
-      console.log('000003 -> history', history);
+    getHistoryByIdUser("5f8a891887f5ef0004f46619").then((history) => {
+      console.log('1001 -> history', history);
       setDataHistory(history);
-      setId(history.items[0]._id);
     }).catch((err) => console.log("Failed", err));
+    console.log('da ', dataHistory?.items);
 
-  
+  }, [dataHistory])
 
-    // getMovieById(dataHistory?.items[0]?.movie_id).then((movie) =>{
-    //   console.log('0005 -> movie', movie);
-    //   setDataMovie(movie);
-    // }).catch((err) => console.log("Failed", err));
-
-    // getFullMovie(dataHistory?.items[0]?.movie_id).then((moviebyId) => {
-    //   console.log('0005 -> movie', moviebyId);
-    //   setDataMovie(moviebyId);
-    // }).catch((err) => console.log("Failed", err));
-    // console.log('0002 -> movie_id', dataHistory?.items[0]?.movie_id);
-
-    getFullMovie(id).then((fullmovie) => {
-      setDataMovie(fullmovie);
-    }).catch((err) => console.log("Failed: ", err))
-
-  }, [])
-  
-
-  const [listData, setListData] = useState(
-    dataMovie?.movie.map((c, index) => ({
-      key: `${index}`,
-      title: c.name,
-      thumb: c.thumb,
-    }))
-  );
-  const closeRow = (rowMap, rowKey) => {
-
+  const removeAll = (invite_id) => {
+    MySpinner.show()
+    deleteHistoryByInvite_ID(invite_id).then(res => {
+      MySpinner.hide()
+    }).catch(e => {
+      console.log(e)
+      MySpinner.hide()
+    })
   }
-  const deleteRow = (rowMap, rowKey) => {
 
+  const remove = (id) => {
+    MySpinner.show()
+    deleteHistoryByID(id).then(res => {
+      console.log(res);
+      MySpinner.hide()
+    }).catch(e => {
+      console.log(e);
+      MySpinner.hide()
+    })
   }
-  const VisibleItem = props => {
-    const { data } = props;
 
+
+  function Header() {
+    const _goBack = () => navigation.goBack();
     return (
-      <View style={styles.rowFront}>
-        <TouchableHighlight style={styles.rowFrontVisible}>
-          <View>
-            <Text style={styles.title} numberOfLines={1}>{data.item.title}</Text>
-          </View>
-
-        </TouchableHighlight>
-      </View>
-      // <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-      //   {dataMovie?.movie.map(c,i)=>}
-      // </ScrollView>
-    );
-  }
-  const renderItem = (data, rowMap) => {
-    return (
-      <VisibleItem data={data} />
+      <Appbar.Header
+        style={{ backgroundColor: '#fafafa', elevation: 0, justifyContent: 'space-between' }}>
+        <Appbar.Action
+          onPress={_goBack}
+          icon={() => (
+            <IconElement name="chevron-left" type="feather" color={ptColor.black} size={18 * WIDTH_SCALE} />
+          )}
+          color={ptColor.black}
+          size={24}
+        />
+        <Text style={{ fontSize: 18 * WIDTH_SCALE }}>History</Text>
+        <View style={{ width: '10%' }} />
+      </Appbar.Header>
     )
-  };
-  const HiddenItemWithAction = props => {
-    const { onClose, onDelete } = props;
-
-    return (
-      <View style={styles.rowBack}>
-        <Text>Left</Text>
-        <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnLeft]}>
-          <Text>Close</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.backRightBtn, styles.backRightBtnRight]}>
-          <Text>Delete</Text>
-        </TouchableOpacity>
-      </View>
-    );
-
   }
-  const renderHiddenItem = (data, rowMap) => {
-    return (
-      <HiddenItemWithAction
-        data={data}
-        rowMap={rowMap}
-        onClose={() => closeRow(rowMap, data.item.key)}
-        onDelete={() => deleteRow(rowMap, data.item.key)}
-      />
-    );
-  }
+
+
   return (
     <View style={styles.container}>
-      <SwipeListView
-        data={dataMovie}
-        renderItem={renderItem}
-        renderHiddenItem={renderHiddenItem}
-        leftOpenValue={75}
-        rightOpenValue={-150}
-      />
+      <Header />
+      {dataHistory?.items.map((e, i) => {
+        return (
+          <Card style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
+            <View style={{ flexDirection: 'row', margin: 10 * WIDTH_SCALE }} >
+              <MyHighLightButton onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}>
+                <Image source={{ uri: e?.movie_id?.cover_img }} style={{ width: WIDTH * 0.4, height: 100 * WIDTH_SCALE }} resizeMode={'cover'} />
+              </MyHighLightButton>
+
+              <MyHighLightButton
+                onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}
+                style={{ margin: 5 * WIDTH_SCALE, alignItems: 'center', justifyContent: 'flex-start' }}>
+                <Text>{e?.movie_id?.name}</Text>
+                <Text>Đã Xem : {e?.duration} s</Text>
+
+                <Text>{e?.movie_id?.score} lượt xem</Text>
+
+              </MyHighLightButton>
+              <View style={{ alignItems: 'center', position: 'absolute', right: 0, width: 30 * WIDTH_SCALE, zIndex: 9999,height: 30 * WIDTH_SCALE }}>
+                <Menu>
+                  <MenuTrigger >
+                    <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
+                  </MenuTrigger>
+                  <MenuOptions>
+                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }} onSelect={() => remove(e?._id)}>
+                      <Text>Xóa Khỏi Lịch Sử Xem</Text>
+                    </MenuOption>
+                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
+                      <Text>Xóa Tất Cả Lịch Sử Xem </Text>
+                    </MenuOption>
+                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }}>
+                      <Text>Share</Text>
+                    </MenuOption>
+                  </MenuOptions>
+                </Menu>
+              </View>
+            </View>
+            <Divider />
+          </Card>
+        )
+      })}
     </View>
   )
 }
@@ -133,97 +140,6 @@ export default function History({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#fff"
-  },
-  topContainer: {
-    padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
   },
 
-  pageTitle: {
-    fontSize: 20,
-    fontFamily: Fonts.SansMedium,
-
-  },
-
-  box: {
-    flexDirection: 'row',
-    padding: 10 * WIDTH_SCALE,
-    // backgroundColor: '#fff'
-  },
-  image: {
-    width: WIDTH_SCALE * 180,
-    height: HEIGHT_SCALE * 100,
-
-  },
-
-  backTextWhite: {
-    color: '#FFF',
-  },
-  rowFront: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
-    height: 60,
-    margin: 5,
-    marginBottom: 15,
-    shadowColor: '#999',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  rowFrontVisible: {
-    backgroundColor: '#FFF',
-    borderRadius: 5,
-    height: 60,
-    padding: 10,
-    marginBottom: 15,
-  },
-  rowBack: {
-    alignItems: 'center',
-    backgroundColor: '#DDD',
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingLeft: 15,
-    margin: 5,
-    marginBottom: 15,
-    borderRadius: 5,
-  },
-  backRightBtn: {
-    alignItems: 'flex-end',
-    bottom: 0,
-    justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    width: 75,
-    paddingRight: 17,
-  },
-  backRightBtnLeft: {
-    backgroundColor: '#1f65ff',
-    right: 75,
-  },
-  backRightBtnRight: {
-    backgroundColor: 'red',
-    right: 0,
-    borderTopRightRadius: 5,
-    borderBottomRightRadius: 5,
-  },
-  trash: {
-    height: 25,
-    width: 25,
-    marginRight: 7,
-  },
-  title: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#666',
-  },
-  details: {
-    fontSize: 12,
-    color: '#999',
-  },
 })
