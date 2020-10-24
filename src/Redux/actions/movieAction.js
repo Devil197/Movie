@@ -72,19 +72,6 @@ export const getVideoByMovie = (_id) =>
       .catch((err) => reject(err));
   });
 
-export const getHistoryByIdUser = (_id) =>
-  new Promise((resolve, reject) => {
-    axiosConfig
-      .get(`/v3/history/get/${_id}`)
-      .then((response) => {
-        if (response.data.result) {
-          resolve(response.data);
-        } else {
-          Alert.alert('get history failed');
-        }
-      })
-      .catch((err) => reject(err));
-  });
 
 export const getMovieById = (_id) =>
   new Promise((resolve, reject) => {
