@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,21 +9,22 @@ import {
   ScrollView,
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
-import {HEIGHT, WIDTH} from '../../constants/constants';
-import {Fonts} from '../../utils/Fonts';
-import {SkypeIndicator} from 'react-native-indicators';//<==== không sử dụng cái này import MySpinner trong '../views' ra sài nhá chỉ cần set giá trị là MySpinner.hide() và MySpinner.show()
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import { HEIGHT, WIDTH } from '../../constants/constants';
+import { Fonts } from '../../utils/Fonts';
+import { SkypeIndicator } from 'react-native-indicators';//<==== không sử dụng cái này import MySpinner trong '../views' ra sài nhá chỉ cần set giá trị là MySpinner.hide() và MySpinner.show()
 import KeyWords from '../views/searchComponent';
-import {films} from '../../constants/data/fakeData';
+import { films } from '../../constants/data/fakeData';
+import { MyHighLightButton } from '../views'
 import AsyncStorage from '@react-native-community/async-storage';//<==== sử dụng redux
-import {getDataByKeyword} from '../../Redux/actions/movieAction'; //<==== api của thằng nào thì viết trong reduxAction của thằng đó nhá
+import { getDataByKeyword } from '../../Redux/actions/movieAction'; //<==== api của thằng nào thì viết trong reduxAction của thằng đó nhá
 
 const STATUS_BAR_CURRENT_HEIGHT =
   Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const HEADER_HEIGHT = 50;
 const KEYWORDS = 'keywords';
 
-export default function Search({navigation}) {
+export default function Search({ navigation }) {
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
 
@@ -41,7 +42,7 @@ export default function Search({navigation}) {
   // các hàm đọc api thì đều viết trong folder '../../Redux/actions'
 
   //====>
-  
+
   const [keyword, setKeyword] = useState('');
   const [listKey, setListKey] = useState([]);
   const [castList, setCastList] = useState([]);
@@ -150,13 +151,15 @@ export default function Search({navigation}) {
       <StatusBar backgroundColor="rgba(0, 0, 0, 0.02)" />
       <Animated.View
         style={{
-          transform: [{translateY: translateY}],
+          transform: [{ translateY: translateY }],
           zIndex: 10,
         }}>
         <View style={styles.searchBarContainer}>
           <View style={styles.searchBar}>
             <View style={styles.backIcon}>
-              <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+              <MyHighLightButton  onPress={() => navigation.goBack()}>
+                <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+              </MyHighLightButton>
             </View>
             <View style={styles.searchInputContainer}>
               <EvilIcon name="search" size={22} color={'gray'} />
@@ -181,7 +184,7 @@ export default function Search({navigation}) {
               ) : null}
             </View>
           </View>
-          <ScrollView style={{width: '100%', backgroundColor: '#fff'}}>
+          <ScrollView style={{ width: '100%', backgroundColor: '#fff' }}>
             {keyword && isVisible ? renderSearchDataWithKeyword : null}
           </ScrollView>
         </View>
