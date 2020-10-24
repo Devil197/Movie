@@ -3,5 +3,5 @@ import FilmFollowItem from '../views/FilmFollowItem';
 import MySpinner from './MySpinner';
 import MyHighLightButton from './MyHighLightButton'
 import Play from './Play'
-import Divider from './Divider'
-export {FilmItem, FilmFollowItem, MySpinner,MyHighLightButton,Play,Divider};
+import CastItem from './CastItem'
+export {FilmItem, FilmFollowItem, MySpinner,MyHighLightButton,Play, CastItem};

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import 'react-native-gesture-handler';
-import { ROUTE_KEY } from './constants/constants';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Login, Videos, Splash, Details, History, Search } from './components/screens';
-import { NavigationContainer } from '@react-navigation/native';
+import {ROUTE_KEY} from './constants/constants';
+import {createStackNavigator} from '@react-navigation/stack';
+import {Login, Videos,Splash,Details, History} from './components/screens';
+import {NavigationContainer} from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
 import Play from './components/views/Play'
 const Stack = createStackNavigator();
@@ -22,8 +22,7 @@ function StackNavigator() {
       <Stack.Screen name={ROUTE_KEY.Splash} component={Splash} />
       <Stack.Screen name={ROUTE_KEY.Details} component={Details} />
       <Stack.Screen name={ROUTE_KEY.History} component={History} />
-      <Stack.Screen name={ROUTE_KEY.Search} component={Search} />
-
+      <Stack.Screen name={'play'} component={Play} />
     </Stack.Navigator>
   );
 }

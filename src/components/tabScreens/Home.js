@@ -123,7 +123,7 @@ export default function Home({ navigation }) {
           </TextC>
         </GroupA>
         <GroupA row>
-          <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.push(ROUTE_KEY.Search)}>
+          <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.navigate('Videos')}>
             <FontAwesome5 name={'search'} size={20} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
