@@ -17,10 +17,6 @@ import Orientation from 'react-native-orientation';
 import { onChange } from 'react-native-reanimated';
 import { HEIGHT, WIDTH } from '../../constants/constants'
 
-interface PlayInterFacce {
-    onChange: (value: Boolean) => {};
-}
-
 export default class Player extends PureComponent<PlayInterFacce> {
     constructor(props) {
         super(props);
@@ -91,14 +87,20 @@ export default class Player extends PureComponent<PlayInterFacce> {
         this.setState({ modalVisible: visible });
     }
 
+    setOnChange = (val)=>{
+        return val
+    }
+
     fullScreen = () => {
         Orientation.getOrientation((err, orientation) => {
             if (orientation == 'LANDSCAPE') {
                 Orientation.lockToPortrait();
-                this.props.onChange(true)
+                console.log('play doc');
+                this.props.onChange(false)
             } else {
                 Orientation.lockToLandscape();
-                this.props.onChange(false)
+                console.log('play ngang');
+                this.props.onChange(true)
             }
         });
 
@@ -124,7 +126,7 @@ export default class Player extends PureComponent<PlayInterFacce> {
     }
     render() {
         const { modalVisible, paused } = this.state
-        const url = `https://r7---sn-42u-nboss.googlevideo.com/videoplayback?expire=1603049159&ei=Z0KMX97vAcOSvQTKtYyoBw&ip=128.199.92.238&id=o-AG03LyW8iTnYSxbDQpHytaaRpS7-QZhnluMtVgPHJk-E&itag=18&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&gir=yes&clen=434815153&ratebypass=yes&dur=5250.983&lmt=1602936227702124&fvip=3&fexp=23915654&c=WEB&txp=5531422&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRAIgEZOXbdOj_8tAYDxPoJdwJz1UnzH6wKmkkBnhCFDhkM8CIEKaHh9ytwqII_YJbfGcpF7D9NY6i3THRXNEM9Pm-Lae&title=best-music-2020-mix-best-of-edm-best-gaming-music-trap-rap-bass-dubstep-electro-house&redirect_counter=1&rm=sn-nposs7s&req_id=a764be79b145a3ee&cms_redirect=yes&ipbypass=yes&mh=s7&mip=113.23.111.154&mm=31&mn=sn-42u-nboss&ms=au&mt=1603029046&mv=m&mvi=7&pl=24&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRQIgDdmnQfQSo6Y9Ac00dYfff29ZVfndqubY8wsjnus_KA4CIQDtDlIpDbPXgMpj8CKVNJoXWuuUpCKwM7wrpyFe0c3A-A%3D%3D`
+        const url = `https://r7---sn-8pxuuxa-nbozl.googlevideo.com/videoplayback?expire=1603641903&ei=zk2VX-roN5SS1AbNw5HoBw&ip=128.199.92.238&id=o-APm_FnHMPZao8IZPg91y-5-B7fAImzeUsRYAcPtOA2P6&itag=18&source=youtube&requiressl=yes&vprv=1&mime=video%2Fmp4&gir=yes&clen=434815153&ratebypass=yes&dur=5250.983&lmt=1602936227702124&fvip=3&c=WEB&txp=5531422&sparams=expire%2Cei%2Cip%2Cid%2Citag%2Csource%2Crequiressl%2Cvprv%2Cmime%2Cgir%2Cclen%2Cratebypass%2Cdur%2Clmt&sig=AOq0QJ8wRAIgUbIhb5hJwP2tHfdwB4PJPKFTLlIlisphvE60AwEjhs0CIG_15uW5u35bDblkZF9HBB_IXJTdMAVQXDBndiFVOGyq&title=best-music-2020-mix-best-of-edm-best-gaming-music-trap-rap-bass-dubstep-electro-house&redirect_counter=1&rm=sn-nposs7s&req_id=d6988226c6d9a3ee&cms_redirect=yes&ipbypass=yes&mh=s7&mip=27.74.244.88&mm=31&mn=sn-8pxuuxa-nbozl&ms=au&mt=1603620167&mv=m&mvi=7&pl=21&lsparams=ipbypass,mh,mip,mm,mn,ms,mv,mvi,pl&lsig=AG3C_xAwRQIgDsk8WYRGylGTLf-2JwL1acY0rhzX9aBclHl-i2fs_fcCIQDiYuN8dj1rZ_r_y_GFDRGxvDEt4u_12cvf7bZwcDueQA%3D%3D`
         const flexCompleted = this.getCurrentTimePercentage() * 100;
         const flexRemaining = (1 - this.getCurrentTimePercentage()) * 100;
         return (

@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { Fonts } from '../../utils/Fonts';
 import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
 import { Play } from '../views'
-
+import Orientation from 'react-native-orientation';
 import moment from 'moment';
 
 
@@ -30,6 +30,7 @@ const Videos = ({ navigation, params, route }) => {
   const [dataFullMovie, setDataFullMovie] = useState();
   const [idx, setIndex] = useState(0);
   const [title, setTitle] = useState()
+  const initial = Orientation.getInitialOrientation();
 
   console.log('1001 type play video screen ', typePlayVideo);
   useEffect(() => {
@@ -48,6 +49,14 @@ const Videos = ({ navigation, params, route }) => {
     }).catch((err) => console.log("Failed", err))
   }, [])
 
+  useEffect(() => {
+    if (!typePlayVideo) {
+      Orientation.lockToLandscape();
+    } else {
+      Orientation.lockToPortrait();
+    }
+  }, [typePlayVideo])
+
 
   // console.log('1120 -> ',moment('5-10-2020', 'YYYY-MM-DDTHH:mm:ss').day());
   // console.log('10002 ', moment(dataFullMovie?.movie[0]?.update_at).format('HH:mm:ss'));
@@ -65,73 +74,74 @@ const Videos = ({ navigation, params, route }) => {
       <View
         style={{
           position: typePlayVideo ? 'absolute' : 'relative',
-          height: typePlayVideo ? HEIGHT : HEIGHT * 0.4,
+          flex: 1,
           backgroundColor: '#000',
           alignItems: 'center',
           justifyContent: 'center',
+          margin: 0, padding: 0
         }}>
         <Play onChange={(val) => {
-         setTypePlayVideo(val)
+          setTypePlayVideo(val)
           console.log(val)
         }} />
       </View>
-      {typePlayVideo == false ? <ScrollView>
-        {/* Videos of Movie */}
-        <View>
-          <View style={styles.card}>
-            <Text style={styles.header}>
-              [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title ? title : dataVideo?.items[0]?.title}
-            </Text>
-            <View style={[styles.rowRating, styles.mr]}>
-              <Text>0.0 </Text>
-              <View style={{ flexDirection: 'row' }}>
-                <Icon name="star" size={20} color="#a5a5a5" />
-                <Icon name="star" size={20} color="#a5a5a5" />
-                <Icon name="star" size={20} color="#a5a5a5" />
-                <Icon name="star" size={20} color="#a5a5a5" />
-                <Icon name="star" size={20} color="#a5a5a5" />
+      { Orientation.getInitialOrientation() !== 'PORTRAIT' ?
+        <View style={{ marginTop: 0 }}>
+          {/* Videos of Movie */}
+          <View>
+            <View style={styles.card}>
+              <Text style={styles.header}>
+                [{dataFullMovie?.movie[0]?.language}] - {dataFullMovie?.movie[0]?.name} Tập {title ? title : dataVideo?.items[0]?.title}
+              </Text>
+              <View style={[styles.rowRating, styles.mr]}>
+                <Text>0.0 </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  <Icon name="star" size={20} color="#a5a5a5" />
+                  <Icon name="star" size={20} color="#a5a5a5" />
+                  <Icon name="star" size={20} color="#a5a5a5" />
+                  <Icon name="star" size={20} color="#a5a5a5" />
+                  <Icon name="star" size={20} color="#a5a5a5" />
+                </View>
               </View>
+              <Text style={styles.mr}>Thể loại: {dataFullMovie?.category[0]?.name}</Text>
+              <Text style={[styles.mr, { color: '#555' }]}>
+                {dataFullMovie?.movie[0]?.introduction}.{' '}
+              </Text>
             </View>
-            <Text style={styles.mr}>Thể loại: {dataFullMovie?.category[0]?.name}</Text>
-            <Text style={[styles.mr, { color: '#555' }]}>
-              {dataFullMovie?.movie[0]?.introduction}.{' '}
+          </View>
+
+          {/* Episode of Move */}
+          <View style={styles.card}>
+            <Text style={styles.header}>Chọn tập</Text>
+            <Text style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
+              Cập nhật vào {day} hàng tuần vào lúc {time}
             </Text>
+            <FlatList
+              keyExtractor={(item) => {
+                return item._id;
+              }}
+              data={dataVideo?.items}
+              renderItem={({ item, index }) =>
+                <TouchableOpacity
+
+                  onPress={() => {
+                    setIndex(index)
+                    console.log(item._id);
+                    console.log(index);
+                    setTitle(item.title)
+                  }}
+                  style={{ ...styles.itemEp, backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB' }}>
+                  <Text style={{ color: idx === index ? '#0984e3' : 'black' }}>{item.title}</Text>
+                </TouchableOpacity>
+              }
+              //Setting the number of column
+              numColumns={6}
+            />
           </View>
         </View>
-
-        {/* Episode of Move */}
-        <View style={styles.card}>
-          <Text style={styles.header}>Chọn tập</Text>
-          <Text style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
-            Cập nhật vào {day} hàng tuần vào lúc {time}
-          </Text>
-          <FlatList
-            keyExtractor={(item) => {
-              return item._id;
-            }}
-            data={dataVideo?.items}
-            renderItem={({ item, index }) =>
-              <TouchableOpacity
-
-                onPress={() => {
-                  setIndex(index)
-                  console.log(item._id);
-                  console.log(index);
-                  setTitle(item.title)
-                }}
-                style={{ ...styles.itemEp, backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB' }}>
-                <Text style={{ color: idx === index ? '#0984e3' : 'black' }}>{item.title}</Text>
-              </TouchableOpacity>
-            }
-            //Setting the number of column
-            numColumns={6}
-          />
-        </View>
-
-        {/* <Episodes episodes={dataVideo} day= {day} time ={time} clickHandler={(id)=>{console.log('id',id);}} /> */}
-      </ScrollView>
         :
-        null}
+        null
+      }
 
     </View>
   )

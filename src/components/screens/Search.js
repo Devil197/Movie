@@ -42,11 +42,12 @@ export default function Search({navigation}) {
   useEffect(() => {
     handleGetDataByKeyword();
   }, [keyword]);
-
+  console.log('a')
   const handleGetDataByKeyword = async () => {
     setLoading(true);
     if (keyword === '') {
       return;
+      console.log('a')
     }
     await searchAPI(keyword)
       .then((json) => {
@@ -55,6 +56,7 @@ export default function Search({navigation}) {
           console.log(c?.name);
         });
         setLoading(false);
+        console.log('a')
       })
       .catch((err) => {
         console.log(err);
