@@ -2,6 +2,8 @@ import React from 'react';
 import {Dimensions, Image, Text, View, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Fonts} from '../../utils/Fonts';
+import {HEIGHT, WIDTH, STATUS_BAR_CURRENT_HEIGHT, HEADER_HEIGHT, WIDTH_SCALE} from '../../constants/constants';
+import {ptColor} from '../../constants/styles'
 
 const {width} = Dimensions.get('window');
 
@@ -65,14 +67,14 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontFamily: Fonts.SansMedium,
-    fontSize: 18,
-    color: '#000',
+    fontSize: 18 * WIDTH_SCALE,
+    color: ptColor.black,
     marginBottom: 10,
     marginTop: 10
   },
   itemYear: {
-    fontSize: 14,
-    color: 'gray',
+    fontSize: 14 * WIDTH_SCALE,
+    color: ptColor.gray2,
     fontFamily: Fonts.SansLight,
     marginTop: 2,
   },

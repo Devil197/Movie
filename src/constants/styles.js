@@ -6,7 +6,7 @@ var {height, width} = Dimensions.get('window');
 export const ptColor = {
   appColor: '#2FA29C',
   appColorHover: '#F7F7F7',
-  grey: '#A5A6AE30',
+  gray: '#A5A6AE30',
   textColor: '#585858',
   textPlaceholderColor: '#8C8C8C',
   textSubColor: '#58585870',
@@ -20,6 +20,7 @@ export const ptColor = {
   white: '#ffffff',
   noWhite: '#f5f5f5',
   transparent: 'transparent',
+  gray2: '#9e9d9d',
 };
 
 export const styles = StyleSheet.create({
@@ -112,4 +113,5 @@ export const styles = StyleSheet.create({
     zIndex: 1,
     color: 'white',
   },
+
 });

@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import { Dimensions, Platform, StatusBar } from 'react-native';
 //
 
 const {width, height} = Dimensions.get('window');
@@ -6,6 +6,8 @@ const WIDTH = width;
 const HEIGHT = height;
 const IS_ANDROID = Platform.OS === 'android';
 const IS_IOS = Platform.OS === 'ios';
+const STATUS_BAR_CURRENT_HEIGHT = IS_IOS ? 20 : StatusBar.currentHeight;
+const HEADER_HEIGHT = 50;
 // Use iPhone6 as base size which is 375 x 667
 const baseWidth = 398;
 const baseHeight = 736;
@@ -70,6 +72,8 @@ export {
   avatarSize,
   ROUTE_KEY,
   URL,
-  ASYNC_TYPE
+  ASYNC_TYPE,
+  STATUS_BAR_CURRENT_HEIGHT,
+  HEADER_HEIGHT
 };
 
