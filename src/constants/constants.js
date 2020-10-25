@@ -26,6 +26,10 @@ const GOOGLE_CONFIGURE =  {
   hostedDomain: '', // specifies a hosted domain restriction
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below
 }
+const ASYNC_TYPE ={
+  GOOGLE:'g',
+  FACEBOOK:'f'
+}
 
 const ROUTE_KEY = {
   Splash:'Splash',
@@ -66,5 +70,6 @@ export {
   avatarSize,
   ROUTE_KEY,
   URL,
+  ASYNC_TYPE
 };
 

@@ -115,16 +115,4 @@ export const getMovieByScore = () =>
       .catch((err) => reject(err));
   });
 
-export const getDataByKeyword = (keyword) =>
-  new Promise((resolve, reject) => {
-    axiosConfig
-      .get(`/v6/movie/query/${keyword}`)
-      .then((response) => {
-        if (response.data.result) {
-          resolve(response.data);
-        } else {
-          console.log('get data failed');
-        }
-      })
-      .catch((err) => reject(err));
-  });
+

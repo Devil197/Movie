@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 export default function Home({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer)
-  console.log('image,: ', userReducer);
+  console.log('1001 image,: ', userReducer);
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();
@@ -110,16 +110,16 @@ export default function Home({ navigation }) {
             s
             small
             source={{
-              uri: userReducer.facebookInfo !== {} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo,
+              uri: userReducer.facebookInfo?.photo !== undefined ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.photo,
             }}
           />
         </GroupA>
         <GroupA col s l p>
           <TextC color="#333" medium heavy numberOfLines={1} ellipsizeMode="tail">
-            {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}
+            {userReducer.facebookInfo?.name !== undefined ? userReducer.facebookInfo?.name : userReducer.googleInfo.name}
           </TextC>
           <TextC a color="#333" medium light numberOfLines={1} ellipsizeMode="tail">
-            ID: {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.id : userReducer.googleInfo.user.id}
+            ID: {userReducer.facebookInfo?.id !== undefined ? userReducer.facebookInfo?.id : userReducer.googleInfo.id}
           </TextC>
         </GroupA>
         <GroupA row>

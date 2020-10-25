@@ -14,35 +14,17 @@ import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {HEIGHT, WIDTH} from '../../constants/constants';
 import {Fonts} from '../../utils/Fonts';
-import {SkypeIndicator} from 'react-native-indicators'; //<==== không sử dụng cái này import MySpinner trong '../views' ra sài nhá chỉ cần set giá trị là MySpinner.hide() và MySpinner.show()
 import KeyWords from '../views/searchComponent';
 import {MyHighLightButton} from '../views';
-import AsyncStorage from '@react-native-community/async-storage'; //<==== sử dụng redux
-import {getDataByKeyword} from '../../Redux/actions/movieAction'; //<==== api của thằng nào thì viết trong reduxAction của thằng đó nhá
+import {searchAPI, addKeywordActionRedux} from '../../Redux/actions/keywordAction';
+import {FilmItem, CastItem, MySpinner} from '../views';
+import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show đc. Loay hoay tốn đống time nên t xài cái nãy đã
+
+import {useDispatch, useSelector} from 'react-redux';
 
 const STATUS_BAR_CURRENT_HEIGHT =
   Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
 const HEADER_HEIGHT = 50;
-const KEYWORDS = 'keywords';
-
-const tabLabel = [
-  {
-    _id: '01',
-    lable: 'Tất cả',
-  },
-  {
-    _id: '02',
-    lable: 'Phim',
-  },
-  {
-    _id: '03',
-    lable: 'Nhạc',
-  },
-  {
-    _id: '04',
-    lable: 'Nghệ sĩ',
-  },
-];
 
 export default function Search({navigation}) {
   const scrollY = new Animated.Value(0);
@@ -52,120 +34,75 @@ export default function Search({navigation}) {
     inputRange: [0, HEADER_HEIGHT],
     outputRange: [0, -HEADER_HEIGHT],
   });
-  //<====
-  // hạn chế việc sử dụng nhiều ustate
-  // các giá trị gọi từ json ra thì nên sử dụng ?. => ex : data?.movie
-  // cái cast vs movie tao trả về là json nên lưu 1 cái thôi  => ex: lưu json là data đi thì lấy cái thằng cast trong json mình gọi data?.cast là đc
 
-  // xem cại cách đặt tên biến => ex: nếu mà callback đó mình muốn chạy api tìm kiếm thì đặt là searchByAPI
-
-  // các hàm đọc api thì đều viết trong folder '../../Redux/actions'
-
-  //====>
+  const dispatch = useDispatch();
 
   const [keyword, setKeyword] = useState('');
-  const [listKey, setListKey] = useState([]);
-  const [castList, setCastList] = useState([]);
-  const [movieList, setMovieList] = useState([]);
-  const [data, setData] = useState([]);
-  const [isVisible, setVisible] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('Tất cả');
-
-  useEffect(() => {
-    getKey();
-  }, []);
+  const [data, setData] = useState();
+  const [isVisible, setVisible] = useState(false);
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     handleGetDataByKeyword();
   }, [keyword]);
 
-  const getKey = async () => {
-    //await AsyncStorage.removeItem(KEYWORDS)
-    try {
-      let string = await AsyncStorage.getItem(KEYWORDS);
-      let obj = JSON.parse(string);
-      //console.log('OBJ ', obj);
-
-      setListKey(obj);
-      //console.log('LIST KEY Search.js ', listKey);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const handleGetDataByKeyword = async () => {
+    setLoading(true);
     if (keyword === '') {
       return;
     }
-
-    let data = await getDataByKeyword(keyword)
-      .then((data) => {
-        return data;
+    await searchAPI(keyword)
+      .then((json) => {
+        setData(json);
+        data?.cast.map((c, i) => {
+          console.log(c?.name);
+        });
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
-
-    setData([...data.cast, ...data.movie]);
-    setCastList(data.cast);
-    setMovieList(data.movie);
   };
 
-  const handleAddNewKeyword = async () => {
-    if (listKey != null) {
-      let index = listKey.indexOf(keyword);
-      console.log('IndexOf ' + keyword + ' = ' + index);
-
-      if (index > -1) {
-        listKey.splice(index, 1);
-        setListKey([...listKey], keyword);
-        try {
-          await AsyncStorage.removeItem(KEYWORDS).then(() => {
-            console.log('Keyword removed');
-          });
-          await AsyncStorage.setItem(KEYWORDS, JSON.stringify(listKey)).then(
-            () => {
-              console.log('KEYWORDS updated.');
-            },
-          );
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    }
-
-    try {
-      let keywords = (await AsyncStorage.getItem(KEYWORDS)) || '[]';
-      keywords = JSON.parse(keywords);
-      keywords.push(keyword);
-      await AsyncStorage.setItem(KEYWORDS, JSON.stringify(keywords)).then(
-        () => {
-          console.log('KEYWORDS added.');
-        },
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  // <==== nếu chỉ thay đổi cái ustate thì viết setState ở trong luôn cần chi tạo thêm callback này nữa
   const handleSearchOnPress = () => {
-    setVisible(false);
+    setVisible(true);
+    addKeywordActionRedux(dispatch, keyword);
   };
 
-  const renderSearchDataWithKeyword = data.map((data) => {
-    return (
-      <View style={styles.castContainer} key={data._id}>
-        <EvilIcon name="search" size={22} color={'gray'} />
-        <Text style={styles.castName}>{data.name}</Text>
-      </View>
-    );
-  });
+  const searchSuggestionsOnPress = (_id) => {
+    console.log(_id);
+  };
 
   const closeIconOnPress = () => {
     setKeyword('');
-    setVisible(true);
+    setVisible(false);
   };
+
+  const renderCastItemAfterHandleSearchAPI = data?.cast.map((c, i) => {
+    return (
+      <TouchableWithoutFeedback
+        key={c._id}
+        onPress={() => searchSuggestionsOnPress(c._id)}>
+        <View style={styles.searchSuggestionsContainer} key={c?._id}>
+          <EvilIcon name="search" size={22} color={'gray'} />
+          <Text style={styles.searchSuggestions}>{c?.name}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  });
+
+  const renderMovieItemAfterHandleSearchAPI = data?.movie.map((c, i) => {
+    return (
+      <TouchableWithoutFeedback
+        key={c._id}
+        onPress={() => searchSuggestionsOnPress(c._id)}>
+        <View style={styles.searchSuggestionsContainer} key={c?._id}>
+          <EvilIcon name="search" size={22} color={'gray'} />
+          <Text style={styles.searchSuggestions}>{c?.name}</Text>
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  });
 
   return (
     <View style={styles.container}>
@@ -177,17 +114,20 @@ export default function Search({navigation}) {
         }}>
         <View style={styles.searchBarContainer}>
           <View style={styles.searchBar}>
-            <View style={styles.backIcon}>
-              <MyHighLightButton onPress={() => navigation.goBack()}>
-                <FontAwesome5 name="arrow-left" size={18} color={'black'} />
-              </MyHighLightButton>
-            </View>
+            <MyHighLightButton
+              style={styles.backIcon}
+              onPress={() => navigation.goBack()}>
+              <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+            </MyHighLightButton>
             <View style={styles.searchInputContainer}>
               <EvilIcon name="search" size={22} color={'gray'} />
               <TextInput
                 autoFocus={true}
                 value={keyword}
-                onChangeText={(txt) => setKeyword(txt)}
+                onChangeText={(txt) => {
+                  setKeyword(txt);
+                  setVisible(false);
+                }}
                 style={styles.searchInput}
                 placeholder={'Tìm kiếm với GEA'}
                 placeholderTextColor={'gray'}
@@ -205,43 +145,28 @@ export default function Search({navigation}) {
               ) : null}
             </View>
           </View>
-          <ScrollView style={{width: '100%', backgroundColor: '#fff'}}>
-            {keyword && isVisible ? renderSearchDataWithKeyword : null}
-          </ScrollView>
         </View>
       </Animated.View>
 
-      {keyword != '' ? null : (
-        <View style={styles.contentContainer}>
-          <ScrollView contentContainerStyle={styles.keyWordContainer}>
-            <KeyWords />
+      {keyword != '' ? (
+        isLoading ? (
+          <SkypeIndicator color="#2FA29C" size={20} style={{marginTop: 20}} />
+        ) : !isVisible ? (
+          <ScrollView style={{width: '100%', backgroundColor: '#fff'}}>
+            {renderCastItemAfterHandleSearchAPI}
+            {renderMovieItemAfterHandleSearchAPI}
           </ScrollView>
-        </View>
+        ) : null
+      ) : (
+        <ScrollView contentContainerStyle={styles.keyWordContainer}>
+          <KeyWords />
+        </ScrollView>
       )}
 
-      {!isVisible ? (
-        <ScrollView
-          showsHorizontalScrollIndicator={false}
-          horizontal={true}
-          style={{flexGrow: 0}}>
-          {tabLabel.map((data) => {
-            return (
-              <TouchableWithoutFeedback
-                key={data._id}
-                onPress={() => setSelectedCategory(data.lable)}>
-                <View style={styles.topTabs}>
-                  <Text style={styles.txtLableContainer}>{data.lable}</Text>
-                  {selectedCategory === data.lable ? (
-                    <View style={styles.topTabsBar} />
-                  ) : null}
-                </View>
-              </TouchableWithoutFeedback>
-            );
-          })}
-        </ScrollView>
-      ) : null}
+      {/* 
+        <View style={styles.contentContainer}> */}
 
-      {selectedCategory === 'Tất cả' && !isVisible ? (
+      {isVisible ? (
         <View style={styles.listALLContainer}>
           <View style={styles.list}>
             <FlatList
@@ -249,7 +174,7 @@ export default function Search({navigation}) {
               scrollEnabled
               snapToAlignment="center"
               showsHorizontalScrollIndicator={false}
-              data={castList}
+              data={data?.cast}
               keyExtractor={(item) => String(item._id)}
               renderItem={(item) => <CastItem item={item} />}
             />
@@ -258,7 +183,7 @@ export default function Search({navigation}) {
             <FlatList
               showsVerticalScrollIndicator={true}
               numColumns={3}
-              data={movieList}
+              data={data?.movie}
               keyExtractor={(item) => String(item._id)}
               renderItem={(item) => <FilmItem item={item} />}
             />
@@ -337,15 +262,15 @@ const styles = StyleSheet.create({
   //   borderRadius: 10,
   //   backgroundColor: '#fff',
   // },
-  castContainer: {
-    height: 41,
+  searchSuggestionsContainer: {
+    height: 35,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
     paddingLeft: 15,
   },
-  castName: {
+  searchSuggestions: {
     color: '#000',
     paddingLeft: 10,
   },
