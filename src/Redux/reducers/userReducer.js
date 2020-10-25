@@ -1,8 +1,9 @@
 import { REDUX } from '../store/types';
 const initialState = {
     loggedIn: false,
+    userInfo:{},
     googleInfo: {},
-    facebookInfo:{}
+    facebookInfo:'',
 };
 
 const userReducer = (state = initialState, action) => {
@@ -29,10 +30,17 @@ const userReducer = (state = initialState, action) => {
         return {
           ...state,
           loggedIn: false,
-          facebookInfo: {},
-          googleInfo:{}
+          facebookInfo: '',
+          googleInfo:{},
+          userInfo:{},
         };
       }
+    case REDUX.ADD_USER_INFO:{
+      return{
+        ...state,
+        userInfo:action.payload
+      }
+    }
     default: {
       return state;
     }
