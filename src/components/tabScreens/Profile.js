@@ -1,18 +1,19 @@
 import React, { useState } from 'react'
-import { Image, StatusBar, StyleSheet, Text, View } from 'react-native'
+import { Image, StatusBar, StyleSheet, Text, View, Alert } from 'react-native'
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Feather'
 import { Fonts } from '../../utils/Fonts'
 import { useDispatch, useSelector } from 'react-redux';
 import { HEIGHT, WIDTH, WIDTH_SCALE } from '../../constants/constants';
 import { ROUTE_KEY, ASYNC_TYPE } from '../../constants/constants'
-import { Divider, MyHighLightButton } from '../views'
+import { Divider, MyHighLightButton, MySpinner } from '../views'
 import { Icon as IconElement } from 'react-native-elements'
 import { ptColor } from '../../constants/styles'
 import { Modal } from 'react-native-paper';
 import { asyncUser } from '../../Redux/actions/userAction'
 import { LoginGoogle, LoginFacebook, _addApiLoginFacebook, _addApiLoginGoogle, _asyncUser } from '../../Redux/actions/userAction';
 import { REDUX } from '../../Redux/store/types'
+import { CommonActions, StackActions, NavigationAction } from '@react-navigation/native';
 
 export default function Profile({ navigation }) {
     const dispatch = useDispatch();
@@ -20,36 +21,33 @@ export default function Profile({ navigation }) {
     const userReducer = useSelector((state) => state.userReducer)
     const [isModal, setIsModal] = useState(false);
     const [isShowUserType, setIsShowUserType] = useState(false)
-    const asyncAccount = (type) => {
-        console.log('1002 => type ', type);
-        if (type == ASYNC_TYPE.GOOGLE) {
-            LoginGoogle().then(res => {
-                console.log('1002 res ', res);
-                asyncUser(ASYNC_TYPE.GOOGLE, userReducer.userInfo?._id, res?.id)
-                dispatch({
-                    type: REDUX.GOOGLE_LOGGED_IN,
-                    payload: res
-                })
-                dispatch({
-                    type: REDUX.ADD_USER_INFO,
-                    payload: userInfo
-                })
-            })
-        } else if (type == ASYNC_TYPE.FACEBOOK) {
-            LoginFacebook().then(res => {
-                console.log('1002 res ', res);
-                asyncUser(ASYNC_TYPE.FACEBOOK, userReducer.userInfo?._id, res.id)
-                dispatch({
-                    type: REDUX.FACEBOOK_LOGGED_IN,
-                    payload: res
-                })
-                dispatch({
-                    type: REDUX.ADD_USER_INFO,
-                    payload: userInfo
-                })
-            })
-        }
+
+    function logoutUser() {
+        Alert.alert('', 'Bạn có muốn đăng xuất ?', [
+            {
+                text: "không",
+                onPress: () => null,
+                style: "cancel"
+            },
+            {
+                text: "có", onPress: () => {
+                    MySpinner.show()
+                    setTimeout(() => {
+                        dispatch({
+                            type: REDUX.CLEAR_DATA,
+                        })
+                        MySpinner.hide()
+                        navigation.replace(ROUTE_KEY.Login)
+                        const stackNavigationReset = CommonActions.reset({
+                            routes: [{ name: ROUTE_KEY.Login }],
+                        });
+                        navigation.dispatch(stackNavigationReset);
+                    }, 1000 * 1)
+                }
+            }
+        ]);
     }
+
     return (
         <View style={styles.container}>
             <ScrollView
@@ -140,7 +138,7 @@ export default function Profile({ navigation }) {
                             <Icon name="chevron-right" />
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={logoutUser}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="log-out" color="#999999" size={16} />
                             <Text style={styles.groupItemText} >Sign out</Text>

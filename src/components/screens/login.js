@@ -8,9 +8,10 @@ import {
   ImageBackground,
   TouchableWithoutFeedback,
   Alert,
+  BackHandler
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import { LoginGoogle, LoginFacebook, _addApiLoginFacebook,_addApiLoginGoogle } from '../../Redux/actions/userAction';
+import { LoginGoogle, LoginFacebook, _addApiLoginFacebook, _addApiLoginGoogle } from '../../Redux/actions/userAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { Fonts } from '../../utils/Fonts';
 import { ROUTE_KEY } from '../../constants/constants'
@@ -32,10 +33,10 @@ export default function Login({ navigation }) {
     if (isLogin) {
       navigation.push(ROUTE_KEY.BottomNavigation)
       MySpinner.hide()
-    }else{
+    } else {
       MySpinner.hide()
     }
-  },[isLogin])
+  }, [isLogin])
 
   const loginFacebook = () => {
     LoginFacebook().then(res => {
@@ -50,7 +51,26 @@ export default function Login({ navigation }) {
       _addApiLoginGoogle(res, dispatch)
     })
   }
-  // console.log('0103 -> USER: ',user);
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('','Bạn có muốn thoát app ?', [
+        {
+          text: "không",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "có", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={styles.container}>
