@@ -1,12 +1,16 @@
 import { REDUX } from '../store/types';
 const initialState = {
     loggedIn: false,
+    userInfo:{},
     googleInfo: {},
-    facebookInfo:{}
+    facebookInfo:'',
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
+    case REDUX.CLEAR_DATA:{
+      return initialState
+    }
     case REDUX.LOGGED_IN: {
       return {
         ...state,
@@ -29,10 +33,17 @@ const userReducer = (state = initialState, action) => {
         return {
           ...state,
           loggedIn: false,
-          facebookInfo: {},
-          googleInfo:{}
+          facebookInfo: '',
+          googleInfo:{},
+          userInfo:{},
         };
       }
+    case REDUX.ADD_USER_INFO:{
+      return{
+        ...state,
+        userInfo:action.payload
+      }
+    }
     default: {
       return state;
     }

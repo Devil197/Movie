@@ -7,9 +7,11 @@ import {
   Easing,
   ImageBackground,
   TouchableWithoutFeedback,
+  Alert,
+  BackHandler
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import { LoginGoogle, LoginFacebook } from '../../Redux/actions/userAction';
+import { LoginGoogle, LoginFacebook, _addApiLoginFacebook, _addApiLoginGoogle } from '../../Redux/actions/userAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { Fonts } from '../../utils/Fonts';
 import { ROUTE_KEY } from '../../constants/constants'
@@ -26,19 +28,49 @@ export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.userReducer?.loggedIn)
   const user = useSelector((state) => state.userReducer)
-  console.log('1001 user ',user);
-  console.log('islogin, ',isLogin);
   useEffect(() => {
     MySpinner.show()
     if (isLogin) {
       navigation.push(ROUTE_KEY.BottomNavigation)
       MySpinner.hide()
-    }else{
+    } else {
       MySpinner.hide()
     }
-  },[isLogin])
+  }, [isLogin])
 
-  // console.log('0103 -> USER: ',user);
+  const loginFacebook = () => {
+    LoginFacebook().then(res => {
+      console.log('1001 res=> login face ', res);
+      _addApiLoginFacebook(res, dispatch)
+    })
+  }
+
+  const loginGoogle = () => {
+    LoginGoogle().then(res => {
+      console.log('1001 res=> login go ', res);
+      _addApiLoginGoogle(res, dispatch)
+    })
+  }
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert('','Bạn có muốn thoát app ?', [
+        {
+          text: "không",
+          onPress: () => null,
+          style: "cancel"
+        },
+        { text: "có", onPress: () => BackHandler.exitApp() }
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -50,7 +82,7 @@ export default function Login({ navigation }) {
 
         <View style={styles.loginContainer}>
 
-          <TouchableWithoutFeedback onPress={() => LoginFacebook(dispatch)}>
+          <TouchableWithoutFeedback onPress={loginFacebook}>
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
               <View style={{ width: 10 }} />
@@ -60,7 +92,7 @@ export default function Login({ navigation }) {
 
           <View style={{ height: 15 }} />
 
-          <TouchableWithoutFeedback onPress={() => LoginGoogle(dispatch)}>
+          <TouchableWithoutFeedback onPress={loginGoogle}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
               <View style={{ width: 10 }} />
