@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {HEIGHT, WIDTH} from '../../constants/constants';
+import {HEIGHT, WIDTH, STATUS_BAR_CURRENT_HEIGHT, HEADER_HEIGHT, WIDTH_SCALE} from '../../constants/constants';
+import {ptColor} from '../../constants/styles'
 import {Fonts} from '../../utils/Fonts';
 import KeyWords from '../views/searchComponent';
 import {MyHighLightButton} from '../views';
@@ -21,10 +22,6 @@ import {FilmItem, CastItem, MySpinner} from '../views';
 import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show đc. Loay hoay tốn đống time nên t xài cái nãy đã
 
 import {useDispatch, useSelector} from 'react-redux';
-
-const STATUS_BAR_CURRENT_HEIGHT =
-  Platform.OS === 'ios' ? 20 : StatusBar.currentHeight;
-const HEADER_HEIGHT = 50;
 
 export default function Search({navigation}) {
   const scrollY = new Animated.Value(0);
@@ -99,7 +96,7 @@ export default function Search({navigation}) {
         key={c._id}
         onPress={() => searchSuggestionsOnPress(c._id)}>
         <View style={styles.searchSuggestionsContainer} key={c?._id}>
-          <EvilIcon name="search" size={22} color={'gray'} />
+          <EvilIcon name="search" size={22} color={ptColor.gray2} />
           <Text style={styles.searchSuggestions}>{c?.name}</Text>
         </View>
       </TouchableWithoutFeedback>
@@ -108,7 +105,7 @@ export default function Search({navigation}) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor="#fff" />
+      <StatusBar backgroundColor={ptColor.white} />
       <Animated.View
         style={{
           transform: [{translateY: translateY}],
@@ -119,10 +116,10 @@ export default function Search({navigation}) {
             <MyHighLightButton
               style={styles.backIcon}
               onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={18} color={'black'} />
+              <FontAwesome5 name="arrow-left" size={18} color={ptColor.black} />
             </MyHighLightButton>
             <View style={styles.searchInputContainer}>
-              <EvilIcon name="search" size={22} color={'gray'} />
+              <EvilIcon name="search" size={22} color={ptColor.gray2} />
               <TextInput
                 autoFocus={true}
                 value={keyword}
@@ -132,7 +129,7 @@ export default function Search({navigation}) {
                 }}
                 style={styles.searchInput}
                 placeholder={'Tìm kiếm với GEA'}
-                placeholderTextColor={'gray'}
+                placeholderTextColor={ptColor.gray2}
                 onSubmitEditing={handleSearchOnPress}
                 returnKeyType="search"
               />
@@ -141,8 +138,8 @@ export default function Search({navigation}) {
                   onPress={() => closeIconOnPress()}
                   style={styles.closeIcon}
                   name="close"
-                  size={22} ///<==== cái này ko sử dụng giá trị cụ thể đc đâu nhá
-                  color={'gray'} // <==== cái màu này mình lấy trong contants hết nhá => sửa mấy cái trên luôn
+                  size={22 * WIDTH_SCALE}
+                  color={ptColor.gray2}
                 />
               ) : null}
             </View>
@@ -152,21 +149,18 @@ export default function Search({navigation}) {
 
       {keyword != '' ? (
         isLoading ? (
-          <SkypeIndicator color="#2FA29C" size={20} style={{marginTop: 20}} />
+          <SkypeIndicator color={ptColor.appColor} size={20 * WIDTH_SCALE} style={{marginTop: 20}} />
         ) : !isVisible ? (
-          <ScrollView style={{width: '100%', backgroundColor: '#fff'}}>
+          <ScrollView style={{width: '100%', backgroundColor: ptColor.white}}>
             {renderCastItemAfterHandleSearchAPI}
             {renderMovieItemAfterHandleSearchAPI}
           </ScrollView>
         ) : null
       ) : (
         <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords />
+          <KeyWords setKeywordOnPress={val => setKeyword(val)}/>
         </ScrollView>
       )}
-
-      {/* 
-        <View style={styles.contentContainer}> */}
 
       {isVisible ? (
         <View style={styles.listALLContainer}>
@@ -196,14 +190,11 @@ export default function Search({navigation}) {
   );
 }
 
-// hạn chế chia style ra đây quá nhiều chỉ khi nào mình muốn sử dụng cái đó cho nhiều thằng thì mới viết
-// các giá trị ko nên để mạc định là 20 , 30 .... mà mình sẽ sử dụng 1 giá trị chung => ex: HEIGHT,WIDTH (cái này trong contants ) gọi nó ra để sài thì mình nhân vs 1 giá trọ nào đó
-// còn mấy cái như fontsize hay size icon hoặc 1 giá trị nào đó nhỏ thì mình sử dụng WIDTH_SCALE và HEIGHT_SCALE trong contants
 const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: ptColor.white,
   },
   searchBarContainer: {
     borderBottomWidth: 0.2,
@@ -220,7 +211,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  closeIcon: {},
   searchInputContainer: {
     flex: 5,
     justifyContent: 'flex-start',
@@ -234,36 +224,18 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     width: '80%',
-    color: 'gray',
-    fontSize: 16,
+    color: ptColor.gray2,
+    fontSize: 16 * WIDTH_SCALE,
     height: 41,
     paddingLeft: 5,
   },
   contentContainer: {
     height: '100%',
-    backgroundColor: '#fff',
-    //backgroundColor: 'rgba(166, 164, 164, 0.3)',
+    backgroundColor: ptColor.white,
   },
   keyWordContainer: {
     flex: 1,
   },
-  // actorContainer: {
-  //   height: HEIGHT * 0.25,
-  //   backgroundColor: '#fff',
-  //   borderRadius: 10,
-  // },
-  // title: {
-  //   fontFamily: Fonts.SansMedium,
-  //   fontSize: 18,
-  //   paddingLeft: 10,
-  //   paddingTop: 10,
-  //   color: 'rgba(0, 0, 0, 0.40)',
-  // },
-  // movieContainer: {
-  //   marginTop: 10,
-  //   borderRadius: 10,
-  //   backgroundColor: '#fff',
-  // },
   searchSuggestionsContainer: {
     height: 35,
     width: '100%',
@@ -273,7 +245,7 @@ const styles = StyleSheet.create({
     paddingLeft: 15,
   },
   searchSuggestions: {
-    color: '#000',
+    color: ptColor.black,
     paddingLeft: 10,
   },
   topTabs: {
@@ -291,9 +263,9 @@ const styles = StyleSheet.create({
   txtLableContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    color: 'gray',
+    color: ptColor.gray2,
     fontFamily: Fonts.SansMedium,
-    fontSize: 16,
+    fontSize: 16 * WIDTH_SCALE,
   },
   listALLContainer: {
     flex: 1,
