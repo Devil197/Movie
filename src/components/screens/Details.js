@@ -68,7 +68,7 @@ export default function Details({ navigation, route }) {
 
                     <View style={styles.boxContent}>
                         <Text style={{ fontWeight: 'bold' }}>{dataMovie?.movie[0].name}</Text>
-                        <Text>{dataMovie?.category[0].name}</Text>
+                        <Text>{dataMovie?.category[0]?.name}</Text>
 
                         <View style={{ flexDirection: 'row' }}>
                             <Icon name="ios-calendar-outline" size={20} color="#000" />

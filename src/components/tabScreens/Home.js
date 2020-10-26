@@ -1,23 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, TouchableOpacity, View, Text, StyleSheet } from 'react-native';
+import { ScrollView, TouchableOpacity, View, Text, StyleSheet, Image } from 'react-native';
 import { set } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Icon from 'react-native-vector-icons/Ionicons';
 import styled from 'styled-components';
-import { HEIGHT, WIDTH, WIDTH_SCALE } from '../../constants/constants';
+import { HEIGHT, HEIGHT_SCALE, WIDTH, WIDTH_SCALE } from '../../constants/constants';
 import Container from '../../constants/style/Container';
 import GroupA from '../../constants/style/Group';
 import ImageA from '../../constants/style/image';
 import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
 import MyView from '../../constants/style/MyView';
-import { styles } from '../../constants/style/styles';
 import TextC from '../../constants/style/Text';
 import { getAllMovie, getCartoon, getCast, getMovieByCreatAt, getMovieByScore } from '../../Redux/actions/movieAction';
 import { MySpinner, MyHighLightButton } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
+import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 // import YouTube from 'react-native-youtube';
 
 export default function Home({ navigation }) {
@@ -103,206 +103,159 @@ export default function Home({ navigation }) {
   return (
     <ScrollView style={styles.container}>
 
-      <Container xxl>
-        <GroupA row ss>
-          <ImageA
-            little
-            s
-            small
+      <View style={styles.containerA}>
+        <View style={[styles.groupA, styles.mL]}>
+          <Image style={styles.imageA}
             source={{
               uri: userReducer.facebookInfo !== {} ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.user?.photo,
             }}
           />
-        </GroupA>
-        <GroupA col s l p>
+        </View>
+        <View style={styles.groupA1}>
           <TextC color="#333" medium heavy numberOfLines={1} ellipsizeMode="tail">
             {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.name : userReducer.googleInfo.user.name}
           </TextC>
           <TextC a color="#333" medium light numberOfLines={1} ellipsizeMode="tail">
             ID: {userReducer.facebookInfo !== {} ? userReducer.facebookInfo?.id : userReducer.googleInfo.user.id}
           </TextC>
-        </GroupA>
-        <GroupA row>
-          <TouchableOpacity style={{ marginRight: 10 }} onPress={() => navigation.push(ROUTE_KEY.Search)}>
-            <FontAwesome5 name={'search'} size={20} color="#be2edd" />
+        </View>
+        <View style={[styles.groupA, styles.mR, styles.aI]}>
+          <TouchableOpacity style={{ marginRight: 10 * WIDTH_SCALE }} onPress={() => navigation.push(ROUTE_KEY.Search)}>
+            <FontAwesome5 name={'search'} size={0.06 * WIDTH} color="#be2edd" />
           </TouchableOpacity>
           <TouchableOpacity>
-            <Icon name={'notifications'} size={20} color="#be2edd" />
+            <Icon name={'notifications'} size={0.06 * WIDTH} color="#be2edd" />
           </TouchableOpacity>
-        </GroupA>
-      </Container>
+        </View>
+      </View>
 
-      <GroupA col s l >
-        <TextC large bold color="#000" p>
+      <View style={styles.groupB}>
+        <Text style={styles.textB}>
           Continue Watching
-        </TextC>
+        </Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity medium xs little>
-                <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
-                  <ImageA large xxl little source={{ uri: c.cover_img }} />
-                  {/* <MyView
-                  rightm
-                  bottoms
-                  large
-                  m
-                  backgroundColor="#7158e2"
-                  alignItems="flex-start">
-                  <TextC large heavy p>
-                    Title
-                  </TextC>
-                </MyView> */}
-                  <MyView more rights bottomm z2>
-                    <Icon name={'play'} size={15} color="#fff" />
-                  </MyView>
-                </MyHighLightButton>
-              </MyTouchableOpacity>
+
+              <MyHighLightButton style={styles.buttonB} onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
+                <Image style={styles.imageB} source={{ uri: c.cover_img }} />
+                <View style={styles.myViewB}>
+                  <Icon name={'play'} size={20} color="#fff" />
+                </View>
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
-
-      {/* <GroupA col>
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-          {data.items.map((c, i) => {
-            return (
-              <MyTouchableOpacity small m little key={i}>
-                <TextC color="#333" medium heavy>
-                 {c.name}
-                </TextC>
-              </MyTouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </GroupA> */}
-
-      <GroupA row ss b>
-        <TextC medium heavy color="#000" p>
+      <View style={styles.groupB}>
+        <Text style={styles.textContent}>
           New
-        </TextC>
-        {/* <TextC medium heavy color="#000" p>
-          Recommed
-        </TextC>
-        <TextC medium heavy color="#000" p>
-          Trending
-        </TextC> */}
-      </GroupA>
+        </Text>
 
-      <GroupA col s b l>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovieByCreat?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity medium xs little>
-                <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
-                  <ImageA large xxl little source={{ uri: c.cover_img }} />
-                  <TextC color="#333" medium bold numberOfLines={1} ellipsizeMode="tail">
-                    {c.name}
-                  </TextC>
-                </MyHighLightButton>
-              </MyTouchableOpacity>
+              <MyHighLightButton style={styles.buttonB} onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
+                <Image style={styles.imageB} source={{ uri: c.cover_img }} />
+                <Text style={styles.textC} numberOfLines={1} ellipsizeMode="tail">
+                  {c.name}
+                </Text>
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
-      <GroupA row ss b>
-        <TextC medium heavy color="#000" p>
+
+      <View style={styles.groupB}>
+        <Text style={styles.textContent}>
           Recommed
-        </TextC>
-        {/* <TextC medium heavy color="#000" p>
-          Trending
-        </TextC> */}
-      </GroupA>
-
-      <GroupA col s b l>
+        </Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovieByCreat?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity medium xs little>
-                <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
-                  <ImageA large xxl little source={{ uri: c.cover_img }} />
-                  <TextC color="#333" medium bold numberOfLines={1} ellipsizeMode="tail">
-                    {c.name}
-                  </TextC>
-                </MyHighLightButton>
-              </MyTouchableOpacity>
+              <MyHighLightButton style={styles.buttonB} onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
+                <Image style={styles.imageB} source={{ uri: c.cover_img }} />
+                <Text style={styles.textC} numberOfLines={1} ellipsizeMode="tail">
+                  {c.name}
+                </Text>
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
 
-      <GroupA row ss b>
-        <TextC medium heavy color="#000" p>
+      <View style={styles.groupB}>
+        <Text style={styles.textContent}>
           Trending
-        </TextC>
-      </GroupA>
+        </Text>
 
-      <GroupA col s b l>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovieByScore?.items.map((c, i) => {
             return (
-              <MyTouchableOpacity medium xs little>
-                 <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
-                <ImageA large xxl little source={{ uri: c.cover_img }} />
-                <TextC color="#333" medium bold numberOfLines={1} ellipsizeMode="tail">
+              <MyHighLightButton style={styles.buttonB} onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c._id })}>
+                <Image style={styles.imageB} source={{ uri: c.cover_img }} />
+                <Text style={styles.textC} numberOfLines={1} ellipsizeMode="tail">
                   {c.name}
-                </TextC>
-                </MyHighLightButton>
-              </MyTouchableOpacity>
+                </Text>
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
-      <GroupA col s b>
-        <TextC large heavy color="#000" p>
+      <View style={styles.groupA1}>
+        <Text style={styles.textD}>
           Cartoon
-        </TextC>
+        </Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
           {dataCartoon?.items.map((c, i) => {
             return (
               <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Details, { _id: c.movie_id._id })}>
-                <Container m>
-                  <GroupA row ss>
-                    <ImageA little xs smalls source={{ uri: c.movie_id.cover_img }} />
-                  </GroupA>
-                  <GroupA col s p l1>
-                    <TextC color="#333" medium heavy numberOfLines={1} ellipsizeMode="tail">
+
+                <View style={styles.containerD}>
+                  <View style={styles.groupA}>
+                    <Image style = {styles.imageD} source={{ uri: c.movie_id.cover_img }} />
+                  </View>
+                  <View style={[styles.groupA1, styles.mT]}>
+                    <Text style={styles.textCartoon} numberOfLines={1} ellipsizeMode="tail">
                       {c.movie_id.name}
-                    </TextC>
-                    <TextC a color="#333" medium light>
+                    </Text>
+                    <Text style={styles.textCartoon} numberOfLines={1} ellipsizeMode="tail">
                       {c.movie_id.episode} Tập
-                    </TextC>
-                  </GroupA>
-                  <GroupA row>
-                    <TouchableOpacity>
+                    </Text>
+                  </View>
+                  <View style={styles.mT}>
+                    <MyHighLightButton>
                       <Feather
                         name={'more-horizontal'}
                         size={30}
                         color="#be2edd"
                       />
-                    </TouchableOpacity>
-                  </GroupA>
-                </Container>
+                    </MyHighLightButton>
+                  </View>
+                </View>
               </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
-      <MyTouchableOpacityA selected={true} smaller n>
-        <TextC small light color="#be2edd">
-          View more
+      <View style={{ alignItems: 'center' }}>
+        <MyHighLightButton style={styles.buttonD}>
+          <TextC small light color="#be2edd">
+            View more
         </TextC>
-      </MyTouchableOpacityA>
+        </MyHighLightButton>
+      </View>
 
-      <GroupA col s t>
-        <TextC medium heavy color="#000" p t>
+      <View style={styles.groupB}>
+
+        <Text style={styles.textContent}>
           Trailer
-        </TextC>
+        </Text>
 
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataMovie?.items.map((c, i) => {
@@ -329,41 +282,167 @@ export default function Home({ navigation }) {
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
 
-      <GroupA col s t>
-        <TextC medium heavy color="#000" p t>
+      <View style={styles.groupB}>
+        <Text style={styles.textContent}>
           Cast
-        </TextC>
+        </Text>
         <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
           {dataCast?.cast.map((c, i) => {
 
             return (
-              <MyTouchableOpacity small m little>
-                <ImageA large xl little source={{ uri: c.cover_image }} />
-                <TextC color="#333" small bold numberOfLines={1} ellipsizeMode="tail">
+              <MyHighLightButton style={styles.buttonE}>
+                <Image style={styles.imageD} source={{ uri: c.cover_image }} />
+                <Text style={styles.textE} numberOfLines={1} ellipsizeMode="tail">
                   {c.name}
-                </TextC>
-              </MyTouchableOpacity>
+                </Text>
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
-      </GroupA>
+      </View>
     </ScrollView>
   );
 }
-const Title = styled.Text`
-  color: #000;
-`;
-const CategoryName = styled(TextC)`
-  color: ${(props) => (props.selected ? '#819ee5' : '#9a9a9a')};
-  font-weight: ${(props) => (props.selected ? '700' : '500')};
-`;
 
-const MyTouchableOpacityA = styled(MyTouchableOpacity)`
-  justifyContent: ${(props) => (props.selected ? 'center' : 'flex-start')};
-  alignItems: ${(props) => (props.selected ? 'center' : 'flex-start')};
-  borderWidth: ${(props) => (props.selected ? '1px' : '0px')};
-  borderRadius: ${(props) => (props.selected ? '5px' : '0px')};
-  borderColor: ${(props) => (props.selected ? '#be2edd' : '#000')};
-`;
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: 'white',
+    flex: 1,
+  },
+  //A
+  containerA: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    paddingTop: 40 * WIDTH_SCALE,
+    paddingLeft: 10 * WIDTH_SCALE,
+  },
+  groupA: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  groupA1: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+
+  },
+  imageA: {
+    width: 0.15 * WIDTH,
+    height: 0.07 * HEIGHT,
+    borderRadius: 10 * WIDTH_SCALE,
+  },
+  //B
+  groupB: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
+    marginLeft: 5 * WIDTH_SCALE,
+
+  },
+  textB: {
+    fontSize: 20 * WIDTH_SCALE,
+    fontFamily: 'ProductSans-Bold',
+    color: '#000',
+    paddingLeft: 10 * WIDTH_SCALE,
+  },
+  buttonB: {
+    width: 0.48 * WIDTH,
+    height: 0.37 * HEIGHT,
+    margin: 5 * WIDTH_SCALE,
+    marginBottom: 20 * WIDTH_SCALE,
+  },
+  imageB: {
+    width: 0.48 * WIDTH,
+    height: 0.34 * HEIGHT,
+    borderRadius: 10 * WIDTH_SCALE,
+  },
+  myViewB: {
+    width: 0.1 * WIDTH,
+    height: 0.05 * HEIGHT,
+    position: 'absolute',
+    justifyContent: 'center',
+    zIndex: 2,
+    alignItems: 'center',
+    backgroundColor: '#e056fd',
+    borderRadius: 25 * WIDTH_SCALE,
+    right: 20 * WIDTH_SCALE,
+    bottom: 5 * WIDTH_SCALE,
+  },
+  //C
+  textC: {
+    color: '#333',
+    fontSize: 16 * WIDTH_SCALE,
+    fontFamily: 'ProductSans-Bold',
+
+  },
+  textContent: {
+    color: '#000',
+    fontFamily: 'ProductSans-Regular',
+    fontSize: 16 * WIDTH_SCALE,
+    paddingLeft: 10 * WIDTH_SCALE,
+  },
+  //D
+  textD: {
+    color: '#000',
+    fontFamily: 'ProductSans-Regular',
+    fontSize: 20 * WIDTH_SCALE,
+    paddingLeft: 10 * WIDTH_SCALE,
+
+  },
+  containerD: {
+    justifyContent: 'space-between',
+    flexDirection: 'row',
+    padding: 10 * WIDTH_SCALE,
+  },
+  textCartoon: {
+    color: '#000',
+    fontFamily: 'ProductSans-Regular',
+    fontSize: 16 * WIDTH_SCALE,
+  },
+  buttonD: {
+    width: 0.2 * WIDTH,
+    height: 0.05 * HEIGHT,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#be2edd',
+    borderRadius: 5 * WIDTH_SCALE,
+    margin: 30 * WIDTH_SCALE
+  },
+  imageD:{
+    width: 0.2 * WIDTH,
+    height: 0.095 * HEIGHT,
+    borderRadius: 10 * WIDTH_SCALE,
+  },
+  textE: {
+    color: '#333',
+    fontSize: 13 * WIDTH_SCALE,
+    fontFamily: 'ProductSans-Bold',
+
+  },
+  buttonE: {
+    width: 0.2 * WIDTH,
+    height: 0.12 * HEIGHT,
+    margin: 5 * WIDTH_SCALE
+
+  },
+  //-----------**------------//
+  mR: {
+    marginRight: 10 * WIDTH_SCALE
+  },
+  mL: {
+    marginLeft: 10 * WIDTH_SCALE
+  },
+  mT: {
+    marginTop: 15 * WIDTH_SCALE
+  },
+  m:{
+    margin: 5 * WIDTH_SCALE
+  },
+  aI: {
+    alignItems: 'center',
+  },
+  jC: {
+    justifyContent: 'flex-start',
+  }
+})
