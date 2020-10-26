@@ -5,6 +5,7 @@ import MySpinner from './MySpinner';
 import MyHighLightButton from './MyHighLightButton';
 import Play from './Play';
 import Divider from './Divider';
+import Player from './Player';
 
 export {
   FilmItem,
@@ -14,4 +15,5 @@ export {
   MyHighLightButton,
   Play,
   Divider,
+  Player,
 };

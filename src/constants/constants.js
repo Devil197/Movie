@@ -1,4 +1,4 @@
-import { Dimensions, Platform } from 'react-native';
+import {Dimensions, Platform} from 'react-native';
 //
 
 const {width, height} = Dimensions.get('window');
@@ -18,35 +18,40 @@ const heightBottomBar = 69 * HEIGHT_SCALE;
 const textInputHeight = 36 * HEIGHT_SCALE;
 const heightButton = 50 * HEIGHT_SCALE;
 const avatarSize = 50 * WIDTH_SCALE;
-const URL = "https://ph2t.herokuapp.com"
-const GOOGLE_CONFIGURE =  {
+const URL = 'https://ph2t.herokuapp.com';
+const API_KEY = {
+  1: 'AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U',
+  2: 'AIzaSyAstEmHpjVSNtJZ0sf4HK-CV3gXlTbhsVo',
+  3: 'AIzaSyAuJ3n_8KEAcR0ip82qAy816VY5sjGBi-s',
+};
+const GOOGLE_CONFIGURE = {
   webClientId:
     '835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
   offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
   hostedDomain: '', // specifies a hosted domain restriction
   forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below
-}
-const ASYNC_TYPE ={
-  GOOGLE:'g',
-  FACEBOOK:'f'
-}
+};
+const ASYNC_TYPE = {
+  GOOGLE: 'g',
+  FACEBOOK: 'f',
+};
 
 const ROUTE_KEY = {
-  Splash:'Splash',
+  Splash: 'Splash',
   Film: 'Film',
-  Profile:'Profile',
-  Setting:'Setting',
-  Favorite:'Favorite',
-  BottomNavigation:'BottomNavigation',
-  Login:'Login',
-  Home:'Home',
-  Videos:'Videos',
-  Music:'Music',
-  Category:'Category',
-  Follow:'Follow',
+  Profile: 'Profile',
+  Setting: 'Setting',
+  Favorite: 'Favorite',
+  BottomNavigation: 'BottomNavigation',
+  Login: 'Login',
+  Home: 'Home',
+  Videos: 'Videos',
+  Music: 'Music',
+  Category: 'Category',
+  Follow: 'Follow',
   Details: 'Details',
-  History:'History',
-  Search:'Search'
+  History: 'History',
+  Search: 'Search',
 };
 
 export {
@@ -70,6 +75,6 @@ export {
   avatarSize,
   ROUTE_KEY,
   URL,
-  ASYNC_TYPE
+  ASYNC_TYPE,
+  API_KEY,
 };
-
