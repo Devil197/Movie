@@ -91,19 +91,19 @@ export default function Profile({ navigation }) {
                     </MyHighLightButton>
 
 
-                    <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.History)}>
+                    <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.History)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="bookmark" color="#999999" size={16} />
                             <Text style={styles.groupItemText} >History</Text>
                             <Icon name="chevron-right" />
                         </View>
-                    </TouchableOpacity>
+                    </MyHighLightButton>
 
 
-                    <TouchableOpacity>
+                    <TouchableOpacity  onPress={() => navigation.push(ROUTE_KEY.Notification)}>
                         <View style={[styles.row, styles.groupItem]}>
-                            <Icon name="heart" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >Follows</Text>
+                            <Icon name="bell" color="#999999" size={16} />
+                            <Text style={styles.groupItemText} >Notification</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </TouchableOpacity>
@@ -111,13 +111,13 @@ export default function Profile({ navigation }) {
                 <View style={styles.group}>
                     <Text style={styles.groupTitle}>Settings</Text>
 
-                    <TouchableOpacity>
+                    <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Setting)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="settings" color="#999999" size={16} />
                             <Text style={styles.groupItemText} >App settings</Text>
                             <Icon name="chevron-right" />
                         </View>
-                    </TouchableOpacity>
+                    </MyHighLightButton>
 
 
 

@@ -54,6 +54,8 @@ const ROUTE_KEY = {
   Details: 'Details',
   History: 'History',
   Search: 'Search',
+  Setting: 'Setting',
+  Notification: 'Notification',
 };
 
 export {

@@ -9,6 +9,8 @@ import {
   Details,
   History,
   Search,
+  Setting,
+  Notification,
 } from './components/screens';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
@@ -28,6 +30,8 @@ function StackNavigator() {
       <Stack.Screen name={ROUTE_KEY.Details} component={Details} />
       <Stack.Screen name={ROUTE_KEY.History} component={History} />
       <Stack.Screen name={ROUTE_KEY.Search} component={Search} />
+      <Stack.Screen name={ROUTE_KEY.Setting} component={Setting} />
+      <Stack.Screen name={ROUTE_KEY.Notification} component={Notification} />
       {/* <Stack.Screen name={'play'} component={Play} /> */}
     </Stack.Navigator>
   );

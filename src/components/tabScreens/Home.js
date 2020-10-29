@@ -245,9 +245,9 @@ export default function Home({ navigation }) {
 
       <View style={{ alignItems: 'center' }}>
         <MyHighLightButton style={styles.buttonD}>
-          <TextC small light color="#be2edd">
-            View more
-        </TextC>
+        <Text style={[styles.textF,styles.c]}>
+         View more
+        </Text>
         </MyHighLightButton>
       </View>
 
@@ -400,8 +400,8 @@ const styles = StyleSheet.create({
     fontSize: 16 * WIDTH_SCALE,
   },
   buttonD: {
-    width: 0.2 * WIDTH,
-    height: 0.05 * HEIGHT,
+    width: 0.26 * WIDTH,
+    height: 0.06 * HEIGHT,
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
@@ -426,6 +426,10 @@ const styles = StyleSheet.create({
     margin: 5 * WIDTH_SCALE
 
   },
+  textF: {
+    fontFamily: 'ProductSans-Regular',
+    fontSize: 16 * WIDTH_SCALE,
+  },
   //-----------**------------//
   mR: {
     marginRight: 10 * WIDTH_SCALE
@@ -444,5 +448,8 @@ const styles = StyleSheet.create({
   },
   jC: {
     justifyContent: 'flex-start',
+  },
+  c: {
+    color: '#be2edd'
   }
 })

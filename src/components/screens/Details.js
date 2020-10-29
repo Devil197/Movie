@@ -17,7 +17,10 @@ import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT } from '../../constants/consta
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import { MySpinner,MyHighLightButton } from '../views';
-import { ROUTE_KEY } from '../../constants/constants'
+import { ROUTE_KEY } from '../../constants/constants';
+import {Play, Player} from '../views';
+import {ptColor} from '../../constants/styles';
+import Orientation from 'react-native-orientation';
 export default function Details({ navigation, route }) {
     // video ====
     const [height, setHeight] = useState();
@@ -28,8 +31,9 @@ export default function Details({ navigation, route }) {
     console.log("hhh", _id);
     const [dataMovie, setDataMovie] = useState();
     const [loading, setLoading] = useState(true);
-
-
+    const [fullScreen, setFullScreen] = useState(false);
+    const url = 'aF8U_uSsXSA';
+    const initial = Orientation.getInitialOrientation();
     useEffect(() => {
         MySpinner.show();
         getFullMovie(_id).then((fullMovie) => {
@@ -51,20 +55,36 @@ export default function Details({ navigation, route }) {
     } else {
         MySpinner.hide()
     }
+
+    const onFullScreen = (fullScreen) => {
+        if (fullScreen) {
+          Orientation.lockToPortrait();
+          setFullScreen(false);
+        } else {
+          Orientation.lockToLandscape();
+          setFullScreen(true);
+        }
+      };
+
     return (
         <ScrollView style={styles.container}>
 
-            <View style={styles.header}>
+          
                 <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
                     <Icon name="chevron-back" size={30} color="#fff" />
                     <Text style={{ color: '#fff' }}>Back</Text>
                 </MyHighLightButton>
 
-                <View style={styles.header1}></View>
+                <View style={styles.header1}>
+                    <Player url={url} fullScreen={onFullScreen} />
+                </View>
 
-                <Image source={{ uri: dataMovie?.movie[0].cover_img }} style={styles.imageHeader} />
-
+             
+                {!fullScreen ? (
+                    <View style={{marginTop: 0, flex: 3}}>
                 <View style={styles.header2}>
+
+                    <Image source={{ uri: dataMovie?.movie[0].cover_img }} style={styles.imageHeader} />
 
                     <View style={styles.boxContent}>
                         <Text style={{ fontWeight: 'bold' }}>{dataMovie?.movie[0].name}</Text>
@@ -85,7 +105,7 @@ export default function Details({ navigation, route }) {
 
                 </View>
 
-            </View>
+      
 
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Overview</Text>
@@ -114,6 +134,8 @@ export default function Details({ navigation, route }) {
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Phim liên quan : </Text>
 
             </View>
+            </View>
+               ) : null}
         </ScrollView>
     )
 }
@@ -134,29 +156,30 @@ const styles = StyleSheet.create({
         zIndex: 1,
     },
     imageHeader: {
-        width: 150 * WIDTH_SCALE,
-        height: 200 * HEIGHT_SCALE,
-        position: 'absolute',
-        top: 170 * WIDTH_SCALE,
-        left: 20 * WIDTH_SCALE,
-        zIndex: 1
+        width: 0.42 * WIDTH,
+        height: 0.26 * HEIGHT,
+        margin: 5 * WIDTH_SCALE
+
     },
     header1: {
         width: WIDTH,
-        height: 200 * HEIGHT_SCALE,
+        height: 0.28 * HEIGHT,
         backgroundColor: '#222f3e',
+        flex: 1,
+        margin: 0,
+        overflow: 'hidden',
+        backgroundColor: ptColor.divider,
     },
     header2: {
         width: WIDTH,
         height: 200 * HEIGHT_SCALE,
         backgroundColor: '#fff',
+        flexDirection: 'row',
     },
     boxContent: {
-        position: 'absolute',
-        right: 0,
         width: WIDTH - 200,
         alignItems: 'flex-start',
-        padding: 5 * WIDTH_SCALE,
+        paddingLeft: 30 * WIDTH_SCALE,
     },
     //content 
     content: {
