@@ -49,9 +49,10 @@ export default function Setting({navigation}) {
         <View style={styles.container}>
             <Header/>
             <View style={styles.group}>
-       
+                <Text style={styles.groupTitle}>Movie</Text>
+
                 <View style={[styles.row, styles.groupItem]}>
-                            
+                    <Icon name="bell" color="#999999" size={16 * WIDTH_SCALE} />        
                     <Text style={styles.groupItemText}>Notification</Text>
                     <Switch 
                         thumbColor= {enableNotifi ? "#be2edd" : '#747d8c'}
@@ -60,17 +61,13 @@ export default function Setting({navigation}) {
                         trackColor = {{false: "#bdc3c7",true: '#D980FA'}}/>
                 </View>
 
+               
+
+                <Text style={[styles.groupTitle, styles.pt]}>Music</Text>
+
                 <View style={[styles.row, styles.groupItem]}>
-                          
-                    <Text style={styles.groupItemText} >Darkmode</Text>
-                    <Switch 
-                        thumbColor= {enableDark ? "#be2edd" : '#747d8c'}
-                        onValueChange={(value) => setEnableDark(value)} 
-                        value = {enableDark}
-                        trackColor = {{false: "#bdc3c7",true: '#D980FA'}}/>      
-                </View>
-                <View style={[styles.row, styles.groupItem]}>
-                          
+   
+                    <IconElement name="musical-notes-outline" type='ionicon'  color="#999999" size={16 * WIDTH_SCALE} />     
                     <Text style={styles.groupItemText}>Music Bubbles</Text>
                     <Switch 
                         thumbColor= {enableMusic ? "#be2edd" : '#747d8c'}
@@ -78,8 +75,19 @@ export default function Setting({navigation}) {
                         value = {enableMusic}
                         trackColor = {{false: "#bdc3c7",true: '#D980FA'}}/>      
                  </View>
+                 <Text style={[styles.groupTitle, styles.pt]}>App</Text>
+                 
                  <View style={[styles.row, styles.groupItem]}>
-                          
+                    <IconElement name="contrast-outline" type='ionicon'  color="#999999" size={16 * WIDTH_SCALE} />
+                    <Text style={styles.groupItemText} >Darkmode</Text>
+                    <Switch 
+                        thumbColor= {enableDark ? "#be2edd" : '#747d8c'}
+                        onValueChange={(value) => setEnableDark(value)} 
+                        value = {enableDark}
+                        trackColor = {{false: "#bdc3c7",true: '#D980FA'}}/>      
+                </View>
+                 <View style={[styles.row, styles.groupItem]}>
+                    <IconElement name="happy-outline" type='ionicon'  color="#999999" size={16 * WIDTH_SCALE} />
                     <Text style={styles.groupItemText}>Status</Text>
                     <Switch 
                         thumbColor= {enableStatus ? "#be2edd" : '#747d8c'}
@@ -89,13 +97,15 @@ export default function Setting({navigation}) {
                  </View>
                  <MyHighLightButton onPress={() => setIsModal(true)}> 
                     <View style={[styles.row, styles.groupItem]}>
-                          
+                        <IconElement name="language-outline" type='ionicon'  color="#999999" size={16 * WIDTH_SCALE} />
                         <Text style={styles.groupItemText}>Language</Text>
                         <Text style={styles.groupTitle}>{value}</Text>
                     </View>
                 </MyHighLightButton>
+                
                 <MyHighLightButton>
                     <View style={[styles.row, styles.groupItem]}>
+                        <IconElement name="phone-portrait-outline" type='ionicon'  color="#999999" size={16 * WIDTH_SCALE} />
                         <Text style={styles.groupItemText} >Setting in your phone</Text>
                         <Icon name="chevron-right" />
                     </View>
@@ -187,5 +197,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 16 * WIDTH_SCALE,
         fontSize: 14 * WIDTH_SCALE,
         fontFamily: Fonts.SansMedium,
+    },
+    pt: {
+        paddingTop: 10 * WIDTH_SCALE
     }
 })

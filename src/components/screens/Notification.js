@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View,Image,ScrollView,FlatList} from 'react-native'
 import { Appbar, Card} from 'react-native-paper';
 import { ptColor } from '../../constants/styles';
@@ -6,7 +6,7 @@ import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY } from '../../const
 import { Icon as IconElement } from 'react-native-elements';
 import {films} from '../../constants/data/fakeData';
 import { Fonts } from '../../utils/Fonts';
-import {NotificationItem} from '../views/index';
+import {MyHighLightButton, NotificationItem} from '../views/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
     Menu,
@@ -30,7 +30,22 @@ export default function Notification({navigation}) {
               size={24}
             />
             <Text style={{ fontSize: 18 * WIDTH_SCALE }}>Notification</Text>
+          
             <View style={{ width: '10%' }} />
+            <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Search)}>
+                <Icon name="search" color="#999999" size={0.07 * WIDTH}/>
+            </MyHighLightButton>
+          
+            <Menu style = {{paddingRight: 10 * WIDTH_SCALE}}>
+                <MenuTrigger >
+                    <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
+                </MenuTrigger>
+                <MenuOptions>
+                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
+                        <Text>Xóa Tất Cả Thông Báo</Text>
+                    </MenuOption>
+                </MenuOptions>
+            </Menu>
           </Appbar.Header>
         )
       }
@@ -42,11 +57,16 @@ export default function Notification({navigation}) {
                      return (
                         <View style={styles.group}>
                             <View style={[styles.row, styles.groupItem]}>
-                                <Image style = {{width: 0.4 * WIDTH, height: 0.15 * HEIGHT, borderRadius: 10 *WIDTH_SCALE}} source={{ uri: c.thumb }} />
-                                <Text style={styles.groupItemText} numberOfLines={3} ellipsizeMode ='tail' >{c.title}</Text>
-                                <View style={styles.myViewB}>
-                                    <Text style = {styles.textContent}>New</Text>
+                                <View style = {{flexDirection: 'column', width: 0.53* WIDTH}}>
+                                    <Text style={styles.groupItemText} numberOfLines={3} ellipsizeMode ='tail' >{c.title}</Text>
+                                    <Text style = {styles.textContent}>15/05/2000</Text>
                                 </View>
+                                <View style= {{width: 0.35 * WIDTH, height: 0.12 * HEIGHT, }}>
+                                    <Image style = {{flex:1,resizeMode:'cover', borderRadius: 5*WIDTH_SCALE, }} source={{ uri: c.thumb }} />
+                                </View>
+                              
+                                                      
+
                                 <Menu>
                                     <MenuTrigger >
                                         <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
@@ -56,7 +76,7 @@ export default function Notification({navigation}) {
                                             <Text>Xóa Thông Báo Này</Text>
                                         </MenuOption>
                                         <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
-                                            <Text>Xóa Tất Cả Thông Báo</Text>
+                                            <Text>Ẩn Thông Báo Này</Text>
                                         </MenuOption>
                                     </MenuOptions>
                                 </Menu>
@@ -112,8 +132,8 @@ const styles = StyleSheet.create({
       textContent: {
         color: '#000',
         fontFamily: 'ProductSans-Regular',
-        fontSize: 8 * WIDTH_SCALE,
-        color: '#FFF',
+        fontSize: 12 * WIDTH_SCALE,
+         padding: 16 * WIDTH_SCALE,
       },
       groupItemText: {
         flex: 1,
