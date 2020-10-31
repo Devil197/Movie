@@ -12,12 +12,21 @@ import {
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {HEIGHT, WIDTH, STATUS_BAR_CURRENT_HEIGHT, HEADER_HEIGHT, WIDTH_SCALE} from '../../constants/constants';
-import {ptColor} from '../../constants/styles'
+import {
+  HEIGHT,
+  WIDTH,
+  STATUS_BAR_CURRENT_HEIGHT,
+  HEADER_HEIGHT,
+  WIDTH_SCALE,
+} from '../../constants/constants';
+import {ptColor} from '../../constants/styles';
 import {Fonts} from '../../utils/Fonts';
 import KeyWords from '../views/searchComponent';
 import {MyHighLightButton} from '../views';
-import {searchAPI, addKeywordActionRedux} from '../../Redux/actions/keywordAction';
+import {
+  searchAPI,
+  addKeywordActionRedux,
+} from '../../Redux/actions/keywordAction';
 import {FilmItem, CastItem, MySpinner} from '../views';
 import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show đc. Loay hoay tốn đống time nên t xài cái nãy đã
 
@@ -42,12 +51,11 @@ export default function Search({navigation}) {
   useEffect(() => {
     handleGetDataByKeyword();
   }, [keyword]);
-  console.log('a')
   const handleGetDataByKeyword = async () => {
     setLoading(true);
     if (keyword === '') {
       return;
-      console.log('a')
+      console.log('a');
     }
     await searchAPI(keyword)
       .then((json) => {
@@ -56,7 +64,6 @@ export default function Search({navigation}) {
           console.log(c?.name);
         });
         setLoading(false);
-        console.log('a')
       })
       .catch((err) => {
         console.log(err);
@@ -149,7 +156,11 @@ export default function Search({navigation}) {
 
       {keyword != '' ? (
         isLoading ? (
-          <SkypeIndicator color={ptColor.appColor} size={20 * WIDTH_SCALE} style={{marginTop: 20}} />
+          <SkypeIndicator
+            color={ptColor.appColor}
+            size={20 * WIDTH_SCALE}
+            style={{marginTop: 20}}
+          />
         ) : !isVisible ? (
           <ScrollView style={{width: '100%', backgroundColor: ptColor.white}}>
             {renderCastItemAfterHandleSearchAPI}
@@ -158,7 +169,7 @@ export default function Search({navigation}) {
         ) : null
       ) : (
         <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords setKeywordOnPress={val => setKeyword(val)}/>
+          <KeyWords setKeywordOnPress={(val) => setKeyword(val)} />
         </ScrollView>
       )}
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -8,15 +8,26 @@ import {
   ImageBackground,
   TouchableWithoutFeedback,
   Alert,
-  BackHandler
+  BackHandler,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
-import { LoginGoogle, LoginFacebook, _addApiLoginFacebook, _addApiLoginGoogle } from '../../Redux/actions/userAction';
-import { useDispatch, useSelector } from 'react-redux';
-import { Fonts } from '../../utils/Fonts';
-import { ROUTE_KEY } from '../../constants/constants'
-import { LoginButton, AccessToken, LoginManager, GraphRequest, GraphRequestManager } from 'react-native-fbsdk';
-import { MySpinner } from '../views';
+import {
+  LoginGoogle,
+  LoginFacebook,
+  _addApiLoginFacebook,
+  _addApiLoginGoogle,
+} from '../../Redux/actions/userAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {Fonts} from '../../utils/Fonts';
+import {ROUTE_KEY} from '../../constants/constants';
+import {
+  LoginButton,
+  AccessToken,
+  LoginManager,
+  GraphRequest,
+  GraphRequestManager,
+} from 'react-native-fbsdk';
+import {MySpinner} from '../views';
 
 const LOGIN_LOGO_HEIGHT = 80;
 const IMAGE = {
@@ -24,49 +35,50 @@ const IMAGE = {
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-export default function Login({ navigation }) {
+export default function Login({navigation}) {
   const dispatch = useDispatch();
-  const isLogin = useSelector((state) => state.userReducer?.loggedIn)
-  const user = useSelector((state) => state.userReducer)
+  const isLogin = useSelector((state) => state.userReducer?.loggedIn);
+  const user = useSelector((state) => state.userReducer);
+
   useEffect(() => {
-    MySpinner.show()
+    MySpinner.show();
     if (isLogin) {
-      navigation.push(ROUTE_KEY.BottomNavigation)
-      MySpinner.hide()
+      navigation.push(ROUTE_KEY.BottomNavigation);
+      MySpinner.hide();
     } else {
-      MySpinner.hide()
+      MySpinner.hide();
     }
-  }, [isLogin])
+  }, [isLogin]);
 
   const loginFacebook = () => {
-    LoginFacebook().then(res => {
+    LoginFacebook().then((res) => {
       console.log('1001 res=> login face ', res);
-      _addApiLoginFacebook(res, dispatch)
-    })
-  }
+      _addApiLoginFacebook(res, dispatch);
+    });
+  };
 
   const loginGoogle = () => {
-    LoginGoogle().then(res => {
+    LoginGoogle().then((res) => {
       console.log('1001 res=> login go ', res);
-      _addApiLoginGoogle(res, dispatch)
-    })
-  }
+      _addApiLoginGoogle(res, dispatch);
+    });
+  };
   useEffect(() => {
     const backAction = () => {
-      Alert.alert('','Bạn có muốn thoát app ?', [
+      Alert.alert('', 'Bạn có muốn thoát app ?', [
         {
-          text: "không",
+          text: 'không',
           onPress: () => null,
-          style: "cancel"
+          style: 'cancel',
         },
-        { text: "có", onPress: () => BackHandler.exitApp() }
+        {text: 'có', onPress: () => BackHandler.exitApp()},
       ]);
       return true;
     };
 
     const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
+      'hardwareBackPress',
+      backAction,
     );
 
     return () => backHandler.remove();
@@ -81,27 +93,24 @@ export default function Login({ navigation }) {
         </View>
 
         <View style={styles.loginContainer}>
-
           <TouchableWithoutFeedback onPress={loginFacebook}>
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
-              <View style={{ width: 10 }} />
+              <View style={{width: 10}} />
               <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
             </View>
           </TouchableWithoutFeedback>
 
-          <View style={{ height: 15 }} />
+          <View style={{height: 15}} />
 
           <TouchableWithoutFeedback onPress={loginGoogle}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
-              <View style={{ width: 10 }} />
+              <View style={{width: 10}} />
               <Text style={styles.titleBtnFB}>Sign In With Google</Text>
             </View>
           </TouchableWithoutFeedback>
-
         </View>
-
       </ImageBackground>
     </View>
   );
@@ -163,6 +172,4 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontFamily: Fonts.SansLight,
   },
-
-
 });
