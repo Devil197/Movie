@@ -19,7 +19,7 @@ function MyBottomTab() {
     <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
         name={ROUTE_KEY.Film}
-        component={Film}
+        component={Home}
         options={{
           tabBarIcon: ({color, size}) => (
             <Icon name="film" color={color} size={size} />
