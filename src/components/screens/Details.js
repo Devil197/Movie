@@ -21,6 +21,7 @@ import { ROUTE_KEY } from '../../constants/constants';
 import {Play, Player} from '../views';
 import {ptColor} from '../../constants/styles';
 import Orientation from 'react-native-orientation';
+import Header from '../views/HeaderMovie';
 export default function Details({ navigation, route }) {
     // video ====
     const [height, setHeight] = useState();
@@ -68,21 +69,30 @@ export default function Details({ navigation, route }) {
 
     return (
         <ScrollView style={styles.container}>
-
-          
-                <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
+                <Header
+                    backdrop={dataMovie?.movie[0].cover_img}
+                    poster={dataMovie?.movie[0].cover_img}
+                    title={dataMovie?.movie[0].name}
+                    genres={dataMovie?.category[0]?.name}
+                    release_date={dataMovie?.movie[0].duration}
+                    runtime={dataMovie?.movie[0].episode}
+                    status={dataMovie?.movie[0].status}
+                    vote_average={3 * 10}
+                    directer = {dataMovie?.movie[0].directer}
+                />
+                {/* <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
                     <Icon name="chevron-back" size={30} color="#fff" />
                     <Text style={{ color: '#fff' }}>Back</Text>
-                </MyHighLightButton>
+                </MyHighLightButton> */}
 
-                <View style={styles.header1}>
-                    <Player url={url} fullScreen={onFullScreen} />
-                </View>
+                {/* <View style={styles.header1}>
+                  
+                </View> */}
 
              
-                {!fullScreen ? (
+                {/* {!fullScreen ? ( */}
                     <View style={{marginTop: 0, flex: 3}}>
-                <View style={styles.header2}>
+                {/* <View style={styles.header2}>
 
                     <Image source={{ uri: dataMovie?.movie[0].cover_img }} style={styles.imageHeader} />
 
@@ -103,9 +113,7 @@ export default function Details({ navigation, route }) {
                         </MyHighLightButton>
                     </View>
 
-                </View>
-
-      
+                </View> */}
 
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Overview</Text>
@@ -128,14 +136,17 @@ export default function Details({ navigation, route }) {
 
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Trailer</Text>
-            
+                <View style={styles.header1}>
+                    <Player url={url} fullScreen={onFullScreen} />  
+                </View>
+                
             </View>
             <View style={styles.content}>
                 <Text style={{ fontWeight: 'bold', color: '#e55039', margin: 10 * WIDTH_SCALE }}>Phim liên quan : </Text>
 
             </View>
             </View>
-               ) : null}
+               {/* ) : null} */}
         </ScrollView>
     )
 }

@@ -8,6 +8,7 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
+import {Play, Player} from '../views';
 import {set} from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -36,6 +37,7 @@ import {MySpinner, MyHighLightButton} from '../views';
 import {ROUTE_KEY} from '../../constants/constants';
 import {useDispatch, useSelector} from 'react-redux';
 import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
+import Orientation from 'react-native-orientation';
 // import YouTube from 'react-native-youtube';
 
 export default function Home({navigation}) {
@@ -49,6 +51,11 @@ export default function Home({navigation}) {
   const [dataMovieByScore, setDataMovieByScore] = useState();
   const [height, setHeight] = useState();
   const [page, setPage] = useState(1);
+
+  const [fullScreen, setFullScreen] = useState(false);
+  const url = 'aF8U_uSsXSA';
+  const initial = Orientation.getInitialOrientation();
+
   // const navigation = useNavigation();
   // console.log(dataMovie.length);
 
@@ -126,6 +133,17 @@ export default function Home({navigation}) {
   } else {
     MySpinner.hide();
   }
+
+  const onFullScreen = (fullScreen) => {
+    if (fullScreen) {
+      Orientation.lockToPortrait();
+      setFullScreen(false);
+    } else {
+      Orientation.lockToLandscape();
+      setFullScreen(true);
+    }
+  };
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.containerA}>
@@ -326,23 +344,9 @@ export default function Home({navigation}) {
           {dataMovie?.items.map((c, i) => {
             console.log('00006 -> trailer', c.trailer);
             return (
-              <MyTouchableOpacity max s long>
-                {/* <ImageA max xxl little source={{ uri: c.cover_img }} /> */}
-                {/* <Text>{c.name}</Text> */}
-                {/* <YouTube
-                  apiKey="AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U"
-                  videoId={c.trailer}
-                  controls={2}
-                  play={false}
-                  style={{ alignSelf: 'stretch', height: 250 * WIDTH_SCALE }}
-                  onReady={() => {
-                    setHeight(221);
-                  }}
-                /> */}
-                {/* <MyView tops leftm light>
-                  <Icon name={'play'} size={25} color="#fff" />
-                </MyView> */}
-              </MyTouchableOpacity>
+              <MyHighLightButton style={styles.buttonF}>
+                <Player url={c.trailer} fullScreen={onFullScreen} />
+              </MyHighLightButton>
             );
           })}
         </ScrollView>
@@ -487,6 +491,11 @@ const styles = StyleSheet.create({
   textF: {
     fontFamily: 'ProductSans-Regular',
     fontSize: 16 * WIDTH_SCALE,
+  },
+  buttonF: {
+    width: 0.97 * WIDTH,
+    height: 0.33 * HEIGHT,
+    paddingHorizontal: 5 * WIDTH_SCALE,
   },
   //-----------**------------//
   mR: {
