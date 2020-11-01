@@ -2,8 +2,15 @@ import React from 'react';
 import {Dimensions, Image, Text, View, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Fonts} from '../../utils/Fonts';
-import {HEIGHT, WIDTH, STATUS_BAR_CURRENT_HEIGHT, HEADER_HEIGHT, WIDTH_SCALE} from '../../constants/constants';
-import {ptColor} from '../../constants/styles'
+import {
+  HEIGHT,
+  WIDTH,
+  STATUS_BAR_CURRENT_HEIGHT,
+  HEADER_HEIGHT,
+  WIDTH_SCALE,
+} from '../../constants/constants';
+import {ptColor} from '../../constants/styles';
+import CastItem from './CastItem';
 
 const {width} = Dimensions.get('window');
 
@@ -63,14 +70,14 @@ const styles = StyleSheet.create({
   infoContainer: {
     flex: 1,
     paddingLeft: 10,
-    paddingRight: 10
+    paddingRight: 10,
   },
   itemTitle: {
     fontFamily: Fonts.SansMedium,
     fontSize: 18 * WIDTH_SCALE,
     color: ptColor.black,
     marginBottom: 10,
-    marginTop: 10
+    marginTop: 10,
   },
   itemYear: {
     fontSize: 14 * WIDTH_SCALE,

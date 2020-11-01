@@ -38,6 +38,8 @@ const IMAGE = {
 export default function Login({navigation}) {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
+  console.log(isLogin);
+
   const user = useSelector((state) => state.userReducer);
 
   useEffect(() => {

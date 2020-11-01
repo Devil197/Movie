@@ -28,15 +28,12 @@ export default function Splash({navigation}) {
   const user = useSelector((state) => state.userReducer);
 
   const handleUserIsLogin = () => {
-    console.log(isLogin + '==' + user);
     setTimeout(function () {
-      // if (isLogin) {
-      //   navigation.navigate(ROUTE_KEY.BottomNavigation);
-      // } else {
-      //   navigation.navigate(ROUTE_KEY.Login);
-      // }
-
-      navigation.navigate(ROUTE_KEY.BottomNavigation);
+      if (isLogin) {
+        navigation.navigate(ROUTE_KEY.BottomNavigation);
+      } else {
+        navigation.navigate(ROUTE_KEY.Login);
+      }
     }, 3000 * 1);
   };
 
