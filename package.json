@@ -44,6 +44,7 @@
     "react": "16.13.1",
     "react-addons-update": "^15.6.2",
     "react-native": "0.63.2",
+    "react-native-app-intro-slider": "^4.0.4",
     "react-native-axios": "^0.17.1",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-fast-image": "^8.3.2",
