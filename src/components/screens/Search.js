@@ -12,12 +12,21 @@ import {
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {HEIGHT, WIDTH, STATUS_BAR_CURRENT_HEIGHT, HEADER_HEIGHT, WIDTH_SCALE} from '../../constants/constants';
-import {ptColor} from '../../constants/styles'
+import {
+  HEIGHT,
+  WIDTH,
+  STATUS_BAR_CURRENT_HEIGHT,
+  HEADER_HEIGHT,
+  WIDTH_SCALE,
+} from '../../constants/constants';
+import {ptColor} from '../../constants/styles';
 import {Fonts} from '../../utils/Fonts';
 import KeyWords from '../views/searchComponent';
 import {MyHighLightButton} from '../views';
-import {searchAPI, addKeywordActionRedux} from '../../Redux/actions/keywordAction';
+import {
+  searchAPI,
+  addKeywordActionRedux,
+} from '../../Redux/actions/keywordAction';
 import {FilmItem, CastItem, MySpinner} from '../views';
 import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show đc. Loay hoay tốn đống time nên t xài cái nãy đã
 
@@ -38,25 +47,21 @@ export default function Search({navigation}) {
   const [data, setData] = useState();
   const [isVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
+  const [dataFlatlist, setDataFlatlist] = useState();
 
   useEffect(() => {
     handleGetDataByKeyword();
   }, [keyword]);
-  console.log('a')
   const handleGetDataByKeyword = async () => {
     setLoading(true);
     if (keyword === '') {
       return;
-      console.log('a')
     }
     await searchAPI(keyword)
       .then((json) => {
         setData(json);
-        data?.cast.map((c, i) => {
-          console.log(c?.name);
-        });
+        setDataFlatlist([...json?.cast, ...json?.movie]);
         setLoading(false);
-        console.log('a')
       })
       .catch((err) => {
         console.log(err);
@@ -93,8 +98,8 @@ export default function Search({navigation}) {
   const renderMovieItemAfterHandleSearchAPI = data?.movie.map((c, i) => {
     return (
       <TouchableWithoutFeedback
-        key={c._id}
-        onPress={() => searchSuggestionsOnPress(c._id)}>
+        key={c?._id}
+        onPress={() => searchSuggestionsOnPress(c?._id)}>
         <View style={styles.searchSuggestionsContainer} key={c?._id}>
           <EvilIcon name="search" size={22} color={ptColor.gray2} />
           <Text style={styles.searchSuggestions}>{c?.name}</Text>
@@ -149,7 +154,11 @@ export default function Search({navigation}) {
 
       {keyword != '' ? (
         isLoading ? (
-          <SkypeIndicator color={ptColor.appColor} size={20 * WIDTH_SCALE} style={{marginTop: 20}} />
+          <SkypeIndicator
+            color={ptColor.appColor}
+            size={20 * WIDTH_SCALE}
+            style={{marginTop: 20}}
+          />
         ) : !isVisible ? (
           <ScrollView style={{width: '100%', backgroundColor: ptColor.white}}>
             {renderCastItemAfterHandleSearchAPI}
@@ -158,7 +167,7 @@ export default function Search({navigation}) {
         ) : null
       ) : (
         <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords setKeywordOnPress={val => setKeyword(val)}/>
+          <KeyWords setKeywordOnPress={(val) => setKeyword(val)} />
         </ScrollView>
       )}
 
@@ -166,22 +175,16 @@ export default function Search({navigation}) {
         <View style={styles.listALLContainer}>
           <View style={styles.list}>
             <FlatList
-              horizontal
-              scrollEnabled
-              snapToAlignment="center"
-              showsHorizontalScrollIndicator={false}
-              data={data?.cast}
-              keyExtractor={(item) => String(item._id)}
-              renderItem={(item) => <CastItem item={item} />}
-            />
-          </View>
-          <View style={styles.list}>
-            <FlatList
               showsVerticalScrollIndicator={true}
-              numColumns={3}
-              data={data?.movie}
+              data={dataFlatlist}
               keyExtractor={(item) => String(item._id)}
-              renderItem={(item) => <FilmItem item={item} />}
+              renderItem={(item) =>
+                'birthday' in item.item ? (
+                  <CastItem item={item} />
+                ) : (
+                  <FilmItem item={item} />
+                )
+              }
             />
           </View>
         </View>

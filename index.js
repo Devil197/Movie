@@ -2,14 +2,22 @@
  * @format
  */
 
-import { AppRegistry, LogBox, Platform, StatusBar, Text, TextInput } from 'react-native';
+import {
+  AppRegistry,
+  LogBox,
+  Platform,
+  StatusBar,
+  Text,
+  TextInput,
+} from 'react-native';
 // import Orientation from 'react-native-orientation-locker';
-import App from './src/App';
+//import App from './src/App';
+import App from './src/components/screens/Introduce';
 
 import {name as appName} from './app.json';
 import 'react-native-gesture-handler';
 
-LogBox.ignoreAllLogs(true)
+LogBox.ignoreAllLogs(true);
 
 if (Platform.OS === 'android') {
   StatusBar.setTranslucent(true);

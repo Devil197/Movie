@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
     width: WIDTH / 5,
     height: HEIGHT / 9,
     borderRadius: HEIGHT,
-    resizeMode: 'cover'
+    resizeMode: 'cover',
   },
   itemTitle: {
     color: '#000',
@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
   textView: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 4
+    marginTop: 4,
   },
 });
 
