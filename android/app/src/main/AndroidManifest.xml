@@ -1,8 +1,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.appmovie">
 
   <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.VIBRATE" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="false" android:theme="@style/AppTheme">
     <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
+ <!-- meta notification  -->
+     <meta-data
+        android:name="com.google.firebase.messaging.default_notification_channel_id" tools:replace="android:value" android:value="movie-mobile-0103" />
+     <meta-data  android:name="com.dieam.reactnativepushnotification.channel_create_default"
+        android:value="false"/>
+      <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_description"
+        android:value="movie mobile app description"/>
+      <meta-data  android:name="com.dieam.reactnativepushnotification.notification_channel_name"
+        android:value="movie-mobile"/>
+    <!-- ======= -->
     <activity android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
       <intent-filter>
 
@@ -11,6 +23,17 @@
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
+    <!-- Notification -->
+      <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
+        android:value="true"/>
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" />
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" />
+      <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver">
+      <intent-filter>
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+      </intent-filter>
   </application>
 
 </manifest>
