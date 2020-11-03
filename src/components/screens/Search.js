@@ -33,6 +33,8 @@ import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show
 import {useDispatch, useSelector} from 'react-redux';
 
 export default function Search({navigation}) {
+  // sử dung userRef để truy cập vào curent => mở keyboard lên lun khi vừa vào trang
+
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
 
@@ -43,15 +45,21 @@ export default function Search({navigation}) {
 
   const dispatch = useDispatch();
 
+  // không sử dụng cái này lun
+  // ghi rõ tên biến hộ cái 1 cái data 1 cái dataFlastlist ai biết cái j
   const [keyword, setKeyword] = useState('');
   const [data, setData] = useState();
   const [isVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
   const [dataFlatlist, setDataFlatlist] = useState();
-
+  // bỏ cái Api ra ngoài
   useEffect(() => {
     handleGetDataByKeyword();
   }, [keyword]);
+  // viết 1 hàm sử lí trong KeywordActione rồi truyền nó nó cái params vào
+  // ở đó mày sec check theo cái params
+  // sử lí ở trong lun  sau đó return ra data  để bên này chỉ .then() rồi gắn data vào thui
+
   const handleGetDataByKeyword = async () => {
     setLoading(true);
     if (keyword === '') {
@@ -88,6 +96,7 @@ export default function Search({navigation}) {
         key={c._id}
         onPress={() => searchSuggestionsOnPress(c._id)}>
         <View style={styles.searchSuggestionsContainer} key={c?._id}>
+          {/* không sử dụng thông số px mặc định  */}
           <EvilIcon name="search" size={22} color={'gray'} />
           <Text style={styles.searchSuggestions}>{c?.name}</Text>
         </View>
@@ -174,6 +183,9 @@ export default function Search({navigation}) {
       {isVisible ? (
         <View style={styles.listALLContainer}>
           <View style={styles.list}>
+            {/* sài recycelListView  custom lại do tao sẽ sửa api lại nên cái footer của cái này sẽ có 1 cái nút là load thêm hay mày sài cái này cũng đc nhưng 
+                mà phải bắt sự kiện scrollEnd cho nó để load tiếp dữ liệu ok
+            */}
             <FlatList
               showsVerticalScrollIndicator={true}
               data={dataFlatlist}
@@ -193,6 +205,9 @@ export default function Search({navigation}) {
   );
 }
 
+// không nên chia style như vậy viết trên thẻ lun để tới lúc chỉnh cho dễ chó mò xuống đây lại rối
+// không sử dụng thông số px mặc định
+// những item thì nên để chó nó cái biến vd: heightItem = HEIGHT*0.1 hay j đó để nó ko bị thay đổi với các kích cỡ màn hình khác nhau quá
 const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,
