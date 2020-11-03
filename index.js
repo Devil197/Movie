@@ -12,12 +12,16 @@ import {
 } from 'react-native';
 // import Orientation from 'react-native-orientation-locker';
 //import App from './src/App';
-import App from './src/components/screens/Introduce';
-
+import App from './src/App';
+import messaging from '@react-native-firebase/messaging';
 import {name as appName} from './app.json';
 import 'react-native-gesture-handler';
 
 LogBox.ignoreAllLogs(true);
+
+messaging().setBackgroundMessageHandler(async (remoteMessage) => {
+  console.log('Message handled in the background!', remoteMessage);
+});
 
 if (Platform.OS === 'android') {
   StatusBar.setTranslucent(true);

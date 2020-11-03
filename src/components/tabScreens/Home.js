@@ -42,7 +42,7 @@ import Orientation from 'react-native-orientation';
 
 export default function Home({navigation}) {
   const userReducer = useSelector((state) => state.userReducer);
-  console.log('1001 image,: ', userReducer);
+  // console.log('1001 image,: ', userReducer);
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
   const [dataMovie, setDataMovie] = useState();

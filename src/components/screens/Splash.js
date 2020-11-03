@@ -1,10 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {Image, ImageBackground, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ImageBackground,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {store} from '../../Redux/store';
 import {persistStore} from 'redux-persist';
 import {ROUTE_KEY} from '../../constants/constants';
 import {styles} from '../../constants/style/styles';
 import {useDispatch, useSelector} from 'react-redux';
+import messaging from '@react-native-firebase/messaging';
 
 import {
   WIDTH_SCALE,
@@ -27,6 +35,17 @@ export default function Splash({navigation}) {
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
   const user = useSelector((state) => state.userReducer);
 
+  async function requestUserPermission() {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Authorization status:', authStatus);
+    }
+  }
+
   const handleUserIsLogin = () => {
     setTimeout(function () {
       if (isLogin) {
@@ -38,9 +57,42 @@ export default function Splash({navigation}) {
   };
 
   useEffect(() => {
-    //persistStore(store, null, async () => {});
+    persistStore(store, null, async () => {});
     handleUserIsLogin();
-  });
+  }, []);
+
+  useEffect(() => {
+    let unsubscribe = null;
+    async function initApplicationData() {
+      let fcmToken = null;
+      try {
+        await requestUserPermission();
+        fcmToken = await messaging().getToken();
+
+        messaging()
+          .subscribeToTopic('N-M-M')
+          .then(() => console.log('1001 Subscribed to topic!'));
+      } catch (error) {}
+
+      console.log('1001 fcmToken', fcmToken);
+
+      messaging().onMessage(async (listener) => {
+        console.log('1001 lis', listener.data);
+        Alert.alert('Thông báo send', listener?.data?.movie_name);
+      });
+    }
+
+    initApplicationData();
+    return () => {
+      console.log('1001 : Splash -> unsubscribe', unsubscribe);
+
+      // unsubscribe();
+      // Linking.removeEventListener('url', handleOpenURL);
+
+      // messaging().unsubscribeFromTopic('test');
+    };
+  }, []);
+
   return (
     <View style={styles.container}>
       <ImageBackground source={IMAGE} style={styles.image_background}>
