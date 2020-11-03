@@ -9,6 +9,7 @@ import {
   StatusBar,
   Text,
   TextInput,
+  ToastAndroid,
 } from 'react-native';
 // import Orientation from 'react-native-orientation-locker';
 //import App from './src/App';
@@ -20,7 +21,14 @@ import 'react-native-gesture-handler';
 LogBox.ignoreAllLogs(true);
 
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  console.log('Message handled in the background!', remoteMessage);
+  ToastAndroid.show(
+    'chay setBackgroundMessageHandler NE NHA' + remoteMessage &&
+      remoteMessage.notification &&
+      Platform.OS === 'android'
+      ? remoteMessage.notification.title
+      : '',
+    ToastAndroid.SHORT,
+  );
 });
 
 if (Platform.OS === 'android') {

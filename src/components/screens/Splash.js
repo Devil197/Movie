@@ -13,7 +13,8 @@ import {ROUTE_KEY} from '../../constants/constants';
 import {styles} from '../../constants/style/styles';
 import {useDispatch, useSelector} from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
-
+import PushNotification from 'react-native-push-notification';
+import moment from 'moment';
 import {
   WIDTH_SCALE,
   HEIGHT_SCALE,
@@ -73,12 +74,25 @@ export default function Splash({navigation}) {
           .subscribeToTopic('N-M-M')
           .then(() => console.log('1001 Subscribed to topic!'));
       } catch (error) {}
-
+      PushNotification.createChannel(
+        {
+          channelId: 'movie0103',
+          channelName: 'Movie',
+          vibrate: true,
+          soundName: 'default',
+        },
+        (created) => console.log(`100 createChannel returned '${created}'`),
+      );
       console.log('1001 fcmToken', fcmToken);
 
       messaging().onMessage(async (listener) => {
-        console.log('1001 lis', listener.data);
-        Alert.alert('Thông báo send', listener?.data?.movie_name);
+        PushNotification.localNotification({
+          title: listener.data.movie_name,
+          message: 'abc',
+          channelId: 'movie0103',
+          id: moment().seconds(),
+          largeIconUrl: listener.data.photo,
+        });
       });
     }
 

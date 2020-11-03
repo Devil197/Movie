@@ -1224,6 +1224,11 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-3.0.3.tgz#830167fd757ba70ac638747ba3169b2dbae60330"
   integrity sha512-8IeHfDwJ9/CTUwFs6x90VlobV3BfuPgNLjTgC6dRZovfCWigaZwVNIFFJnHBakK3pW2xErAPwhdvNR4JeNoYbw==
 
+"@react-native-firebase/analytics@^7.6.9":
+  version "7.6.9"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/analytics/-/analytics-7.6.9.tgz#ab30f65a7b30bede02c120a0d5109b283b2cf2cf"
+  integrity sha512-Kfqqx47hqugQN+8SadvlXodH3Bsn1I3mj5OY9TXRw0l22E1eAKC5Rd8HTfdATmt/50Rrj8ZvkBeuQsaaTOuIAQ==
+
 "@react-native-firebase/app@^8.4.7":
   version "8.4.7"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/app/-/app-8.4.7.tgz#7393ba7af36bd815bd5af7c64a20b0dd8a7e3341"
@@ -6457,6 +6462,11 @@ react-native-progress-circle@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-native-progress-circle/-/react-native-progress-circle-2.1.0.tgz#62bdf31c76962d10c5c14446b61ff7d05cf0d0ec"
   integrity sha512-VP0s92bgbTMQy4hQzPU4LlGyFj3z5u7i1HYFG8/yzXXfGkX1cxKS4xOlE+OTaObWC99w7Bodi3h8R7En2nQPYw==
+
+react-native-push-notification@^6.1.2:
+  version "6.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification/-/react-native-push-notification-6.1.2.tgz#b1d0aecdfbabd0e46106bcf0b249f07d7ab5db63"
+  integrity sha512-fhA9UR6j0JHUqnE5okCGnMKD5+HfmkWwEvxJznoYTqhXFTweO6P12RgZcqu/4/OCp7jXuSCwPZC+L6H6r8Ly2Q==
 
 react-native-ratings@^7.3.0:
   version "7.3.0"

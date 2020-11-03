@@ -11,7 +11,7 @@ import com.facebook.react.ReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-
+import io.invertase.firebase.app.ReactNativeFirebaseApp;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -46,6 +46,7 @@ public class MainApplication extends Application implements ReactApplication {
   public void onCreate() {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
+    ReactNativeFirebaseApp.initializeSecondaryApp("secondaryFromNative", getApplicationContext());
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
 
