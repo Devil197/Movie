@@ -21,20 +21,23 @@ import {
   WIDTH,
   HEIGHT,
 } from '../../constants/constants';
+import Introduce from './Introduce';
+import AsyncStorage from '@react-native-community/async-storage';
+import {SkypeIndicator} from 'react-native-indicators';
+import {ptColor} from '../../constants/styles';
 
 const IMAGE = {
   uri:
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-const LOGO_LINK = {
-  uri:
-    'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/Splash%2Flogo_2x.png?alt=media&token=b21ada55-d092-40f3-8052-0d4bfcc817d2',
-};
+import {getValueToShowIntroduceOrNot} from '../../utils/IsShowIntroduce';
 
 export default function Splash({navigation}) {
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
   const user = useSelector((state) => state.userReducer);
+
+  const [isShowIntroduce, setIsShowIntroduce] = useState();
 
   async function requestUserPermission() {
     const authStatus = await messaging().requestPermission();
@@ -59,8 +62,22 @@ export default function Splash({navigation}) {
 
   useEffect(() => {
     persistStore(store, null, async () => {});
-    handleUserIsLogin();
+    //handleUserIsLogin();
   }, []);
+
+  useEffect(() => {
+    handleIsShowIntroduce();
+  }, [isShowIntroduce]);
+
+  const handleIsShowIntroduce = async () => {
+    await getValueToShowIntroduceOrNot((isShow) => {
+      console.log('IS SHOW INTRODUCE: ', isShow);
+      if (isShow === false) {
+        handleUserIsLogin();
+      }
+      setIsShowIntroduce(isShow);
+    });
+  };
 
   useEffect(() => {
     let unsubscribe = null;
@@ -107,10 +124,24 @@ export default function Splash({navigation}) {
     };
   }, []);
 
+  if (isShowIntroduce === true) {
+    return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;
+  }
+
   return (
     <View style={styles.container}>
       <ImageBackground source={IMAGE} style={styles.image_background}>
-        <Image source={LOGO_LINK} style={myStyles.logo} />
+        <View style={{width: 60, height: 60, borderRadius: 20}}>
+          <SkypeIndicator
+            color={ptColor.appColor}
+            style={{
+              padding: 16 * WIDTH_SCALE,
+              backgroundColor: 'rgba(166, 164, 164, 0.4)',
+              borderRadius: 10,
+            }}
+            size={40 * WIDTH_SCALE}
+          />
+        </View>
       </ImageBackground>
     </View>
   );

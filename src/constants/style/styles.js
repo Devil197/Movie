@@ -158,10 +158,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image_background: {
-    flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'center',
     width: WIDTH,
     alignItems: 'center',
+    height: HEIGHT,
   },
 });

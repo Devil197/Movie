@@ -22,31 +22,30 @@ import {
 import {ptColor} from '../../constants/styles';
 
 export default function searchComponent({setKeywordOnPress}) {
-
   const keywordInRedux = useSelector((state) => state.keywordReducer?.keyword);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     console.log(keywordInRedux);
-    
   }, [keywordInRedux]);
 
   const closeIconOnPress = (index) => {
-    console.log(index);
     deleteKeywordRedux(dispatch, index);
   };
 
   const mapKeyword = keywordInRedux.map((val, index) => {
     return (
-      <View style={styles.keyWordContainer}>
+      <View style={styles.keyWordContainer} key={index}>
         <EvilIcon
           style={styles.icons}
           name="search"
           size={22 * WIDTH_SCALE}
           color={ptColor.gray2}
         />
-        <MyHighLightButton style={{flex: 9}} onPress={() => setKeywordOnPress(val)}>
+        <MyHighLightButton
+          style={{flex: 9}}
+          onPress={() => setKeywordOnPress(val)}>
           <Text style={styles.txtKeyword}>{val}</Text>
         </MyHighLightButton>
 
@@ -72,7 +71,7 @@ export default function searchComponent({setKeywordOnPress}) {
           color={'rgba(166, 164, 164, 0.8)'}
         />
         <Text style={styles.txtWithoutKeywords}>
-          Nhập từ khóa để tìm kiếm với GEA
+          Enter your keyword to search!
         </Text>
       </View>
     );
