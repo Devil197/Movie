@@ -1,6 +1,6 @@
 import React from 'react';
-import {Dimensions, Image, Text, View, StyleSheet} from 'react-native';
-import {Fonts} from '../../utils/Fonts';
+import { Dimensions, Image, Text, View, StyleSheet } from 'react-native';
+import { Fonts } from '../../utils/Fonts';
 import {
   HEIGHT,
   WIDTH,
@@ -8,45 +8,45 @@ import {
   HEADER_HEIGHT,
   WIDTH_SCALE,
 } from '../../constants/constants';
-import {ptColor} from '../../constants/styles';
+import { ptColor } from '../../constants/styles';
 import CastItem from './CastItem';
-import {TouchableOpacity} from 'react-native-gesture-handler';
-import {ROUTE_KEY} from '../../constants/constants';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ROUTE_KEY } from '../../constants/constants';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const FilmItem = ({navigation, params}) => {
-  const item = params.item;
+const FilmItem = ({ navigation, params }) => {
+  const item = params?.item;
   return (
     <TouchableOpacity
       key={item._id}
-      onPress={() => navigation.push(ROUTE_KEY.Details, {_id: item._id})}>
+      onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item?._id })}>
       <View style={styles.item}>
-        <Image source={{uri: item.cover_img}} style={styles.itemImg} />
+        <Image source={{ uri: item?.cover_img }} style={styles.itemImg} />
         <View style={styles.infoContainer}>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={styles.itemTitle}>
-            {item.name}
+            {item?.name}
           </Text>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={styles.itemYear}>
-            Year: {item.years}
+            Year: {item?.years}
           </Text>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={styles.itemYear}>
-            Subtitle: {item.language}
+            Subtitle: {item?.language}
           </Text>
           <Text
             numberOfLines={1}
             ellipsizeMode={'tail'}
             style={styles.itemYear}>
-            Nation: {item.country}
+            Nation: {item?.country}
           </Text>
         </View>
       </View>
