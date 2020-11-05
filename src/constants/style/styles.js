@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
   },
   // music
   containerMusic: {
-    backgroundColor: '#161622',
+    // backgroundColor: '#161622',
     flex: 1,
   },
   header: {
@@ -158,10 +158,9 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image_background: {
-    flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'center',
     width: WIDTH,
     alignItems: 'center',
+    height: HEIGHT,
   },
 });

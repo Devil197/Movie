@@ -25,8 +25,8 @@ export const deleteKeywordRedux = (dispatch, keyword) => {
   dispatch({
     type: REDUX.REMOVE_KEYWORD,
     payload: keyword,
-  })
-}
+  });
+};
 
 // api viết dưới này lúc mà search xong á thì cho nó lưu vào redux.
 export const searchAPI = (keyword) =>
@@ -40,5 +40,19 @@ export const searchAPI = (keyword) =>
           console.log('get data failed');
         }
       })
-      .catch((err) => reject("Search API: " + err));
+      .catch((err) => reject('Search API: ' + err));
+  });
+
+export const hotContentsAPI = (keyword) =>
+  new Promise((resolve, reject) => {
+    axiosConfig
+      .get('/v3/movie/get/score')
+      .then((response) => {
+        if (response.data.result) {
+          resolve(response.data);
+        } else {
+          console.log('get data failed');
+        }
+      })
+      .catch((err) => reject('GET HOT MOVIE: ' + err));
   });
