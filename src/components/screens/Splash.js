@@ -1,8 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   Alert,
   Image,
   ImageBackground,
+  AppState,
+  Platform,
+  Linking,
   StyleSheet,
   Text,
   View,
@@ -32,23 +35,22 @@ const IMAGE = {
 };
 
 import {getValueToShowIntroduceOrNot} from '../../utils/IsShowIntroduce';
+async function requestUserPermission() {
+  const authStatus = await messaging().requestPermission();
+  const enabled =
+    authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+    authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
+  if (enabled) {
+    console.log('Authorization status:', authStatus);
+  }
+}
 export default function Splash({navigation}) {
+  const appState = useRef(AppState.currentState);
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
   const user = useSelector((state) => state.userReducer);
 
   const [isShowIntroduce, setIsShowIntroduce] = useState();
-
-  async function requestUserPermission() {
-    const authStatus = await messaging().requestPermission();
-    const enabled =
-      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
-      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-    if (enabled) {
-      console.log('Authorization status:', authStatus);
-    }
-  }
 
   const handleUserIsLogin = () => {
     setTimeout(function () {
@@ -93,30 +95,44 @@ export default function Splash({navigation}) {
       } catch (error) {}
       PushNotification.createChannel(
         {
+          number: moment().milliseconds(),
           channelId: 'movie0103',
           channelName: 'Movie',
-          vibrate: true,
           soundName: 'default',
+          group: 'Movie',
         },
         (created) => console.log(`100 createChannel returned '${created}'`),
       );
-      console.log('1001 fcmToken', fcmToken);
 
-      messaging().onMessage(async (listener) => {
-        PushNotification.localNotification({
-          title: listener.data.movie_name,
-          message: 'abc',
-          channelId: 'movie0103',
-          id: moment().seconds(),
-          largeIconUrl: listener.data.photo,
+      setTimeout(() => {
+        PushNotification.configure({
+          onRegister: function (token) {
+            console.log('TOKEN:', token);
+          },
+
+          // (required) Called when a remote is received or opened, or local notification is opened
+          // Open schedule detail when click on Noti
+          onNotification: async function (notification) {
+            console.log('1001 notificationFICATION:', notification);
+            pushNotification(notification);
+          },
+
+          // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
+          onAction: function (notification) {
+            console.log('1001 Long ACTION:', notification.action);
+            console.log('1001 Long NOTIFICATION:', notification);
+            // process the action
+          },
         });
-      });
+      }, 1000);
     }
 
     initApplicationData();
+    AppState.addEventListener('change', _handleAppStateChange);
+
     return () => {
       console.log('1001 : Splash -> unsubscribe', unsubscribe);
-
+      AppState.removeEventListener('change', _handleAppStateChange);
       // unsubscribe();
       // Linking.removeEventListener('url', handleOpenURL);
 
@@ -124,10 +140,36 @@ export default function Splash({navigation}) {
     };
   }, []);
 
-  if (isShowIntroduce === true) {
-    return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;
-  }
+  const pushNotification = async (listener) => {
+    PushNotification.localNotification({
+      title: listener.data.movie_name,
+      message: 'abc',
+      channelId: 'movie0103',
+      id: moment().seconds(),
+      largeIconUrl: listener.data.photo,
+    });
+  };
 
+  const _handleAppStateChange = async (nextAppState) => {
+    console.log('29148 : _handleAppStateChange -> nextAppState', nextAppState);
+    if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === 'active'
+    ) {
+      PushNotification.popInitialNotification((notification) => {
+        if (notification) {
+          this.onNotification(notification);
+        }
+      });
+    } else {
+      PushNotification.popInitialNotification((notification) => {
+        if (notification) {
+          this.onNotification(notification);
+        }
+      });
+    }
+    appState.current = nextAppState;
+  };
   return (
     <View style={styles.container}>
       <ImageBackground source={IMAGE} style={styles.image_background}>
