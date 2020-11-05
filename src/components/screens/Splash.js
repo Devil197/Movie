@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   Alert,
   Image,
@@ -10,11 +10,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import {store} from '../../Redux/store';
-import {persistStore} from 'redux-persist';
-import {ROUTE_KEY} from '../../constants/constants';
-import {styles} from '../../constants/style/styles';
-import {useDispatch, useSelector} from 'react-redux';
+import { store } from '../../Redux/store';
+import { persistStore } from 'redux-persist';
+import { ROUTE_KEY } from '../../constants/constants';
+import { styles } from '../../constants/style/styles';
+import { useDispatch, useSelector } from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
@@ -26,15 +26,15 @@ import {
 } from '../../constants/constants';
 import Introduce from './Introduce';
 import AsyncStorage from '@react-native-community/async-storage';
-import {SkypeIndicator} from 'react-native-indicators';
-import {ptColor} from '../../constants/styles';
+import { SkypeIndicator } from 'react-native-indicators';
+import { ptColor } from '../../constants/styles';
 
 const IMAGE = {
   uri:
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-import {getValueToShowIntroduceOrNot} from '../../utils/IsShowIntroduce';
+import { getValueToShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -45,7 +45,7 @@ async function requestUserPermission() {
     console.log('Authorization status:', authStatus);
   }
 }
-export default function Splash({navigation}) {
+export default function Splash({ navigation }) {
   const appState = useRef(AppState.currentState);
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
   const user = useSelector((state) => state.userReducer);
@@ -63,7 +63,7 @@ export default function Splash({navigation}) {
   };
 
   useEffect(() => {
-    persistStore(store, null, async () => {});
+    persistStore(store, null, async () => { });
     //handleUserIsLogin();
   }, []);
 
@@ -92,7 +92,7 @@ export default function Splash({navigation}) {
         messaging()
           .subscribeToTopic('N-M-M')
           .then(() => console.log('1001 Subscribed to topic!'));
-      } catch (error) {}
+      } catch (error) { }
       PushNotification.createChannel(
         {
           number: moment().milliseconds(),
@@ -178,7 +178,7 @@ export default function Splash({navigation}) {
   return (
     <View style={styles.container}>
       <ImageBackground source={IMAGE} style={styles.image_background}>
-        <View style={{width: 60, height: 60, borderRadius: 20}}>
+        <View style={{ width: 60, height: 60, borderRadius: 20 }}>
           <SkypeIndicator
             color={ptColor.appColor}
             style={{

@@ -31,10 +31,12 @@ import {
   getAllMovie,
   getCartoon,
   getCast,
-  getCategory,
   getMovieByCreatAt,
   getMovieByScore,
 } from '../../Redux/actions/movieAction';
+import {
+  getCategory
+} from '../../Redux/actions/categoryAction'
 import { MySpinner, MyHighLightButton } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
@@ -74,8 +76,8 @@ export default function Home({ navigation }) {
   // }
 
   useEffect(() => {
-    //get cate
 
+    //get cate
     getCategory()
       .then((category) => {
         setLoading(false), setDataCate(category);
@@ -172,7 +174,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container} >
-      <StatusBar translucent={false} />
+      <StatusBar translucent={false} backgroundColor="#fff" />
       <View style={styles.topNav} >
         <View style={styles.topNavTop} >
           <View style={{ flex: 1 }}>
@@ -209,7 +211,7 @@ export default function Home({ navigation }) {
           {dataCate?.items.map((c, i) => {
             return (
               <TouchableOpacity style={styles.cate}>
-                <Text>{c.name}</Text>
+                <Text style={{ fontFamily: Fonts.SansMedium }}>{c.name}</Text>
               </TouchableOpacity>
             );
           })}
@@ -263,6 +265,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -292,6 +295,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -320,6 +324,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageD} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -368,7 +373,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageA} source={{ uri: c.cover_img }} />
                   <Text
-
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -399,6 +404,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -428,6 +434,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -457,6 +464,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -486,6 +494,7 @@ export default function Home({ navigation }) {
                   }>
                   <Image style={styles.imageC} source={{ uri: c.cover_img }} />
                   <Text
+                    style={{ fontFamily: Fonts.Sans }}
                     numberOfLines={1}
                     ellipsizeMode="tail"
                   >{c.name}</Text>
@@ -723,8 +732,8 @@ const styles = StyleSheet.create({
   topNav: {
     flexDirection: "column",
     padding: 16,
-
-    zIndex: 1
+    zIndex: 1,
+    backgroundColor: "#fff"
   },
 
   topNavTop: {
