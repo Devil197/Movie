@@ -21,7 +21,7 @@ import {
 } from '../../constants/constants';
 import {ptColor} from '../../constants/styles';
 import {Fonts} from '../../utils/Fonts';
-import KeyWords from '../views/searchComponent';
+//import KeyWords from '../views/searchComponent';
 import {MyHighLightButton} from '../views';
 import {
   searchAPI,
@@ -54,6 +54,7 @@ export default function Search({navigation}) {
 
   useEffect(() => {
     inputRef.current = keyword;
+    handleHotMovieAPI();
   }, []);
 
   const handleGetDataByKeyword = async (keyword) => {
@@ -70,7 +71,9 @@ export default function Search({navigation}) {
       .catch((err) => {
         console.log(err);
       });
+  };
 
+  const handleHotMovieAPI = async () => {
     //Get hot contents
     let hotContents = await hotContentsAPI().then((data) => {
       return data?.items;
@@ -137,58 +140,49 @@ export default function Search({navigation}) {
         </View>
       </Animated.View>
 
-      {keyword === '' ? (
-        <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords
-            setKeywordOnPress={(val) => {
-              setKeyword(val);
-              handleGetDataByKeyword(val);
-              setVisible(true);
-            }}
-          />
+      {!isVisible ? (
+        <ScrollView contentContainerStyle={styles.hotKeyWordContainer}>
+          <Text
+            style={{
+              color: ptColor.gray2,
+              fontFamily: Fonts.SansMedium,
+              fontSize: 14 * WIDTH_SCALE,
+            }}>
+            POPULAR KEYWORD
+          </Text>
+          <View style={{padding: WIDTH * 0.02, flexDirection: 'row'}}>
+            {hotContentsData.map((value, index) => {
+              return (
+                <MyHighLightButton
+                  onPress={() =>
+                    navigation.push(ROUTE_KEY.Details, {_id: value?._id})
+                  }>
+                  <Text
+                    key={value?._id}
+                    numberOfLines={1}
+                    style={{
+                      backgroundColor: ptColor.white,
+                      padding: 10 * WIDTH_SCALE,
+                      // borderRadius: 20 * WIDTH_SCALE,
+                      // borderColor: '#e056fd',
+                      // borderWidth: 0.5,
+                      fontFamily: Fonts.SansMedium,
+                      marginRight: WIDTH * 0.02,
+                      color: '#e056fd',
+                    }}
+                    ellipsizeMode="middle">
+                    {value?.name}
+                  </Text>
+                </MyHighLightButton>
+              );
+            })}
+          </View>
         </ScrollView>
       ) : null}
 
       {isVisible ? (
         !isLoading ? (
           <View style={styles.listALLContainer}>
-            <View style={{marginTop: HEIGHT * 0.01}}>
-              <Text
-                style={{
-                  color: ptColor.gray2,
-                  fontFamily: Fonts.SansMedium,
-                  fontSize: 14 * WIDTH_SCALE,
-                }}>
-                POPULAR KEYWORD
-              </Text>
-              <View style={{padding: WIDTH * 0.02, flexDirection: 'row'}}>
-                {hotContentsData.map((value, index) => {
-                  return (
-                    <MyHighLightButton
-                      onPress={() =>
-                        navigation.push(ROUTE_KEY.Details, {_id: value?._id})
-                      }>
-                      <Text
-                        key={value?._id}
-                        numberOfLines={1}
-                        style={{
-                          backgroundColor: ptColor.white,
-                          padding: 10 * WIDTH_SCALE,
-                          // borderRadius: 20 * WIDTH_SCALE,
-                          // borderColor: '#e056fd',
-                          // borderWidth: 0.5,
-                          fontFamily: Fonts.SansMedium,
-                          marginRight: WIDTH * 0.02,
-                          color: '#e056fd',
-                        }}
-                        ellipsizeMode="middle">
-                        {value?.name}
-                      </Text>
-                    </MyHighLightButton>
-                  );
-                })}
-              </View>
-            </View>
             <View style={styles.list}>
               <Text
                 style={{
@@ -286,8 +280,9 @@ const styles = StyleSheet.create({
     height: HEIGHT,
     backgroundColor: ptColor.white,
   },
-  keyWordContainer: {
+  hotKeyWordContainer: {
     flex: 1,
+    paddingLeft: WIDTH * 0.02,
   },
   searchSuggestionsContainer: {
     height: HEIGHT * 0.055,

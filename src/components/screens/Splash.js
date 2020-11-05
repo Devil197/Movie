@@ -146,11 +146,3 @@ export default function Splash({navigation}) {
     </View>
   );
 }
-
-const myStyles = StyleSheet.create({
-  logo: {
-    height: HEIGHT / 4,
-    width: WIDTH,
-    resizeMode: 'contain',
-  },
-});
