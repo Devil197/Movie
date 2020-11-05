@@ -170,6 +170,11 @@ export default function Splash({navigation}) {
     }
     appState.current = nextAppState;
   };
+
+  if (isShowIntroduce === true) {
+    return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;
+  }
+
   return (
     <View style={styles.container}>
       <ImageBackground source={IMAGE} style={styles.image_background}>
