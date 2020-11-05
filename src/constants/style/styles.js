@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
   },
   // music
   containerMusic: {
-    backgroundColor: '#161622',
+    // backgroundColor: '#161622',
     flex: 1,
   },
   header: {
