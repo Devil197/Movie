@@ -26,11 +26,13 @@ import {MyHighLightButton} from '../views';
 import {
   searchAPI,
   addKeywordActionRedux,
+  hotContentsAPI,
 } from '../../Redux/actions/keywordAction';
 import {FilmItem, CastItem, MySpinner} from '../views';
-import {SkypeIndicator} from 'react-native-indicators'; //Cái MySpinner ko show đc. Loay hoay tốn đống time nên t xài cái nãy đã
-
+import {SkypeIndicator} from 'react-native-indicators';
+import {Chip} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import {ROUTE_KEY} from '../../constants/constants';
 
 export default function Search({navigation}) {
   const scrollY = new Animated.Value(0);
@@ -43,70 +45,49 @@ export default function Search({navigation}) {
 
   const dispatch = useDispatch();
 
+  const inputRef = useRef(keyword);
   const [keyword, setKeyword] = useState('');
-  const [data, setData] = useState();
   const [isVisible, setVisible] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [dataFlatlist, setDataFlatlist] = useState();
+  const [dataAfterSearch, setdataAfterSearch] = useState();
+  const [hotContentsData, setHotContentsData] = useState([]);
 
   useEffect(() => {
-    handleGetDataByKeyword();
-  }, [keyword]);
-  const handleGetDataByKeyword = async () => {
+    inputRef.current = keyword;
+  }, []);
+
+  const handleGetDataByKeyword = async (keyword) => {
+    console.log('Search API Called');
     setLoading(true);
     if (keyword === '') {
       return;
     }
     await searchAPI(keyword)
       .then((json) => {
-        setData(json);
-        setDataFlatlist([...json?.cast, ...json?.movie]);
+        setdataAfterSearch([...json?.cast, ...json?.movie]);
         setLoading(false);
       })
       .catch((err) => {
         console.log(err);
       });
+
+    //Get hot contents
+    let hotContents = await hotContentsAPI().then((data) => {
+      return data?.items;
+    });
+    setHotContentsData(hotContents);
   };
 
   const handleSearchOnPress = () => {
     setVisible(true);
     addKeywordActionRedux(dispatch, keyword);
-  };
-
-  const searchSuggestionsOnPress = (_id) => {
-    console.log(_id);
+    handleGetDataByKeyword(keyword);
   };
 
   const closeIconOnPress = () => {
     setKeyword('');
     setVisible(false);
   };
-
-  const renderCastItemAfterHandleSearchAPI = data?.cast.map((c, i) => {
-    return (
-      <TouchableWithoutFeedback
-        key={c._id}
-        onPress={() => searchSuggestionsOnPress(c._id)}>
-        <View style={styles.searchSuggestionsContainer} key={c?._id}>
-          <EvilIcon name="search" size={22} color={'gray'} />
-          <Text style={styles.searchSuggestions}>{c?.name}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  });
-
-  const renderMovieItemAfterHandleSearchAPI = data?.movie.map((c, i) => {
-    return (
-      <TouchableWithoutFeedback
-        key={c?._id}
-        onPress={() => searchSuggestionsOnPress(c?._id)}>
-        <View style={styles.searchSuggestionsContainer} key={c?._id}>
-          <EvilIcon name="search" size={22} color={ptColor.gray2} />
-          <Text style={styles.searchSuggestions}>{c?.name}</Text>
-        </View>
-      </TouchableWithoutFeedback>
-    );
-  });
 
   return (
     <View style={styles.container}>
@@ -124,7 +105,11 @@ export default function Search({navigation}) {
               <FontAwesome5 name="arrow-left" size={18} color={ptColor.black} />
             </MyHighLightButton>
             <View style={styles.searchInputContainer}>
-              <EvilIcon name="search" size={22} color={ptColor.gray2} />
+              <EvilIcon
+                name="search"
+                size={22 * WIDTH_SCALE}
+                color={ptColor.gray2}
+              />
               <TextInput
                 autoFocus={true}
                 value={keyword}
@@ -133,12 +118,12 @@ export default function Search({navigation}) {
                   setVisible(false);
                 }}
                 style={styles.searchInput}
-                placeholder={'Tìm kiếm với GEA'}
+                placeholder={'Search on GEA'}
                 placeholderTextColor={ptColor.gray2}
                 onSubmitEditing={handleSearchOnPress}
                 returnKeyType="search"
               />
-              {keyword.length > 0 ? (
+              {keyword !== '' ? (
                 <EvilIcon
                   onPress={() => closeIconOnPress()}
                   style={styles.closeIcon}
@@ -152,47 +137,112 @@ export default function Search({navigation}) {
         </View>
       </Animated.View>
 
-      {keyword != '' ? (
-        isLoading ? (
+      {keyword === '' ? (
+        <ScrollView contentContainerStyle={styles.keyWordContainer}>
+          <KeyWords
+            setKeywordOnPress={(val) => {
+              setKeyword(val);
+              handleGetDataByKeyword(val);
+              setVisible(true);
+            }}
+          />
+        </ScrollView>
+      ) : null}
+
+      {isVisible ? (
+        !isLoading ? (
+          <View style={styles.listALLContainer}>
+            <View style={{marginTop: HEIGHT * 0.01}}>
+              <Text
+                style={{
+                  color: ptColor.gray2,
+                  fontFamily: Fonts.SansMedium,
+                  fontSize: 14 * WIDTH_SCALE,
+                }}>
+                POPULAR KEYWORD
+              </Text>
+              <View style={{padding: WIDTH * 0.02, flexDirection: 'row'}}>
+                {hotContentsData.map((value, index) => {
+                  return (
+                    <MyHighLightButton
+                      onPress={() =>
+                        navigation.push(ROUTE_KEY.Details, {_id: value?._id})
+                      }>
+                      <Text
+                        key={value?._id}
+                        numberOfLines={1}
+                        style={{
+                          backgroundColor: ptColor.white,
+                          padding: 10 * WIDTH_SCALE,
+                          // borderRadius: 20 * WIDTH_SCALE,
+                          // borderColor: '#e056fd',
+                          // borderWidth: 0.5,
+                          fontFamily: Fonts.SansMedium,
+                          marginRight: WIDTH * 0.02,
+                          color: '#e056fd',
+                        }}
+                        ellipsizeMode="middle">
+                        {value?.name}
+                      </Text>
+                    </MyHighLightButton>
+                  );
+                })}
+              </View>
+            </View>
+            <View style={styles.list}>
+              <Text
+                style={{
+                  color: ptColor.gray2,
+                  fontFamily: Fonts.SansMedium,
+                  fontSize: 14 * WIDTH_SCALE,
+                }}>
+                FOUND {dataAfterSearch.length} RESULTS
+              </Text>
+              {dataAfterSearch.length > 0 ? (
+                <FlatList
+                  showsVerticalScrollIndicator={true}
+                  data={dataAfterSearch}
+                  keyExtractor={(item) => String(item._id)}
+                  renderItem={(item) =>
+                    'birthday' in item.item ? (
+                      <CastItem item={item} />
+                    ) : (
+                      <FilmItem params={item} navigation={navigation} />
+                    )
+                  }
+                />
+              ) : (
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: HEIGHT * 0.6,
+                  }}>
+                  <Text
+                    style={{
+                      color: ptColor.gray2,
+                      fontSize: 16 * WIDTH_SCALE,
+                      fontFamily: Fonts.SansMedium,
+                    }}>
+                    Oop! No result were found
+                  </Text>
+                </View>
+              )}
+            </View>
+          </View>
+        ) : (
           <SkypeIndicator
             color={ptColor.appColor}
             size={20 * WIDTH_SCALE}
             style={{marginTop: 20}}
           />
-        ) : !isVisible ? (
-          <ScrollView style={{width: '100%', backgroundColor: ptColor.white}}>
-            {renderCastItemAfterHandleSearchAPI}
-            {renderMovieItemAfterHandleSearchAPI}
-          </ScrollView>
-        ) : null
-      ) : (
-        <ScrollView contentContainerStyle={styles.keyWordContainer}>
-          <KeyWords setKeywordOnPress={(val) => setKeyword(val)} />
-        </ScrollView>
-      )}
-
-      {isVisible ? (
-        <View style={styles.listALLContainer}>
-          <View style={styles.list}>
-            <FlatList
-              showsVerticalScrollIndicator={true}
-              data={dataFlatlist}
-              keyExtractor={(item) => String(item._id)}
-              renderItem={(item) =>
-                'birthday' in item.item ? (
-                  <CastItem item={item} />
-                ) : (
-                  <FilmItem item={item} />
-                )
-              }
-            />
-          </View>
-        </View>
+        )
       ) : null}
     </View>
   );
 }
 
+// không nên chia style như vậy viết trên thẻ lun để tới lúc chỉnh cho dễ chó mò xuống đây lại rối
 const styles = StyleSheet.create({
   container: {
     marginTop: STATUS_BAR_CURRENT_HEIGHT,
@@ -219,65 +269,46 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'rgba(166, 164, 164, 0.3)',
-    height: 40,
-    paddingLeft: 20,
-    marginRight: 10,
+    backgroundColor: '#fff',
+    height: HEIGHT * 0.06,
+    paddingLeft: WIDTH * 0.06,
+    marginRight: WIDTH * 0.03,
     borderRadius: 20,
   },
   searchInput: {
-    width: '80%',
+    width: WIDTH * 0.6,
     color: ptColor.gray2,
     fontSize: 16 * WIDTH_SCALE,
-    height: 41,
-    paddingLeft: 5,
+    height: HEIGHT * 0.06,
+    paddingLeft: WIDTH * 0.015,
   },
   contentContainer: {
-    height: '100%',
+    height: HEIGHT,
     backgroundColor: ptColor.white,
   },
   keyWordContainer: {
     flex: 1,
   },
   searchSuggestionsContainer: {
-    height: 35,
+    height: HEIGHT * 0.055,
     width: '100%',
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    paddingLeft: 15,
+    paddingLeft: WIDTH * 0.0175,
   },
   searchSuggestions: {
     color: ptColor.black,
-    paddingLeft: 10,
-  },
-  topTabs: {
-    height: 30,
-    width: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  topTabsBar: {
-    backgroundColor: '#819ee5',
-    width: '40%',
-    borderRadius: 8,
-    height: 2,
-  },
-  txtLableContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    color: ptColor.gray2,
-    fontFamily: Fonts.SansMedium,
-    fontSize: 16 * WIDTH_SCALE,
+    paddingLeft: WIDTH * 0.03,
   },
   listALLContainer: {
     flex: 1,
     borderRadius: 10,
-    marginRight: 8,
-    marginLeft: 8,
+    marginRight: WIDTH * 0.028,
+    marginLeft: WIDTH * 0.028,
   },
   list: {
     borderRadius: 3,
-    marginTop: 5,
+    marginTop: HEIGHT * 0.015,
   },
 });

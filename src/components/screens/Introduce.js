@@ -1,5 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {StyleSheet, View, Image, Text, StatusBar} from 'react-native';
+import React, {useEffect, useState, useMemo} from 'react';
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  StatusBar,
+  ImageBackground,
+} from 'react-native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import App from '../../App';
 import Icon from 'react-native-vector-icons/Ionicons';
@@ -7,9 +14,10 @@ import {
   WIDTH,
   HEIGHT,
   STATUS_BAR_CURRENT_HEIGHT,
+  WIDTH_SCALE,
 } from '../../constants/constants';
-import AsyncStorage from '@react-native-community/async-storage';
-import {MySpinner} from '../views/MySpinner';
+import {ROUTE_KEY} from '../../constants/constants';
+import {storeValueIsShowIntroduceOrNot} from '../../utils/IsShowIntroduce';
 
 const slides = [
   {
@@ -35,50 +43,19 @@ const slides = [
   },
 ];
 
-export default function Introduce() {
-  const [letGetIt, setLetGetIt] = useState();
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    try {
-      await AsyncStorage.getItem('@isShow', (err, value) => {
-        if (err) {
-          console.log(err);
-        } else {
-          if (value !== null) {
-            setLetGetIt(JSON.parse(value));
-            console.log(letGetIt);
-          } else {
-            setLetGetIt(false);
-          }
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+export default function Introduce({turnOffIntroduce}) {
   const _onDone = () => {
-    setLetGetIt(true);
-    storeData();
-  };
-
-  const storeData = async () => {
-    try {
-      await AsyncStorage.setItem('@isShow', JSON.stringify(true));
-    } catch (e) {
-      console.log(e);
-    }
+    storeValueIsShowIntroduceOrNot();
+    turnOffIntroduce();
   };
 
   const _renderItem = ({item}) => {
     return (
       <View style={styles.slide} key={item.key}>
         <StatusBar barStyle="light-content" />
-        <Image source={item.image} style={styles.image} />
+        <ImageBackground source={item.image} style={styles.image}>
+          <Text style={{color: '#fff', fontSize: 40}}>{item.key}</Text>
+        </ImageBackground>
       </View>
     );
   };
@@ -89,7 +66,7 @@ export default function Introduce() {
         <Icon
           name="arrow-forward-sharp"
           color="rgba(255, 255, 255, .9)"
-          size={24}
+          size={24 * WIDTH_SCALE}
         />
       </View>
     );
@@ -101,26 +78,22 @@ export default function Introduce() {
         <Icon
           name="checkmark-sharp"
           color="rgba(255, 255, 255, .9)"
-          size={24}
+          size={24 * WIDTH_SCALE}
         />
       </View>
     );
   };
 
-  if (letGetIt) {
-    return <App />;
-  } else {
-    return (
-      <AppIntroSlider
-        data={slides}
-        renderItem={_renderItem}
-        renderDoneButton={_renderDoneButton}
-        renderNextButton={_renderNextButton}
-        dotStyle={{backgroundColor: '#6b6a69'}}
-        onDone={_onDone}
-      />
-    );
-  }
+  return (
+    <AppIntroSlider
+      data={slides}
+      renderItem={_renderItem}
+      renderDoneButton={_renderDoneButton}
+      renderNextButton={_renderNextButton}
+      dotStyle={{backgroundColor: '#6b6a69'}}
+      onDone={_onDone}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
@@ -132,12 +105,14 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-    width: '100%',
+    width: WIDTH,
+    alignItems: 'center',
   },
   buttonCircle: {
-    width: 40,
-    height: 40,
-    backgroundColor: 'rgba(0, 0, 0, .2)',
+    width: WIDTH * 0.1,
+    height: WIDTH * 0.1,
+    //backgroundColor: 'rgba(0, 0, 0, .2)',
+    backgroundColor: 'gray',
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
