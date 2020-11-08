@@ -45,15 +45,13 @@ export default function Details({ navigation, route }) {
     MySpinner.show();
     getFullMovie(_id)
       .then((fullMovie) => {
-        console.log('0001 ', fullMovie);
         setDataMovie(fullMovie);
-        console.log('trailer : ', fullMovie.movie[0].trailer);
         setTrailer(fullMovie?.movie[0]?.trailer);
         setLoading(false);
       })
       .catch((err) => console.log('Failed', err));
   }, []);
-  console.log('yyyyy', dataMovie?.movie[0].trailer);
+
   if (loading) {
     MySpinner.show();
     return (
