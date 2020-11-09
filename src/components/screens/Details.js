@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -12,7 +12,7 @@ import {
   Image,
 } from 'react-native';
 
-import {getFullMovie} from '../../Redux/actions/movieAction';
+import { getFullMovie } from '../../Redux/actions/movieAction';
 import {
   WIDTH_SCALE,
   HEIGHT_SCALE,
@@ -21,13 +21,14 @@ import {
 } from '../../constants/constants';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import {MySpinner, MyHighLightButton} from '../views';
-import {ROUTE_KEY} from '../../constants/constants';
-import {Play, Player} from '../views';
-import {ptColor} from '../../constants/styles';
+import { MySpinner, MyHighLightButton } from '../views';
+import { ROUTE_KEY } from '../../constants/constants';
+import { Play, Player } from '../views';
+import { ptColor } from '../../constants/styles';
 import Orientation from 'react-native-orientation';
 import Header from '../views/HeaderMovie';
-export default function Details({navigation, route}) {
+import Icons from 'react-native-vector-icons/Feather'
+export default function Details({ navigation, route }) {
   // video ====
   const [height, setHeight] = useState();
   const [trailer, setTrailer] = useState('');
@@ -44,15 +45,13 @@ export default function Details({navigation, route}) {
     MySpinner.show();
     getFullMovie(_id)
       .then((fullMovie) => {
-        console.log('0001 ', fullMovie);
         setDataMovie(fullMovie);
-        console.log('trailer : ', fullMovie.movie[0].trailer);
         setTrailer(fullMovie?.movie[0]?.trailer);
         setLoading(false);
       })
       .catch((err) => console.log('Failed', err));
   }, []);
-  console.log('yyyyy', dataMovie?.movie[0].trailer);
+
   if (loading) {
     MySpinner.show();
     return (
@@ -105,19 +104,22 @@ export default function Details({navigation, route}) {
       {/* {!fullScreen ? ( */}
       <MyHighLightButton
         style={{
-          marginTop: 10 * WIDTH_SCALE,
-          width: 80 * WIDTH_SCALE,
-          height: 40 * WIDTH_SCALE,
-          backgroundColor: 'gray',
+          marginTop: 150 * WIDTH_SCALE,
+          marginLeft: 330 * WIDTH_SCALE,
+          width: 60 * WIDTH_SCALE,
+          height: 60 * WIDTH_SCALE,
           alignItems: 'center',
           justifyContent: 'center',
-          borderRadius: 15 * WIDTH_SCALE,
+          borderRadius: 30 * WIDTH_SCALE,
+          position: 'absolute',
+          borderColor: '#fff',
+          borderWidth: 1,
         }}
-        onPress={() => navigation.push(ROUTE_KEY.Videos, {_id: _id})}>
-        <Text style={{color: 'white'}}>Xem Phim</Text>
+        onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
+        <Icons name="play" size={28 * WIDTH_SCALE} color="#fff" />
       </MyHighLightButton>
 
-      <View style={{marginTop: 0, flex: 3}}>
+      <View style={{ marginTop: 0, flex: 3 }}>
         {/* <View style={styles.header2}>
                     <Image source={{ uri: dataMovie?.movie[0].cover_img }} style={styles.imageHeader} />
                     <View style={styles.boxContent}>
@@ -147,7 +149,7 @@ export default function Details({navigation, route}) {
             }}>
             Overview
           </Text>
-          <Text style={{margin: 10 * WIDTH_SCALE}}>
+          <Text style={{ margin: 10 * WIDTH_SCALE }}>
             {dataMovie?.movie[0].introduction}
           </Text>
         </View>
@@ -165,7 +167,7 @@ export default function Details({navigation, route}) {
             {dataMovie?.cast.map((c, i) => {
               return (
                 <MyHighLightButton style={styles.touchopa}>
-                  <Image source={{uri: c.cover_img}} style={styles.imageCast} />
+                  <Image source={{ uri: c.cover_img }} style={styles.imageCast} />
                   <Text color="#333">{c.name}</Text>
                 </MyHighLightButton>
               );

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   StatusBar,
   Text,
@@ -8,18 +8,22 @@ import {
   BackHandler,
   SafeAreaView,
 } from 'react-native';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {Fonts} from '../../utils/Fonts';
-import {getVideoByMovie, getFullMovie} from '../../Redux/actions/movieAction';
-import {Play, Player} from '../views';
+import { Fonts } from '../../utils/Fonts';
+import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
+import { Play, Player } from '../views';
 import Orientation from 'react-native-orientation';
 import moment from 'moment';
 
-import {MySpinner} from '../views';
-import {HEIGHT, WIDTH, WIDTH_SCALE} from '../../constants/constants';
-import {onChange} from 'react-native-reanimated';
-import {ptColor} from '../../constants/styles';
+import { MySpinner } from '../views';
+import { HEIGHT, WIDTH, WIDTH_SCALE } from '../../constants/constants';
+import { onChange } from 'react-native-reanimated';
+import { ptColor } from '../../constants/styles';
+
+//NguyenHai editted from here
+import { addHistoryByMovieId } from '../../Redux/actions/historyAction'
+import { useSelector } from 'react-redux';
 
 function renderDays(idx) {
   if (idx === 7) {
@@ -31,7 +35,8 @@ function renderDays(idx) {
 
 const url = 'r_G69vVBaww';
 
-const Videos = ({navigation, params, route}) => {
+const Videos = ({ navigation, params, route }) => {
+
   const _id = route.params?._id;
   const [fullScreen, setFullScreen] = useState(false);
   const [dataVideo, setDataVideo] = useState();
@@ -41,12 +46,45 @@ const Videos = ({navigation, params, route}) => {
   const [title, setTitle] = useState();
   const initial = Orientation.getInitialOrientation();
 
-  console.log('1001 type play video screen ', fullScreen);
+  //NguyenHai editted here
+  const userInfo = useSelector((state) => state.userReducer?.userInfo);
+
+  const [videoId, setVideoId] = useState('');
+  const [watchedVideoAt, setTimeWatchedVideo] = useState(new Date());
+
+  const videoRef = useRef(videoId)
+  useEffect(() => {
+    videoRef.current = dataVideo?.items[idx]?._id
+    //console.log(videoRef.current)
+  }, [idx])
+
+  const handleAddHistoryAPI = () => {
+    let userId = userInfo?._id;
+    setTimeWatchedVideo(new Date());
+    let date = watchedVideoAt.getTime();
+
+    console.log("\n_idMovie: " + _id +
+      "\nVideo: " + videoRef.current +
+      "\nWatched At: " + date +
+      "\nUserId: " + userId);
+
+    addHistoryByMovieId(_id, videoRef.current, date, userId);
+  }
+
+  useEffect(() => {
+    return () => {
+      handleAddHistoryAPI()
+    }
+  }, [])
+
+  //=====================//
+
+  //console.log('1001 type play video screen ', fullScreen);
+
   useEffect(() => {
     MySpinner.show();
     getVideoByMovie(_id)
-      .then((video) => {
-        console.log('00001 ', video);
+      .then(video => {
         setDataVideo(video);
         setLoading(false);
         MySpinner.hide();
@@ -60,6 +98,7 @@ const Videos = ({navigation, params, route}) => {
         MySpinner.hide();
       })
       .catch((err) => console.log('Failed', err));
+
   }, []);
 
   const onFullScreen = (fullScreen) => {
@@ -76,6 +115,7 @@ const Videos = ({navigation, params, route}) => {
     moment(dataFullMovie?.movie[0]?.update_at, 'YYYY-MM-DDTHH:mm:ss').day(),
   );
   const time = moment(dataFullMovie?.movie[0]?.update_at).format('HH:mm');
+
   return (
     <View
       style={{
@@ -91,10 +131,13 @@ const Videos = ({navigation, params, route}) => {
           overflow: 'hidden',
           backgroundColor: ptColor.divider,
         }}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <Text>Back</Text>
+        </TouchableOpacity>
         <Player url={url} fullScreen={onFullScreen} />
       </View>
       {!fullScreen ? (
-        <View style={{marginTop: 0, flex: 3}}>
+        <View style={{ marginTop: 0, flex: 3 }}>
           {/* Videos of Movie */}
           <View>
             <View style={styles.card}>
@@ -105,7 +148,7 @@ const Videos = ({navigation, params, route}) => {
               </Text>
               <View style={[styles.rowRating, styles.mr]}>
                 <Text>0.0 </Text>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <Icon name="star" size={20} color="#a5a5a5" />
                   <Icon name="star" size={20} color="#a5a5a5" />
                   <Icon name="star" size={20} color="#a5a5a5" />
@@ -116,7 +159,7 @@ const Videos = ({navigation, params, route}) => {
               <Text style={styles.mr}>
                 Thể loại: {dataFullMovie?.category[0]?.name}
               </Text>
-              <Text style={[styles.mr, {color: '#555'}]}>
+              <Text style={[styles.mr, { color: '#555' }]}>
                 {dataFullMovie?.movie[0]?.introduction}.{' '}
               </Text>
             </View>
@@ -126,7 +169,7 @@ const Videos = ({navigation, params, route}) => {
           <View style={styles.card}>
             <Text style={styles.header}>Chọn tập</Text>
             <Text
-              style={{fontFamily: Fonts.Sans, marginBottom: 16, color: '#555'}}>
+              style={{ fontFamily: Fonts.Sans, marginBottom: 16, color: '#555' }}>
               Cập nhật vào {day} hàng tuần vào lúc {time}
             </Text>
             <FlatList
@@ -134,19 +177,17 @@ const Videos = ({navigation, params, route}) => {
                 return item._id;
               }}
               data={dataVideo?.items}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <TouchableOpacity
                   onPress={() => {
                     setIndex(index);
-                    console.log(item._id);
-                    console.log(index);
                     setTitle(item.title);
                   }}
                   style={{
                     ...styles.itemEp,
                     backgroundColor: idx === index ? '#F2F5FB' : '#F2F5FB',
                   }}>
-                  <Text style={{color: idx === index ? '#0984e3' : 'black'}}>
+                  <Text style={{ color: idx === index ? '#0984e3' : 'black' }}>
                     {item.title}
                   </Text>
                 </TouchableOpacity>
@@ -171,7 +212,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 16,
   },
-  rowRating: {flexDirection: 'row', alignItems: 'center', marginVertical: 4},
+  rowRating: { flexDirection: 'row', alignItems: 'center', marginVertical: 4 },
   mr: {
     marginVertical: 4,
   },

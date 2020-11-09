@@ -190,7 +190,7 @@ export default function Home({ navigation }) {
           </View>
 
           <View style={styles.topNavIcon}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Search)}>
               <Icon name="search" size={24} color="#000" />
             </TouchableOpacity>
 

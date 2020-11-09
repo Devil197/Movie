@@ -35,6 +35,8 @@ const IMAGE = {
 };
 
 import { getValueToShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
+import { getNewNotification, setNewNotification, clearNewNotification } from '../../utils/asyncStorage'
+
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -82,94 +84,40 @@ export default function Splash({ navigation }) {
   };
 
   useEffect(() => {
-    let unsubscribe = null;
-    async function initApplicationData() {
-      let fcmToken = null;
-      try {
-        await requestUserPermission();
-        fcmToken = await messaging().getToken();
+    PushNotification.configure({
+      // (optional) Called when Token is generated (iOS and Android)
+      onRegister: function (token) {
+        console.log("TOKEN:", token);
+      },
 
-        messaging()
-          .subscribeToTopic('N-M-M')
-          .then(() => console.log('1001 Subscribed to topic!'));
-      } catch (error) { }
-      PushNotification.createChannel(
-        {
-          number: moment().milliseconds(),
-          channelId: 'movie0103',
-          channelName: 'Movie',
-          soundName: 'default',
-          group: 'Movie',
-        },
-        (created) => console.log(`100 createChannel returned '${created}'`),
-      );
+      // (required) Called when a remote is received or opened, or local notification is opened
+      onNotification: function (notification) {
 
-      setTimeout(() => {
-        PushNotification.configure({
-          onRegister: function (token) {
-            console.log('TOKEN:', token);
-          },
-
-          // (required) Called when a remote is received or opened, or local notification is opened
-          // Open schedule detail when click on Noti
-          onNotification: async function (notification) {
-            console.log('1001 notificationFICATION:', notification);
-            pushNotification(notification);
-          },
-
-          // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
-          onAction: function (notification) {
-            console.log('1001 Long ACTION:', notification.action);
-            console.log('1001 Long NOTIFICATION:', notification);
-            // process the action
-          },
-        });
-      }, 1000);
-    }
-
-    initApplicationData();
-    AppState.addEventListener('change', _handleAppStateChange);
-
-    return () => {
-      console.log('1001 : Splash -> unsubscribe', unsubscribe);
-      AppState.removeEventListener('change', _handleAppStateChange);
-      // unsubscribe();
-      // Linking.removeEventListener('url', handleOpenURL);
-
-      // messaging().unsubscribeFromTopic('test');
-    };
-  }, []);
-
-  const pushNotification = async (listener) => {
-    PushNotification.localNotification({
-      title: listener.data.movie_name,
-      message: 'abc',
-      channelId: 'movie0103',
-      id: moment().seconds(),
-      largeIconUrl: listener.data.photo,
+        console.log("1001 NOTIFICATION:", notification);
+        const movie_id = notification.message.split('/')
+        if (notification.userInteraction) {
+          navigation.navigate(ROUTE_KEY.Details, { _id: movie_id[1] })
+        }
+      },
+      onAction: function (notification) {
+        console.log("1001 ACTION:", notification.action);
+        Alert.alert('chayj ne')
+        console.log("1001 NOTIFICATION:", notification);
+        const movie_id = notification.message.split('/')
+        navigation.navigate(ROUTE_KEY.Details, { _id: movie_id[1] })
+      },
+      onRegistrationError: function (err) {
+        console.error(err.message, err);
+      },
+      permissions: {
+        alert: true,
+        badge: true,
+        sound: true,
+      },
+      popInitialNotification: true,
+      requestPermissions: true,
     });
-  };
-
-  const _handleAppStateChange = async (nextAppState) => {
-    console.log('29148 : _handleAppStateChange -> nextAppState', nextAppState);
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      PushNotification.popInitialNotification((notification) => {
-        if (notification) {
-          this.onNotification(notification);
-        }
-      });
-    } else {
-      PushNotification.popInitialNotification((notification) => {
-        if (notification) {
-          this.onNotification(notification);
-        }
-      });
-    }
-    appState.current = nextAppState;
-  };
+  }, [])
 
   if (isShowIntroduce === true) {
     return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;

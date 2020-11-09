@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -19,22 +19,22 @@ import {
   HEADER_HEIGHT,
   WIDTH_SCALE,
 } from '../../constants/constants';
-import {ptColor} from '../../constants/styles';
-import {Fonts} from '../../utils/Fonts';
+import { ptColor } from '../../constants/styles';
+import { Fonts } from '../../utils/Fonts';
 //import KeyWords from '../views/searchComponent';
-import {MyHighLightButton} from '../views';
+import { MyHighLightButton } from '../views';
 import {
   searchAPI,
   addKeywordActionRedux,
   hotContentsAPI,
 } from '../../Redux/actions/keywordAction';
-import {FilmItem, CastItem, MySpinner} from '../views';
-import {SkypeIndicator} from 'react-native-indicators';
-import {Chip} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import {ROUTE_KEY} from '../../constants/constants';
+import { FilmItem, CastItem, MySpinner } from '../views';
+import { SkypeIndicator } from 'react-native-indicators';
+import { Chip } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { ROUTE_KEY } from '../../constants/constants';
 
-export default function Search({navigation}) {
+export default function Search({ navigation }) {
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
 
@@ -97,7 +97,7 @@ export default function Search({navigation}) {
       <StatusBar backgroundColor={ptColor.white} />
       <Animated.View
         style={{
-          transform: [{translateY: translateY}],
+          transform: [{ translateY: translateY }],
           zIndex: 10,
         }}>
         <View style={styles.searchBarContainer}>
@@ -121,7 +121,7 @@ export default function Search({navigation}) {
                   setVisible(false);
                 }}
                 style={styles.searchInput}
-                placeholder={'Search on GEA'}
+                //placeholder={'Search on GEA'}
                 placeholderTextColor={ptColor.gray2}
                 onSubmitEditing={handleSearchOnPress}
                 returnKeyType="search"
@@ -150,15 +150,15 @@ export default function Search({navigation}) {
             }}>
             POPULAR KEYWORD
           </Text>
-          <View style={{padding: WIDTH * 0.02, flexDirection: 'row'}}>
+          <View style={{ padding: WIDTH * 0.02, flexDirection: 'row' }}>
             {hotContentsData.map((value, index) => {
               return (
                 <MyHighLightButton
+                  key={value?._id}
                   onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, {_id: value?._id})
+                    navigation.push(ROUTE_KEY.Details, { _id: value?._id })
                   }>
                   <Text
-                    key={value?._id}
                     numberOfLines={1}
                     style={{
                       backgroundColor: ptColor.white,
@@ -201,36 +201,36 @@ export default function Search({navigation}) {
                     'birthday' in item.item ? (
                       <CastItem item={item} />
                     ) : (
-                      <FilmItem params={item} navigation={navigation} />
-                    )
+                        <FilmItem params={item} navigation={navigation} />
+                      )
                   }
                 />
               ) : (
-                <View
-                  style={{
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: HEIGHT * 0.6,
-                  }}>
-                  <Text
+                  <View
                     style={{
-                      color: ptColor.gray2,
-                      fontSize: 16 * WIDTH_SCALE,
-                      fontFamily: Fonts.SansMedium,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: HEIGHT * 0.6,
                     }}>
-                    Oop! No result were found
+                    <Text
+                      style={{
+                        color: ptColor.gray2,
+                        fontSize: 16 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansMedium,
+                      }}>
+                      Oop! No result were found
                   </Text>
-                </View>
-              )}
+                  </View>
+                )}
             </View>
           </View>
         ) : (
-          <SkypeIndicator
-            color={ptColor.appColor}
-            size={20 * WIDTH_SCALE}
-            style={{marginTop: 20}}
-          />
-        )
+            <SkypeIndicator
+              color={ptColor.appColor}
+              size={20 * WIDTH_SCALE}
+              style={{ marginTop: 20 }}
+            />
+          )
       ) : null}
     </View>
   );
@@ -239,7 +239,6 @@ export default function Search({navigation}) {
 // không nên chia style như vậy viết trên thẻ lun để tới lúc chỉnh cho dễ chó mò xuống đây lại rối
 const styles = StyleSheet.create({
   container: {
-    marginTop: STATUS_BAR_CURRENT_HEIGHT,
     flex: 1,
     backgroundColor: ptColor.white,
   },
