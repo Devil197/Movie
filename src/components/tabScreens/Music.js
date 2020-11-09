@@ -7,12 +7,12 @@ import {
   Dimensions,
   Image,
   FlatList,
+  StyleSheet,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Swiper from 'react-native-swiper';
-import {MySpinner, MyHighLightButton} from '../views';
-import {ROUTE_KEY} from '../../constants/constants';
-import {styles} from '../../constants/style/styles';
+import { MySpinner, MyHighLightButton } from '../views';
+import { ROUTE_KEY } from '../../constants/constants';
 
 import {
   WIDTH_SCALE,
@@ -22,7 +22,7 @@ import {
 } from '../../constants/constants';
 import MyCarousel from '../views/MyCarousel';
 
-var {height, width} = Dimensions.get('window');
+var { height, width } = Dimensions.get('window');
 const TRACKS = [
   {
     title: 'Top 100 bài hát nhạc trẻ hay nhất',
@@ -60,10 +60,17 @@ const TRACKS = [
 
 const Music = () => {
   return (
-    <View style={{flex: 1}}>
-      <Text>fasfasf</Text>
+    <View style={{ flex: 1 }}>
       <MyCarousel />
     </View>
   );
 };
 export default Music;
+
+const styles = StyleSheet.create({
+  container: {
+    width: WIDTH,
+    height: HEIGHT,
+  },
+
+});

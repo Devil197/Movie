@@ -1,5 +1,5 @@
-import React, {useRef, useState, useEffect} from 'react';
-import Carousel, {ParallaxImage} from 'react-native-snap-carousel';
+import React, { useRef, useState, useEffect } from 'react';
+import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
 import {
   View,
   Text,
@@ -9,43 +9,113 @@ import {
   Platform,
 } from 'react-native';
 import CustomItem from './CustomItem';
-const ENTRIES1 = [
-  {
-    data: [
-      {
-        id: 2,
-        title: 'Peter Grill to Kenja no Jikan',
-        thumb: 'https://img.anime47.com/imgur/6hhR2bl.jpg',
-      },
-      {
-        id: 3,
-        title: 'Dokyuu Hentai HxEros',
-        thumb: 'https://img.anime47.com/imgur/gEfsKK8.jpg',
-      },
-      {
-        id: 4,
-        title: 'Kanojo, Okarishimasu',
-        thumb: 'https://img.anime47.com/imgur/KKrknWT.jpg',
-      },
-    ],
-  },
+import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY, dataCarousel } from '../../constants/constants'
+import {
+  getAllMovie,
+  getCartoon,
+  getCast,
+  getMovieByCreatAt,
+  getMovieByScore,
+} from '../../Redux/actions/movieAction';
 
+const ENTRIES1 = [
   {
     data: [
       {
         id: 5,
         title: 'Deca-Dence',
-        thumb: 'https://img.anime47.com/imgur/4A8EO07.jpg',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
       {
         id: 6,
         title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
-        thumb: 'https://img.anime47.com/imgur/9HpTWLd.jpg',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
       {
         id: 7,
         title: 'The God of High School',
-        thumb: 'https://img.anime47.com/imgur/A9txARE.jpg',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 2,
+        title: 'Peter Grill to Kenja no Jikan',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 3,
+        title: 'Dokyuu Hentai HxEros',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 4,
+        title: 'Kanojo, Okarishimasu',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 5,
+        title: 'Deca-Dence',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 6,
+        title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 7,
+        title: 'The God of High School',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+    ],
+  },
+
+  {
+    data: [
+
+      {
+        id: 7,
+        title: 'The God of High School',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 2,
+        title: 'Peter Grill to Kenja no Jikan',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 3,
+        title: 'Dokyuu Hentai HxEros',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 5,
+        title: 'Deca-Dence',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 6,
+        title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 4,
+        title: 'Kanojo, Okarishimasu',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 5,
+        title: 'Deca-Dence',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 6,
+        title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 7,
+        title: 'The God of High School',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
     ],
   },
@@ -53,25 +123,102 @@ const ENTRIES1 = [
   {
     data: [
       {
-        id: 8,
-        title: 'Sword Art Online: Alicization - Đại Chiến Underworld 2',
-        thumb: 'https://img.anime47.com/imgur/dcfyjSL.png',
+        id: 2,
+        title: 'Peter Grill to Kenja no Jikan',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
       {
-        id: 9,
-        title: 'Lapis Re:LiGHTs',
-        thumb: 'https://img.anime47.com/imgur/o6Ghr0q.jpg',
+        id: 3,
+        title: 'Dokyuu Hentai HxEros',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
       {
-        id: 10,
-        title: 'Ore wo Suki nano wa Omae dake ka yo: Oretachi no Game Set',
-        thumb: 'https://img.anime47.com/imgur/DlO2bxC.jpg',
+        id: 4,
+        title: 'Kanojo, Okarishimasu',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 5,
+        title: 'Deca-Dence',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 6,
+        title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+      },
+      {
+        id: 7,
+        title: 'The God of High School 2',
+        thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
       },
     ],
   },
 ];
 
-const {width: screenWidth} = Dimensions.get('window');
+const topics = [{
+  id: "TP1",
+  title: "Nhac Han",
+  cover: ""
+},
+{
+  id: "TP2",
+  title: "Nhac Han 2",
+  cover: ""
+},
+
+{
+  id: "TP3",
+  title: "Nhac Han 3",
+  cover: ""
+},
+
+{
+  id: "TP4",
+  title: "Nhac Han 4",
+  cover: ""
+},
+
+]
+
+const musics = [
+
+  {
+    id: 2,
+    title: 'Peter Grill to Kenja no Jikan',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+  {
+    id: 3,
+    title: 'Dokyuu Hentai HxEros',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+  {
+    id: 4,
+    title: 'Kanojo, Okarishimasu',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+  {
+    id: 5,
+    title: 'Deca-Dence',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+  {
+    id: 6,
+    title: 'Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+  {
+    id: 7,
+    title: 'The God of High School 2',
+    thumb: 'https://firebasestorage.googleapis.com/v0/b/rn-firebase-7c3c7.appspot.com/o/product-01.jpg?alt=media&token=2196d403-d4c1-4189-a585-65a1e5d8ea6b',
+  },
+
+
+]
+
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const MyCarousel = (props) => {
   const [entries, setEntries] = useState([]);
@@ -84,24 +231,32 @@ const MyCarousel = (props) => {
 
   useEffect(() => {
     setEntries(ENTRIES1);
+
+    //getMusicGroupBy/TopicId
   }, []);
 
   // useEffect(() => {
   //   setEntries(ENTRIES1);
   // }, []);
+  function onToScroll(event, offsetx, offsety) {
+    console.log('000888', offsetx, offsety);
 
-  const renderItem = ({item, index}, parallaxProps) => {
+  }
+
+  const renderItem = ({ item, index }, parallaxProps) => {
+
     return (
       <View style={styles.item}>
         {/* <ParallaxImage
-          source={{uri: item.illustration}}
+          source={{ uri: item.illustration }}
           containerStyle={styles.imageContainer}
           style={styles.image}
           parallaxFactor={0.4}
           {...parallaxProps}
         /> */}
         {/* <Categories data={item.data} title={item.title} /> */}
-        <CustomItem item={item} />
+        <View><Text>id topics: {item.id}</Text></View>
+        <CustomItem musics={musics} />
       </View>
     );
   };
@@ -109,13 +264,16 @@ const MyCarousel = (props) => {
   return (
     <View style={styles.container}>
       <Carousel
+
         ref={carouselRef}
         sliderWidth={screenWidth}
         sliderHeight={screenWidth - 80}
-        itemWidth={screenWidth - 60}
-        data={ENTRIES1}
+        itemWidth={screenWidth - 10}
+        data={topics}
         renderItem={renderItem}
         hasParallaxImages={true}
+      // onScroll={onToScroll}
+      // onScroll={e => console.log('9999', e.nativeEvent)}
       />
     </View>
   );
@@ -128,12 +286,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   item: {
-    width: screenWidth - 60,
-    height: screenWidth - 60,
+    width: screenWidth - 20,
+    height: HEIGHT,
   },
   imageContainer: {
     flex: 1,
-    marginBottom: Platform.select({ios: 0, android: 1}), // Prevent a random Android rendering issue
+    marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
     backgroundColor: 'white',
     borderRadius: 8,
   },
