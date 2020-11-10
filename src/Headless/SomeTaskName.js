@@ -5,6 +5,7 @@ import { ROUTE_KEY } from '../constants/constants'
 import { setNewNotification, clearNewNotification } from '../utils/asyncStorage'
 module.exports = async (taskData) => {
     console.log('1001 chayj ne`');
+    messaging().subscribeToTopic('N-M-M').then(res => console.log('111 topic ok '))
     messaging().setBackgroundMessageHandler(async (remoteMessage) => {
         console.log('1001 -> noti ne` : ', remoteMessage);
         ToastAndroid.show(

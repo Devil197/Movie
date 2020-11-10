@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -17,9 +17,9 @@ import {
   _addApiLoginFacebook,
   _addApiLoginGoogle,
 } from '../../Redux/actions/userAction';
-import {useDispatch, useSelector} from 'react-redux';
-import {Fonts} from '../../utils/Fonts';
-import {ROUTE_KEY} from '../../constants/constants';
+import { useDispatch, useSelector } from 'react-redux';
+import { Fonts } from '../../utils/Fonts';
+import { ROUTE_KEY } from '../../constants/constants';
 import {
   LoginButton,
   AccessToken,
@@ -27,7 +27,7 @@ import {
   GraphRequest,
   GraphRequestManager,
 } from 'react-native-fbsdk';
-import {MySpinner} from '../views';
+import { MySpinner } from '../views';
 
 const LOGIN_LOGO_HEIGHT = 80;
 const IMAGE = {
@@ -35,7 +35,7 @@ const IMAGE = {
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
 };
 
-export default function Login({navigation}) {
+export default function Login({ navigation }) {
   const dispatch = useDispatch();
   const isLogin = useSelector((state) => state.userReducer?.loggedIn);
   console.log(isLogin);
@@ -65,26 +65,7 @@ export default function Login({navigation}) {
       _addApiLoginGoogle(res, dispatch);
     });
   };
-  useEffect(() => {
-    const backAction = () => {
-      Alert.alert('', 'Bạn có muốn thoát app ?', [
-        {
-          text: 'không',
-          onPress: () => null,
-          style: 'cancel',
-        },
-        {text: 'có', onPress: () => BackHandler.exitApp()},
-      ]);
-      return true;
-    };
 
-    const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
-      backAction,
-    );
-
-    return () => backHandler.remove();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -98,17 +79,17 @@ export default function Login({navigation}) {
           <TouchableWithoutFeedback onPress={loginFacebook}>
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
-              <View style={{width: 10}} />
+              <View style={{ width: 10 }} />
               <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
             </View>
           </TouchableWithoutFeedback>
 
-          <View style={{height: 15}} />
+          <View style={{ height: 15 }} />
 
           <TouchableWithoutFeedback onPress={loginGoogle}>
             <View style={styles.buttonGG}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
-              <View style={{width: 10}} />
+              <View style={{ width: 10 }} />
               <Text style={styles.titleBtnFB}>Sign In With Google</Text>
             </View>
           </TouchableWithoutFeedback>

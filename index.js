@@ -27,6 +27,16 @@ const channel = {
   description: 'movie mobile app description',
 };
 
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+  PushNotification.localNotification({
+    title: remoteMessage?.notification?.title,
+    message: remoteMessage?.notification?.body,
+    channelId: channel.id,
+    bigPictureUrl: remoteMessage?.notification?.android?.imageUrl
+  });
+});
+
 if (Platform.OS === 'android') {
   StatusBar.setTranslucent(true);
   StatusBar.setBackgroundColor('transparent');

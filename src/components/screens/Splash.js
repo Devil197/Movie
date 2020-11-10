@@ -83,7 +83,20 @@ export default function Splash({ navigation }) {
     });
   };
 
+  // const showNotification = (noti) => {
+  //   console.log('1001 notification aaa', noti);
+  //   PushNotification.localNotification({
+  //     title: noti?.notification?.title,
+  //     message: noti?.notification?.body,
+  //     channelId: 'movie0103',
+  //     bigPictureUrl: noti.notification?.android?.imageUrl
+
+  //   });
+  // };
+
   useEffect(() => {
+    messaging().subscribeToTopic('N-M-M').then(res => console.log('ok topic'))
+
     PushNotification.configure({
       // (optional) Called when Token is generated (iOS and Android)
       onRegister: function (token) {
@@ -117,6 +130,41 @@ export default function Splash({ navigation }) {
       popInitialNotification: true,
       requestPermissions: true,
     });
+    const channel = {
+      id: 'movie0103',
+      name: 'Movie',
+      description: 'movie mobile app description',
+    };
+
+
+    PushNotification.createChannel({
+      channelId: channel.id,
+      channelDescription: channel.description,
+      channelName: channel.name
+    }, () => console.log('1001 create channel ne`!'))
+
+    messaging()
+      .getInitialNotification()
+      .then(response => {
+        console.log('Message handled in the getInitialNotification!', response);
+        if (response) showNotification(response);
+      });
+
+    messaging().onNotificationOpenedApp(async remoteMessage => {
+      console.log('Message handled in the quit state!', remoteMessage);
+      showNotification(remoteMessage);
+    });
+
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      // When app in foreground
+      console.log('Message handled in the foregroud!', remoteMessage);
+      showNotification(remoteMessage);
+    });
+
+    return () => {
+      return unsubscribe;
+    };
+
   }, [])
 
   if (isShowIntroduce === true) {
