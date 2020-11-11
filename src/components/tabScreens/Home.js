@@ -58,7 +58,6 @@ export default function Home({ navigation }) {
   const [dataMovie, setDataMovie] = useState();
   const [dataCartoon, setDataCartoon] = useState();
   const [dataCate, setDataCate] = useState();
-
   const [dataMovieByCreat, setDataMovieByCreat] = useState();
   const [dataMovieByScore, setDataMovieByScore] = useState();
   const [height, setHeight] = useState();

@@ -44,13 +44,6 @@ package="com.appmovie">
       </intent-filter>
     </service>
 
-    <!-- service  noti -->
-    <service android:name=".MyTaskService" />
-    <receiver android:name=".NetworkChangeReceiver" >
-      <intent-filter>
-        <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-      </intent-filter>
-    </receiver>
   </application>
 
 </manifest>
