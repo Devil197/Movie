@@ -1,7 +1,7 @@
 import { REDUX } from '../store/types';
 import update from 'react-addons-update';
 const initialState = {
-    listMovie: []
+    list: []
 };
 
 const notificationReducer = (state = initialState, action) => {
@@ -9,31 +9,43 @@ const notificationReducer = (state = initialState, action) => {
         case REDUX.CLEAR_DATA: {
             return initialState;
         }
+        case REDUX.CLEAR_NOTIFICATION: {
+            return initialState;
+        }
         case REDUX.ADD_MOVIE_NOTIFICATION: {
-            const tmp = update(state?.listMovie, { $push: [action.payload] });
+            const tmp = update(state?.list, { $push: [action.payload] });
             return {
                 ...state,
-                listMovie: tmp,
+                list: tmp,
             };
         }
 
         case REDUX.UPDATE_NOTIFICATION: {
-            const newNoti = state?.listMovie.map((val) => {
+            const newNoti = state?.list.map((val) => {
                 return val.movie_id === action.payload.movie_id ? action.payload : val;
             });
             return {
                 ...state,
-                listMovie: newNoti,
+                list: newNoti,
             };
         }
 
-        case REDUX.REMOVE_SCHEDULE: {
+        case REDUX.REMOVE_NOTIFICATION: {
 
             return {
                 ...state,
-                listMovie: [...state.listMovie.filter((e) => e.movie_id !== action.payload.movie_id)],
+                list: [...state.list.filter((e) => e.movie_id !== action.payload.movie_id)],
             };
         }
+
+        case REDUX.VIEW_ALL_NOTIFICATION: {
+            return {
+                ...state,
+                list: action.payload
+            }
+        }
+
+
 
         // case REDUX.SET_ALL_NOTIFICATION:{
         //     return{

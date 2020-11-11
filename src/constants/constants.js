@@ -39,6 +39,12 @@ const ASYNC_TYPE = {
 };
 
 const dataCarousel = [0, 1, 2, 3, 4]
+const typeNotification = {
+  MOVIE: 'movie',
+  MUSIC: 'music',
+  CAST: 'cast'
+
+}
 
 const ROUTE_KEY = {
   Splash: 'Splash',
@@ -86,5 +92,6 @@ export {
   API_KEY,
   STATUS_BAR_CURRENT_HEIGHT,
   HEADER_HEIGHT,
-  dataCarousel
+  dataCarousel,
+  typeNotification
 };

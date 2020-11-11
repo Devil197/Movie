@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native'
 import { Appbar, Card, Avatar } from 'react-native-paper';
 import { ptColor } from '../../constants/styles';
-import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY } from '../../constants/constants';
+import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY, typeNotification } from '../../constants/constants';
 import { Icon as IconElement } from 'react-native-elements';
 import { films } from '../../constants/data/fakeData';
 import { Fonts } from '../../utils/Fonts';
@@ -21,9 +21,8 @@ import { REDUX } from '../../Redux/store/types';
 export default function Notification({ navigation }) {
     const data = useSelector(state => state.notificationReducer)
     const dispatch = useDispatch()
-    const dataMomentDay = data?.listMovie.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() === moment().format('YYYY-MM-DD').toString())
-    const dataMomentNoDay = data?.listMovie.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() !== moment().format('YYYY-MM-DD').toString())
-    console.log('1001 dataMomentNoDay', dataMomentNoDay);
+    const dataMomentDay = data?.list.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() === moment().format('YYYY-MM-DD').toString())
+    const dataMomentNoDay = data?.list.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() !== moment().format('YYYY-MM-DD').toString())
     function Header() {
         const _goBack = () => navigation.goBack();
         return (
@@ -52,10 +51,22 @@ export default function Notification({ navigation }) {
                         <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
                     </MenuTrigger>
                     <MenuOptions>
-                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
+                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }}
+                            onSelect={() => {
+                                const viewAllNotification = data.list.map((e1) => ({
+                                    ...e1,
+                                    userInteraction: true,
+                                }));
+                                dispatch({
+                                    type: REDUX.VIEW_ALL_NOTIFICATION,
+                                    payload: viewAllNotification
+                                })
+                            }}>
                             <Text>Đánh dấu tất cả là đã xem</Text>
                         </MenuOption>
-                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
+                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }}
+                            onSelect={() => dispatch({ type: REDUX.CLEAR_NOTIFICATION, })}
+                        >
                             <Text>Xóa Tất Cả Thông Báo</Text>
                         </MenuOption>
                     </MenuOptions>
@@ -116,7 +127,8 @@ const ItemNotification = React.memo(({ item, index, dispatch, navigation }) => {
                     cover_image: item.item.cover_image,
                     movie_id: item.item.movie_id,
                     des: item.item.des,
-                    create_at: item.item.create_at
+                    create_at: item.item.create_at,
+                    type: item.item.type
                 }
                 dispatch({
                     type: REDUX.UPDATE_NOTIFICATION,
@@ -126,10 +138,17 @@ const ItemNotification = React.memo(({ item, index, dispatch, navigation }) => {
             }}
             style={{ paddingTop: 10 * WIDTH_SCALE, backgroundColor: item?.item?.userInteraction ? 'white' : '#A9F5F2' }}>
             <View style={{ flexDirection: 'row' }}>
-                <Avatar.Image size={60 * WIDTH_SCALE} source={{ uri: item?.item?.cover_image }} style={{ marginLeft: 5 * WIDTH_SCALE }} />
-                <View style={{ paddingLeft: 20 * WIDTH_SCALE, justifyContent: 'center' }}>
-                    <Text>{item?.item?.name}</Text>
-                    <Text>{item?.item?.des}</Text>
+                {item.item.type === typeNotification.CAST ?
+                    <Avatar.Image size={60 * WIDTH_SCALE} source={{ uri: item?.item?.cover_image }} style={{ marginLeft: 5 * WIDTH_SCALE }} />
+                    : null
+                }
+                {item.item.type === typeNotification.MOVIE ?
+                    <Image source={{ uri: item.item.cover_image }} style={{ width: 120 * WIDTH_SCALE, height: 80 * WIDTH_SCALE, margin: 10 * WIDTH_SCALE }} />
+                    : null
+                }
+                <View style={{ paddingLeft: 20 * WIDTH_SCALE }}>
+                    <Text style={{ fontSize: 15 * WIDTH_SCALE }}>{item?.item?.name}</Text>
+                    <Text style={{ fontStyle: 'italic', color: 'gray' }}>{item?.item?.des}</Text>
                 </View>
             </View>
         </MyHighLightButton>
