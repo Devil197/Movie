@@ -125,6 +125,8 @@ export default function Splash({ navigation }) {
               userInteraction: notification.userInteraction,
               cover_image: notification.largeIconUrl,
               movie_id: notification.data.movie_id,
+              des: notification.message,
+              create_at: moment().format('YYYY-MM-DD HH:mm:ss')
             };
 
             if (notification.userInteraction) {
