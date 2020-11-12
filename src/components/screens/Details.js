@@ -3,13 +3,17 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
   TouchableOpacity,
   PixelRatio,
   Dimensions,
   Platform,
   FlatList,
   Image,
+  StatusBar,
+  ImageBackground,
+  ScrollView,
+  Animated,
+  Easing
 } from 'react-native';
 
 import { getFullMovie } from '../../Redux/actions/movieAction';
@@ -20,14 +24,19 @@ import {
   HEIGHT,
 } from '../../constants/constants';
 import Icon from 'react-native-vector-icons/Ionicons';
-
 import { MySpinner, MyHighLightButton } from '../views';
-import { ROUTE_KEY } from '../../constants/constants';
+import { ROUTE_KEY, STATUS_BAR_CURRENT_HEIGHT } from '../../constants/constants';
 import { Play, Player } from '../views';
 import { ptColor } from '../../constants/styles';
 import Orientation from 'react-native-orientation';
 import Header from '../views/HeaderMovie';
 import Icons from 'react-native-vector-icons/Feather'
+import { Fonts } from '../../utils/Fonts'
+import starData from './childScreens/data';
+import StarRating from 'react-native-star-rating';
+
+const HEADER_BAR_HEIGHT = 20;
+
 export default function Details({ navigation, route }) {
   // video ====
   const [height, setHeight] = useState();
@@ -35,18 +44,70 @@ export default function Details({ navigation, route }) {
 
   //=====
   const _id = route.params._id;
-  console.log('hhh', _id);
   const [dataMovie, setDataMovie] = useState();
   const [loading, setLoading] = useState(true);
   const [fullScreen, setFullScreen] = useState(false);
   const url = 'aF8U_uSsXSA';
   const initial = Orientation.getInitialOrientation();
+
+  //==== Exam cal star and rate
+  const [starCount, setStarCount] = useState();
+  const [sumStar, setSumStar] = useState();
+  const [sqrtStar, setSqrtStar] = useState();
+  //==============
+
+  //=== Animation
+  const scrollY = new Animated.Value(0);
+  const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_BAR_HEIGHT);
+
+  const translateY = diffClamp.interpolate({
+    inputRange: [0, HEADER_BAR_HEIGHT],
+    outputRange: [0, 0.1],
+  });
+
+  useEffect(() => {
+    Animated.timing(scrollY, {
+      toValue: 1,
+      duration: 1200,
+      easing: Easing.linear,
+      useNativeDriver: true
+    }).start();
+  })
+
+  const opacity = scrollY.interpolate({
+    inputRange: [0, HEADER_BAR_HEIGHT * 2],
+    outputRange: [1, 0],
+  });
+  const iconOpacity = scrollY.interpolate({
+    inputRange: [0, HEADER_BAR_HEIGHT * 2],
+    outputRange: [0, 1],
+  });
+
+  useEffect(() => {
+    calSumStar();
+  }, []);
+
+  const calSumStar = () => {
+    let sumStar = 0;
+    let countUserVote = 0;
+
+    starData.map((star) => {
+      sumStar = sumStar + star.detail.length * star.starNum;
+      countUserVote = countUserVote + star.detail.length;
+    });
+    setSumStar(sumStar);
+    setStarCount(countUserVote);
+
+    setSqrtStar(Math.round(sumStar / countUserVote * 10) / 10);
+  };
+
   useEffect(() => {
     MySpinner.show();
     getFullMovie(_id)
       .then((fullMovie) => {
         setDataMovie(fullMovie);
         setTrailer(fullMovie?.movie[0]?.trailer);
+        console.log(fullMovie);
         setLoading(false);
       })
       .catch((err) => console.log('Failed', err));
@@ -80,181 +141,258 @@ export default function Details({ navigation, route }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Header
-        backdrop={dataMovie?.movie[0].cover_img}
-        poster={dataMovie?.movie[0].cover_img}
-        title={dataMovie?.movie[0].name}
-        genres={dataMovie?.category[0]?.name}
-        release_date={dataMovie?.movie[0].duration}
-        runtime={dataMovie?.movie[0].episode}
-        status={dataMovie?.movie[0].status}
-        vote_average={3 * 10}
-        directer={dataMovie?.movie[0].directer}
-      />
-      {/* <MyHighLightButton style={styles.boxHeader} onPress={()=> navigation.goBack()}>
-                    <Icon name="chevron-back" size={30} color="#fff" />
-                    <Text style={{ color: '#fff' }}>Back</Text>
-                </MyHighLightButton> */}
+    <View style={styles.container}>
+      <StatusBar translucent={true} backgroundColor="transparent" barStyle="light-content" />
 
-      {/* <View style={styles.header1}>
-                  
-                </View> */}
-
-      {/* {!fullScreen ? ( */}
-      <MyHighLightButton
+      <ImageBackground
+        source={{ uri: dataMovie?.movie[0]?.cover_img }}
         style={{
-          marginTop: 150 * WIDTH_SCALE,
-          marginLeft: 330 * WIDTH_SCALE,
-          width: 60 * WIDTH_SCALE,
-          height: 60 * WIDTH_SCALE,
-          alignItems: 'center',
-          justifyContent: 'center',
-          borderRadius: 30 * WIDTH_SCALE,
-          position: 'absolute',
-          borderColor: '#fff',
-          borderWidth: 1,
+          height: HEIGHT * 0.4,
+          width: WIDTH,
+          resizeMode: 'cover',
+          zIndex: 0,
         }}
-        onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
-        <Icons name="play" size={28 * WIDTH_SCALE} color="#fff" />
-      </MyHighLightButton>
+      >
+        <View style={styles.shapeCustom} />
+      </ImageBackground>
 
-      <View style={{ marginTop: 0, flex: 3 }}>
-        {/* <View style={styles.header2}>
-                    <Image source={{ uri: dataMovie?.movie[0].cover_img }} style={styles.imageHeader} />
-                    <View style={styles.boxContent}>
-                        <Text style={{ fontWeight: 'bold' }}>{dataMovie?.movie[0].name}</Text>
-                        <Text>{dataMovie?.category[0]?.name}</Text>
+      <View
+        style={{
+          flex: 1,
+          zIndex: 101,
+          backgroundColor: 'rgba(0,0,0,0.4)',
+          position: 'absolute',
+          alignItems: 'center',
+          width: WIDTH,
+        }}>
 
-                        <View style={{ flexDirection: 'row' }}>
-                            <Icon name="ios-calendar-outline" size={20} color="#000" />
-                            <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].duration}</Text>
-                        </View>
-                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].directer}</Text>
-                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].country}</Text>
-                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].episode}</Text>
-                        <Text style={{ marginLeft: 5 * WIDTH_SCALE }}>{dataMovie?.movie[0].status}</Text>
-                        <MyHighLightButton style={{marginTop:10*WIDTH_SCALE, width: 80 * WIDTH_SCALE, height: 40 * WIDTH_SCALE, backgroundColor: 'gray', alignItems: 'center', justifyContent: 'center',borderRadius:15*WIDTH_SCALE }} onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
-                            <Text style={{color:'white'}}>Xem Phim</Text>
-                        </MyHighLightButton>
-                    </View>
-                </View> */}
+        <View style={{ height: STATUS_BAR_CURRENT_HEIGHT, width: WIDTH }} />
 
-        <View style={styles.content}>
-          <Text
+        <View
+          style={{
+            width: WIDTH * 0.9,
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: HEIGHT * 0.05,
+          }}>
+          <MyHighLightButton onPress={() => navigation.goBack()} style={{ flex: 1, }}>
+            <Icons name="arrow-left" color={ptColor.white} size={22} />
+          </MyHighLightButton>
+
+          <Animated.View
             style={{
-              fontWeight: 'bold',
-              color: '#e55039',
-              margin: 10 * WIDTH_SCALE,
-            }}>
-            Overview
-          </Text>
-          <Text style={{ margin: 10 * WIDTH_SCALE }}>
-            {dataMovie?.movie[0].introduction}
-          </Text>
+              flex: 1,
+              alignItems: 'flex-end',
+            }, { opacity: iconOpacity }
+            }>
+            <Icons
+              onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: dataMovie?.movie[0]?._id })}
+              name="play-circle"
+              color={ptColor.white}
+              size={22} />
+          </Animated.View>
         </View>
 
-        <View style={styles.content}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: '#e55039',
-              margin: 10 * WIDTH_SCALE,
-            }}>
-            Cast
-          </Text>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.cast.map((c, i) => {
-              return (
-                <MyHighLightButton style={styles.touchopa}>
-                  <Image source={{ uri: c.cover_img }} style={styles.imageCast} />
-                  <Text color="#333">{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
+        <Animated.ScrollView
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+            { useNativeDriver: true },
+          )}
+          showsVerticalScrollIndicator={false}
+          style={{ height: HEIGHT * 0.9 }}>
 
-        <View style={styles.content}>
-          <Text
+          {/* Featured Part */}
+          <View
             style={{
-              fontWeight: 'bold',
-              color: '#e55039',
-              margin: 10 * WIDTH_SCALE,
+              backgroundColor: 'transparent',
+              width: WIDTH * 0.9,
+              height: HEIGHT * 2
             }}>
-            Trailer
-          </Text>
-          <View style={styles.header1}>
-            <Player url={url} fullScreen={onFullScreen} />
+
+            <Animated.View
+              style={[{
+                backgroundColor: 'transparent',
+                width: '100%',
+                height: HEIGHT * 0.2,
+                justifyContent: 'center'
+              }, { opacity: opacity }]}
+            >
+              <MyHighLightButton
+                style={{ justifyContent: 'center', alignItems: 'center' }}
+                onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: dataMovie?.movie[0]?._id })}>
+                <View style={{ padding: 3, borderRadius: 30, borderWidth: 1.5, borderColor: '#fff' }}>
+                  <View style={{ padding: 8, borderRadius: 25, borderWidth: 1.5, borderColor: '#fff' }}>
+                    <Icons name="play" size={22 * WIDTH_SCALE} color={'#fff'} />
+                  </View>
+                </View>
+              </MyHighLightButton>
+            </Animated.View>
+
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#fff',
+                borderTopLeftRadius: 4,
+                borderTopRightRadius: 4
+              }}>
+              <Image
+                source={{ uri: dataMovie?.movie[0]?.cover_img }}
+                style={{
+                  width: WIDTH * 0.28,
+                  height: HEIGHT * 0.22,
+                  marginLeft: WIDTH * 0.03,
+                  marginTop: -WIDTH * 0.09,
+                  resizeMode: 'contain',
+                  borderWidth: 0.5,
+                  borderColor: '#fff',
+                }}
+              />
+
+              <View style={{ paddingTop: 5, paddingLeft: 8 }}>
+                <View
+                  style={{
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    paddingTop: 5,
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily:
+                        Fonts.SansMedium,
+                      fontSize: 18 * WIDTH_SCALE,
+                    }}
+                    numberOfLines={1}
+                    ellipsizeMode={"clip"}
+                  >{dataMovie?.movie[0]?.name}</Text>
+                </View>
+
+                <View
+                  style={{
+                    width: WIDTH * 0.2,
+                    flexDirection: 'row',
+                    marginTop: 7,
+                  }} >
+                  <StarRating
+                    activeOpacity={1}
+                    starStyle={{ width: 15 }}
+                    starSize={14}
+                    fullStarColor={'#f1c40f'}
+                    disabled={false}
+                    maxStars={5}
+                    rating={sqrtStar}
+                    emptyStarColor={'#f1c40f'}
+                  />
+                  <Text style={{
+                    marginRight: 10,
+                    color: "#e056fd",
+                    fontFamily: Fonts.SansMedium,
+                    fontSize: 14
+                  }}> {sqrtStar}</Text>
+                </View>
+
+                <Text
+                  style={{
+                    fontSize: 12,
+                    fontFamily: Fonts.SansMedium,
+                    marginTop: 7,
+                  }}
+                >No APIs / Drama / Action</Text>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{
+                    fontSize: 12,
+                    fontFamily: Fonts.SansMedium,
+                    color: ptColor.gray2,
+                  }}>
+                    by
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: Fonts.SansMedium,
+                    }}
+                  > {dataMovie?.movie[0]?.directer}</Text>
+                </View>
+
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={{
+                    fontSize: 12,
+                    fontFamily: Fonts.SansMedium,
+                    color: ptColor.gray2,
+                  }}>
+                    release
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      fontFamily: Fonts.SansMedium,
+                    }}
+                  > {dataMovie?.movie[0]?.years}</Text>
+                </View>
+              </View>
+            </View>
+
+            <View
+              style={{
+                backgroundColor: '#fff',
+                width: '100%',
+                paddingTop: 10,
+              }}>
+
+              {/* Trailer Component */}
+              <View>
+                <Player url={url} fullScreen={onFullScreen} />
+              </View>
+
+              {/* Introduce */}
+              <View style={{
+                marginLeft: WIDTH * 0.03,
+              }}>
+                <Text style={{
+                  fontFamily: Fonts.SansLight,
+                  fontSize: 16,
+                  color: ptColor.gray2,
+                }}>Introduce</Text>
+
+                <Text
+                  style={{ marginTop: 10, fontSize: 12, fontFamily: Fonts.SansLight }}
+                >{dataMovie?.movie[0]?.introduction}
+                </Text>
+              </View>
+
+              {/* Actors */}
+              <View style={{}}>
+
+              </View>
+
+            </View>
           </View>
-        </View>
-        <View style={styles.content}>
-          <Text
-            style={{
-              fontWeight: 'bold',
-              color: '#e55039',
-              margin: 10 * WIDTH_SCALE,
-            }}>
-            Phim liên quan :{' '}
-          </Text>
-        </View>
+        </Animated.ScrollView>
       </View>
-      {/* ) : null} */}
-    </ScrollView>
+    </View >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#c8d6e5',
+    backgroundColor: '#fff',
+    height: HEIGHT * 0.9
   },
-  // header
-  boxHeader: {
-    flexDirection: 'row',
+
+  shapeCustom: {
     position: 'absolute',
-    alignItems: 'center',
-    justifyContent: 'center',
-    top: 40 * WIDTH_SCALE,
-    left: 20 * WIDTH_SCALE,
-    zIndex: 1,
-  },
-  imageHeader: {
-    width: 0.42 * WIDTH,
-    height: 0.26 * HEIGHT,
-    margin: 5 * WIDTH_SCALE,
-  },
-  header1: {
-    width: WIDTH,
-    height: 0.28 * HEIGHT,
-    backgroundColor: '#222f3e',
-    flex: 1,
-    margin: 0,
-    overflow: 'hidden',
-    backgroundColor: ptColor.divider,
-  },
-  header2: {
-    width: WIDTH,
-    height: 200 * HEIGHT_SCALE,
-    backgroundColor: '#fff',
-    flexDirection: 'row',
-  },
-  boxContent: {
-    width: WIDTH - 200,
-    alignItems: 'flex-start',
-    paddingLeft: 30 * WIDTH_SCALE,
-  },
-  //content
-  content: {
-    backgroundColor: '#fff',
-    marginTop: 5 * WIDTH_SCALE,
-  },
-  //cast
-  touchopa: {
-    margin: 5 * WIDTH_SCALE,
-  },
-  imageCast: {
-    width: 150 * WIDTH_SCALE,
-    height: 200 * HEIGHT_SCALE,
+    right: 0,
+    bottom: 0,
+    width: 0,
+    height: 0,
+    backgroundColor: 'transparent',
+    borderStyle: 'solid',
+    borderLeftWidth: WIDTH,
+    borderRightWidth: 0,
+    borderBottomWidth: 50,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: '#fff',
   },
 });

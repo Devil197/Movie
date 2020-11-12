@@ -1,9 +1,9 @@
-import React, {useState, useCallback, useRef} from 'react';
-import {Button, View, Alert} from 'react-native';
+import React, { useState, useCallback, useRef } from 'react';
+import { Button, View, Alert } from 'react-native';
 import YoutubePlayer from 'react-native-youtube-iframe';
-import {WIDTH, HEIGHT} from '../../constants/constants';
+import { WIDTH, HEIGHT } from '../../constants/constants';
 
-const Player = React.memo(({url, fullScreen}) => {
+const Player = React.memo(({ url, fullScreen }) => {
   const videoRef = useRef();
   const [playing, setPlaying] = useState(false);
   const [full, setFull] = useState(false);
@@ -21,7 +21,7 @@ const Player = React.memo(({url, fullScreen}) => {
   return (
     <YoutubePlayer
       ref={videoRef}
-      height={full ? HEIGHT : 600}
+      height={full ? HEIGHT : HEIGHT * 0.3}
       play={playing}
       videoId={url}
       onFullScreenChange={(e) => {

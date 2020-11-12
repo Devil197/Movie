@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
   ScrollView,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
-import {Fonts} from '../../../utils/Fonts';
+import { Fonts } from '../../../utils/Fonts';
 import StarRating from 'react-native-star-rating';
-import {WIDTH, HEIGHT} from '../../../constants/constants';
+import { WIDTH, HEIGHT } from '../../../constants/constants';
 import starData from './data';
 
 StatusBar.setHidden(true);
@@ -58,7 +58,7 @@ export default function review(params, navigation) {
         <View style={styles.starsIcon}>
           <StarRating
             activeOpacity={1}
-            starStyle={{paddingRight: 2.5, paddingLeft: 2.5}}
+            starStyle={{ paddingRight: 2.5, paddingLeft: 2.5 }}
             starSize={20}
             fullStarColor={'#f1c40f'}
             disabled={false}
@@ -112,7 +112,7 @@ export default function review(params, navigation) {
                   <View style={styles.starsIcon}>
                     <StarRating
                       activeOpacity={1}
-                      starStyle={{paddingRight: 2.5}}
+                      starStyle={{ paddingRight: 2.5 }}
                       starSize={16}
                       fullStarColor={'#f1c40f'}
                       disabled={false}
@@ -134,7 +134,7 @@ export default function review(params, navigation) {
                 </Text>
               </View>
               <View
-                style={{height: 1, width: WIDTH, backgroundColor: '#cfd0d1'}}
+                style={{ height: 1, width: WIDTH, backgroundColor: '#cfd0d1' }}
               />
             </View>
           );
@@ -268,7 +268,7 @@ const styles = StyleSheet.create({
   dateCmtContainer: {
     width: '30%',
     alignItems: 'flex-end',
-    
+
   },
   dateCmt: {
     color: '#babab8',

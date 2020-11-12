@@ -12,10 +12,9 @@ import {
   ToastAndroid,
 } from 'react-native';
 // import Orientation from 'react-native-orientation-locker';
-//import App from './src/App';
 import App from './src/App';
 import messaging from '@react-native-firebase/messaging';
-import {name as appName} from './app.json';
+import { name as appName } from './app.json';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
 LogBox.ignoreAllLogs(true);

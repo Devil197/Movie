@@ -174,7 +174,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container} >
-      <StatusBar translucent={false} backgroundColor="#fff" />
+      <StatusBar translucent={false} barStyle={"dark-content"} />
       <View style={styles.topNav} >
         <View style={styles.topNavTop} >
           <View style={{ flex: 1 }}>
@@ -259,6 +259,7 @@ export default function Home({ navigation }) {
             {dataMovie?.items.map((c, i) => {
               return (
                 <MyHighLightButton
+                  key={c._id}
                   style={styles.buttonC}
                   onPress={() =>
                     navigation.push(ROUTE_KEY.Details, { _id: c._id })
@@ -276,7 +277,7 @@ export default function Home({ navigation }) {
         </View>
 
         {/* New */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >New</Text>
             <TouchableOpacity>
@@ -303,10 +304,10 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Recommend */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Recommend</Text>
             <TouchableOpacity>
@@ -332,7 +333,7 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Trailer */}
         {/* <View style={styles.section}>
@@ -355,7 +356,7 @@ export default function Home({ navigation }) {
         </View> */}
 
         {/* Cast */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Cast</Text>
             <TouchableOpacity>
@@ -381,11 +382,11 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
 
         {/* Action Film */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Action</Text>
             <TouchableOpacity>
@@ -412,10 +413,10 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Romance Film */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Romance</Text>
             <TouchableOpacity>
@@ -442,10 +443,10 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Science Film */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Science</Text>
             <TouchableOpacity>
@@ -472,10 +473,10 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* Cartoon Film */}
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={[styles.sectionTitle, { flex: 1 }]} >Cartoon</Text>
             <TouchableOpacity>
@@ -502,7 +503,7 @@ export default function Home({ navigation }) {
               );
             })}
           </ScrollView>
-        </View>
+        </View> */}
 
         {/* <View style={styles.containerA}>
         <View style={[styles.groupA,]}>
