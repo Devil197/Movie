@@ -21,13 +21,14 @@ const Player = React.memo(({ url, fullScreen }) => {
   return (
     <YoutubePlayer
       ref={videoRef}
-      height={full ? HEIGHT : HEIGHT * 0.3}
+      // height={full ? HEIGHT : HEIGHT * 0.3}
+      height={HEIGHT}
       play={playing}
       videoId={url}
-      onFullScreenChange={(e) => {
-        fullScreen(!e);
-        setFull(e);
-      }}
+    // onFullScreenChange={(e) => {
+    //   fullScreen(!e);
+    //   setFull(e);
+    // }}
     />
   );
 });
