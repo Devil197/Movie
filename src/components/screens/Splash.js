@@ -9,6 +9,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ToastAndroid,
 } from 'react-native';
 import { store } from '../../Redux/store';
 import { persistStore } from 'redux-persist';
@@ -35,6 +36,9 @@ const IMAGE = {
 };
 
 import { getValueToShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
+import { getNewNotification, setNewNotification, clearNewNotification } from '../../utils/asyncStorage'
+import { REDUX } from '../../Redux/store/types';
+
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -45,131 +49,126 @@ async function requestUserPermission() {
     console.log('Authorization status:', authStatus);
   }
 }
-export default function Splash({ navigation }) {
-  const appState = useRef(AppState.currentState);
-  const isLogin = useSelector((state) => state.userReducer?.loggedIn);
-  const user = useSelector((state) => state.userReducer);
 
+
+export const channel = {
+  id: 'movie0103',
+  name: 'Movie',
+  description: 'movie mobile app description',
+};
+export default function Splash({ navigation }) {
+  const dispatch = useDispatch()
   const [isShowIntroduce, setIsShowIntroduce] = useState();
 
-  const handleUserIsLogin = () => {
-    setTimeout(function () {
-      if (isLogin) {
-        navigation.navigate(ROUTE_KEY.BottomNavigation);
-      } else {
-        navigation.navigate(ROUTE_KEY.Login);
-      }
-    }, 3000 * 1);
-  };
-
-  useEffect(() => {
-    persistStore(store, null, async () => { });
-    //handleUserIsLogin();
-  }, []);
-
-  useEffect(() => {
-    handleIsShowIntroduce();
-  }, [isShowIntroduce]);
-
-  const handleIsShowIntroduce = async () => {
-    await getValueToShowIntroduceOrNot((isShow) => {
-      console.log('IS SHOW INTRODUCE: ', isShow);
-      if (isShow === false) {
-        handleUserIsLogin();
-      }
-      setIsShowIntroduce(isShow);
-    });
-  };
 
   useEffect(() => {
     let unsubscribe = null;
     async function initApplicationData() {
+
       let fcmToken = null;
       try {
         await requestUserPermission();
         fcmToken = await messaging().getToken();
-
-        messaging()
-          .subscribeToTopic('N-M-M')
-          .then(() => console.log('1001 Subscribed to topic!'));
+        messaging().subscribeToTopic('N-M-M');
       } catch (error) { }
-      PushNotification.createChannel(
-        {
-          number: moment().milliseconds(),
-          channelId: 'movie0103',
-          channelName: 'Movie',
-          soundName: 'default',
-          group: 'Movie',
-        },
-        (created) => console.log(`100 createChannel returned '${created}'`),
-      );
+
+      await messaging().onMessage(async (remoteMessage) => {
+        console.log('29148 : unsubscribe -> remoteMessage', remoteMessage);
+        if (remoteMessage && remoteMessage.notification && Platform.OS === 'android') {
+          console.log('29148 : unsubscribe -> remoteMessage', remoteMessage);
+          const movie_id = remoteMessage.notification.body.split('/')
+          PushNotification.localNotification({
+            /* Android Only Properties */
+            ignoreInForeground: true, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear)
+            channelId: channel.id, // (optional) custom channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
+            invokeApp: true, // (optional) This enable click on actions to bring back the application to foreground or stay in background, default: true
+            /* iOS and Android properties */
+            priority: 'high',
+            bigPictureUrl: remoteMessage.notification.android.imageUrl,
+            title: remoteMessage.notification.title + 'abdddd', // (optional)
+            message: movie_id[0], // (required)
+            number: 1,
+            showWhen: true,
+            messageId: movie_id[1],
+            id: remoteMessage.ttl,
+            group: 'Movie',
+            when: moment().valueOf(),
+          });
+        }
+      })
+
+      await persistStore(store, null, async () => {
+        console.log('1001 store', store.getState().notificationReducer.listMovie);
+        const isLogin = store.getState().userReducer.loggedIn
+        await getValueToShowIntroduceOrNot((isShow) => {
+
+          if (isShow === false) {
+            if (isLogin) {
+              navigation.navigate(ROUTE_KEY.BottomNavigation)
+            } else {
+              navigation.navigate(ROUTE_KEY.Login)
+            }
+          }
+          setIsShowIntroduce(isShow);
+        });
+      });
 
       setTimeout(() => {
         PushNotification.configure({
           onRegister: function (token) {
             console.log('TOKEN:', token);
           },
-
-          // (required) Called when a remote is received or opened, or local notification is opened
-          // Open schedule detail when click on Noti
           onNotification: async function (notification) {
-            console.log('1001 notificationFICATION:', notification);
-            pushNotification(notification);
+            console.log('1002 onNotification ', notification);
+            const movieNotification = {
+              name: notification.title,
+              userInteraction: notification.userInteraction,
+              cover_image: notification.largeIconUrl,
+              movie_id: notification.data.movie_id,
+              type: notification.data.type,
+              des: notification.message,
+              create_at: moment().format('YYYY-MM-DD HH:mm:ss')
+            };
+
+            if (notification.userInteraction) {
+              dispatch({
+                type: REDUX.UPDATE_NOTIFICATION,
+                payload: movieNotification
+              })
+              navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+            } else {
+              dispatch({
+                type: REDUX.ADD_MOVIE_NOTIFICATION,
+                payload: movieNotification
+              })
+              ToastAndroid.show(
+                'vừa nhận thông báo có phim mới ' + movieNotification.name,
+                ToastAndroid.SHORT,
+              );
+            }
           },
 
-          // (optional) Called when Registered Action is pressed and invokeApp is false, if true onNotification will be called (Android)
           onAction: function (notification) {
-            console.log('1001 Long ACTION:', notification.action);
-            console.log('1001 Long NOTIFICATION:', notification);
-            // process the action
+            console.log('1002 Long ACTION:', notification);
           },
         });
       }, 1000);
+
+      PushNotification.createChannel(
+        {
+          channelId: channel.id, // (required)
+          channelName: channel.name, // (required)
+          channelDescription: channel.description, // (optional) default: undefined.
+        },
+        (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+      );
     }
+    initApplicationData()
 
-    initApplicationData();
-    AppState.addEventListener('change', _handleAppStateChange);
 
-    return () => {
-      console.log('1001 : Splash -> unsubscribe', unsubscribe);
-      AppState.removeEventListener('change', _handleAppStateChange);
-      // unsubscribe();
-      // Linking.removeEventListener('url', handleOpenURL);
+    return () => console.log('29148 : Splash -> unsubscribe');
 
-      // messaging().unsubscribeFromTopic('test');
-    };
-  }, []);
-
-  const pushNotification = async (listener) => {
-    PushNotification.localNotification({
-      title: listener.data.movie_name,
-      message: 'abc',
-      channelId: 'movie0103',
-      id: moment().seconds(),
-      largeIconUrl: listener.data.photo,
-    });
-  };
-
-  const _handleAppStateChange = async (nextAppState) => {
-    console.log('29148 : _handleAppStateChange -> nextAppState', nextAppState);
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === 'active'
-    ) {
-      PushNotification.popInitialNotification((notification) => {
-        if (notification) {
-          this.onNotification(notification);
-        }
-      });
-    } else {
-      PushNotification.popInitialNotification((notification) => {
-        if (notification) {
-          this.onNotification(notification);
-        }
-      });
-    }
-    appState.current = nextAppState;
-  };
+  }, [])
 
   if (isShowIntroduce === true) {
     return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;

@@ -1,7 +1,7 @@
-import {Dimensions, Platform, StatusBar} from 'react-native';
+import { Dimensions, Platform, StatusBar } from 'react-native';
 //
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const WIDTH = width;
 const HEIGHT = height;
 const IS_ANDROID = Platform.OS === 'android';
@@ -37,6 +37,14 @@ const ASYNC_TYPE = {
   GOOGLE: 'g',
   FACEBOOK: 'f',
 };
+
+const dataCarousel = [0, 1, 2, 3, 4]
+const typeNotification = {
+  MOVIE: 'movie',
+  MUSIC: 'music',
+  CAST: 'cast'
+
+}
 
 const ROUTE_KEY = {
   Splash: 'Splash',
@@ -84,4 +92,6 @@ export {
   API_KEY,
   STATUS_BAR_CURRENT_HEIGHT,
   HEADER_HEIGHT,
+  dataCarousel,
+  typeNotification
 };

@@ -17,16 +17,10 @@ import messaging from '@react-native-firebase/messaging';
 import { name as appName } from './app.json';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
+import { setNewNotification } from './src/utils/asyncStorage'
 LogBox.ignoreAllLogs(true);
 
-const channel = {
-  id: 'movie0103',
-  name: 'Movie',
-  description: 'movie mobile app description',
-};
-
 messaging().setBackgroundMessageHandler(async (remoteMessage) => {
-  console.log('1001 -> noti ne` : ', remoteMessage);
   ToastAndroid.show(
     'chay setBackgroundMessageHandler NE NHA' + remoteMessage &&
       remoteMessage.notification &&
@@ -35,20 +29,20 @@ messaging().setBackgroundMessageHandler(async (remoteMessage) => {
       : '',
     ToastAndroid.SHORT,
   );
+  console.log('29148 : setBackgroundMessageHandler -> remoteMessage', remoteMessage);
 
-  PushNotification.localNotification({
-    title: remoteMessage.data.movie_name,
-    message: 'abc',
-    channelId: 'movie0103',
-    id: moment().seconds(),
-    largeIconUrl: remoteMessage.data.photo,
-  });
+  if (remoteMessage && remoteMessage.notification && Platform.OS === 'android') {
+    const listnoti = await getNotificationList();
+    console.log('29148 : !__DEV__&& -> listnoti', listnoti);
+    const newList = [...listnoti, remoteMessage];
+    console.log('29148 : !__DEV__&& -> newList', newList);
+    await setNotificationList(newList);
+  }
 });
-
 if (Platform.OS === 'android') {
   StatusBar.setTranslucent(true);
   StatusBar.setBackgroundColor('transparent');
 }
 StatusBar.setBarStyle('dark-content');
-// Orientation.lockToPortrait();
+
 AppRegistry.registerComponent(appName, () => App);
