@@ -10,11 +10,12 @@ import {
   Text,
   View,
   ToastAndroid,
+  Animated,
+  Easing
 } from 'react-native';
 import { store } from '../../Redux/store';
 import { persistStore } from 'redux-persist';
 import { ROUTE_KEY } from '../../constants/constants';
-import { styles } from '../../constants/style/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
@@ -50,16 +51,31 @@ async function requestUserPermission() {
   }
 }
 
-
 export const channel = {
   id: 'movie0103',
   name: 'Movie',
   description: 'movie mobile app description',
 };
+
 export default function Splash({ navigation }) {
   const dispatch = useDispatch()
   const [isShowIntroduce, setIsShowIntroduce] = useState();
 
+  const animOpacity = new Animated.Value(0);
+
+  useEffect(() => {
+    Animated.timing(animOpacity, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true
+    }).start()
+  }, []);
+
+  const timeOut = (screen) => {
+    setTimeout(() => {
+      navigation.navigate(screen);
+    }, 3000);
+  }
 
   useEffect(() => {
     let unsubscribe = null;
@@ -104,9 +120,11 @@ export default function Splash({ navigation }) {
 
           if (isShow === false) {
             if (isLogin) {
-              navigation.navigate(ROUTE_KEY.BottomNavigation)
+              //navigation.navigate(ROUTE_KEY.BottomNavigation)
+              timeOut(ROUTE_KEY.BottomNavigation)
             } else {
-              navigation.navigate(ROUTE_KEY.Login)
+              //navigation.navigate(ROUTE_KEY.Login)
+              timeOut(ROUTE_KEY.Login)
             }
           }
           setIsShowIntroduce(isShow);
@@ -176,8 +194,16 @@ export default function Splash({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={IMAGE} style={styles.image_background}>
-        <View style={{ width: 60, height: 60, borderRadius: 20 }}>
+      <Animated.View
+        style={
+          { opacity: animOpacity }} >
+        <Image
+          source={require('../../assets/icons/gea_logo.png')}
+          style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} />
+      </Animated.View>
+      <Animated.View
+        style={{ opacity: animOpacity }}>
+        <View style={{ width: 40, height: 40, borderRadius: 20 }}>
           <SkypeIndicator
             color={ptColor.appColor}
             style={{
@@ -185,10 +211,18 @@ export default function Splash({ navigation }) {
               backgroundColor: 'rgba(166, 164, 164, 0.4)',
               borderRadius: 10,
             }}
-            size={40 * WIDTH_SCALE}
+            size={20 * WIDTH_SCALE}
           />
         </View>
-      </ImageBackground>
+      </Animated.View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+})
