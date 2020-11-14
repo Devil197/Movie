@@ -196,7 +196,7 @@ const Videos = ({ navigation, params, route }) => {
       <StatusBar hidden={true} barStyle={'dark-content'} translucent={true} backgroundColor="transparent" />
 
       <View style={{ flex: 1, zIndex: 1 }}>
-        <Player url={url} fullScreen={onFullScreen} />
+        <Player url={url} fullScreen={onFullScreen} height={HEIGHT} />
       </View>
 
       <View

@@ -195,8 +195,7 @@ export default function Splash({ navigation }) {
   return (
     <View style={styles.container}>
       <Animated.View
-        style={
-          { opacity: animOpacity }} >
+        style={{ opacity: animOpacity }} >
         <Image
           source={require('../../assets/icons/gea_logo.png')}
           style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} />
