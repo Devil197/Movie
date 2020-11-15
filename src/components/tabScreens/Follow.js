@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -12,20 +12,25 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native-gesture-handler';
-import {FilmFollowItem} from '../views/index';
-import {getItemsFollowByUserId} from '../../Redux/actions/followAction';
-import {Fonts} from '../../utils/Fonts';
-import {MySpinner} from '../views';
-import {useSelector} from 'react-redux';
+import { FilmFollowItem } from '../views/index';
+import { getItemsFollowByUserId } from '../../Redux/actions/followAction';
+import { Fonts } from '../../utils/Fonts';
+import { MySpinner } from '../views';
+import { useSelector, useDispatch } from 'react-redux';
+import { REDUX } from '../../Redux/store/types';
 
-const Follow = ({navigation}) => {
+
+const Follow = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [data, setData] = useState();
-  let user = useSelector((state) => state.userReducer);
-  let userId = user?.userInfo?._id;
+  const user = useSelector((state) => state.userReducer);
+  const followReducer = useSelector((state) => state.followReducer)
+  console.log('1001 ', followReducer);
+  const userId = user?.userInfo?._id;
 
   useEffect(() => {
     getDataFromAPI();
-  }, [userId]);
+  }, []);
 
   const getDataFromAPI = async () => {
     MySpinner.show();
@@ -39,7 +44,19 @@ const Follow = ({navigation}) => {
     });
     console.log('DATA in Follow: ', temp);
     setData(temp);
+    if (!followReducer?.first) {
+      console.log('1001 chay redux');
+      dispatch({
+        type: REDUX.SET_FOLLOW,
+        payload: temp
+      })
+      dispatch({
+        type: REDUX.FIRST_FOLLOW
+      })
+      MySpinner.hide();
+    }
     MySpinner.hide();
+
   };
 
   return (

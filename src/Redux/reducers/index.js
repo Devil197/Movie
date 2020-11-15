@@ -5,6 +5,7 @@ import { persistReducer } from 'redux-persist';
 import userReducer from './userReducer';
 import keywordReducer from './keywordReducer'
 import notificationReducer from './notificationReducer'
+import followReducer from './followReducer'
 const reducers = combineReducers({
   userReducer: persistReducer(
     {
@@ -27,6 +28,14 @@ const reducers = combineReducers({
     },
     notificationReducer,
   ),
+  followReducer: persistReducer(
+    {
+      key: 'followReducer',
+      storage: AsyncStorage,
+    },
+    followReducer,
+  ),
 });
+
 // Exports
 export default reducers;

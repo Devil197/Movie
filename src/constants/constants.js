@@ -42,7 +42,8 @@ const dataCarousel = [0, 1, 2, 3, 4]
 const typeNotification = {
   MOVIE: 'movie',
   MUSIC: 'music',
-  CAST: 'cast'
+  CAST: 'cast',
+  VIDEO: 'video'
 
 }
 
