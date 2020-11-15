@@ -44,7 +44,7 @@ const Follow = ({ navigation }) => {
     });
     console.log('DATA in Follow: ', temp);
     setData(temp);
-    if (!followReducer?.first) {
+    if (followReducer?.first) {
       console.log('1001 chay redux');
       dispatch({
         type: REDUX.SET_FOLLOW,

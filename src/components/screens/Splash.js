@@ -16,7 +16,7 @@ import {
 import { store } from '../../Redux/store';
 import { persistStore } from 'redux-persist';
 import { ROUTE_KEY, typeNotification } from '../../constants/constants';
-import { styles } from '../../constants/style/styles';
+// import { styles } from '../../constants/style/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
@@ -126,7 +126,7 @@ export default function Splash({ navigation }) {
       })
 
       await persistStore(store, null, async () => {
-        console.log('1001 store', store.getState().notificationReducer.listMovie);
+
         const userRedux = store.getState().userReducer
         const dataFollowRedux = await store.getState().followReducer.list
         console.log('1001 redux', dataFollowRedux);
@@ -143,46 +143,12 @@ export default function Splash({ navigation }) {
           setIsShowIntroduce(isShow);
         });
         // notification  video
-        await dataFollowRedux.map((e) => {
-          return messaging().subscribeToTopic(e._id.toString())
-          // return console.log('1001 movie id ', e.movie_id);
-        })
+        setTimeout(() => {
+          dataFollowRedux.map((e) => {
+            messaging().subscribeToTopic(e._id.toString())
 
-
-        // async function pushNotificationsFollowInitApp() {
-        //   try {
-        //     const dataFollowRedux = await store.getState().followReducer.list
-        //     const followApi = await getItemsFollowByUserId(userRedux.userInfo._id)
-        //     dataFollowRedux.map((e, i) => {
-        //       const itemFollowFind = followApi.items.find(e1 => e1.movie_id._id === e._id)
-        //       console.log('1001 itemFollowFind', itemFollowFind);
-        //       if (itemFollowFind.movie_id.status !== e.status) {
-        //         PushNotification.localNotification(
-        //           {
-        //             /* Android Only Properties */
-        //             ignoreInForeground: true, // (optional) if true, the notification will not be visible when the app is in the foreground (useful for parity with how iOS notifications appear)
-        //             channelId: channel.id, // (optional) custom channelId, if the channel doesn't exist, it will be created with options passed above (importance, vibration, sound). Once the channel is created, the channel will not be update. Make sure your channelId is different if you change these options. If you have created a custom channel, it will apply options of the channel.
-        //             invokeApp: true, // (optional) This enable click on actions to bring back the application to foreground or stay in background, default: true
-        //             /* iOS and Android properties */
-        //             priority: 'high',
-        //             bigPictureUrl: e.cover_image,
-        //             title: e.name + 'tập ' + itemFollowFind.movie_id.status, // (optional)
-        //             message: ' cập nhật vào lúc ' + moment(itemFollowFind.movie_id.update_at).format('YYYY-MM-DD HH:mm'), // (required)
-        //             number: 1,
-        //             showWhen: true,
-        //             id: 1,
-        //             group: 'Movie',
-        //             when: moment().valueOf(),
-        //           }
-        //         )
-        //       }
-        //     })
-
-        //   } catch { e => console.log(e) }
-        // }
-
-        // pushNotificationsFollowInitApp()
-
+          })
+        }, 1000)
       });
 
       setTimeout(() => {
@@ -193,7 +159,34 @@ export default function Splash({ navigation }) {
           onNotification: async function (notification) {
             console.log('1002 onNotification ', notification);
             if (notification.data.type === typeNotification.VIDEO) {
-              console.log('1001 data ne` đã chạy', notification.userInteraction);
+              console.log('1001 data ne` đã chạy', notification);
+              const movieNotification = {
+                name: notification.title,
+                userInteraction: notification.userInteraction,
+                cover_image: notification.largeIconUrl,
+                movie_id: notification.data.movie_id,
+                video_id: notification.data.video_id,
+                type: notification.data.type,
+                des: notification.message,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                position: notification.data.position
+              };
+              if (notification.userInteraction) {
+                dispatch({
+                  type: REDUX.UPDATE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+              } else {
+                dispatch({
+                  type: REDUX.ADD_MOVIE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                ToastAndroid.show(
+                  'vừa nhận thông báo ' + movieNotification.name + ' ra mắt tập ' + movieNotification.position,
+                  ToastAndroid.SHORT,
+                );
+              }
             } else if (notification.data.type === typeNotification.MOVIE) {
               const movieNotification = {
                 name: notification.title,
@@ -211,6 +204,35 @@ export default function Splash({ navigation }) {
                   payload: movieNotification
                 })
                 navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+              } else {
+                dispatch({
+                  type: REDUX.ADD_MOVIE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                ToastAndroid.show(
+                  'vừa nhận thông báo có phim mới ' + movieNotification.name,
+                  ToastAndroid.SHORT,
+                );
+              }
+            }
+            else if (notification.data.type === typeNotification.CAST) {
+              const movieNotification = {
+                name: notification.title,
+                userInteraction: notification.userInteraction,
+                cover_image: notification.largeIconUrl,
+                cast_id: notification.data.cast_id,
+                type: notification.data.type,
+                des: notification.message,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                isFollow: false
+              };
+
+              if (notification.userInteraction) {
+                dispatch({
+                  type: REDUX.UPDATE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                // navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
               } else {
                 dispatch({
                   type: REDUX.ADD_MOVIE_NOTIFICATION,
