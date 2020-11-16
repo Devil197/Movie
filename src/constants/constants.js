@@ -65,6 +65,7 @@ const ROUTE_KEY = {
   Setting: 'Setting',
   Notification: 'Notification',
   Introduce: 'Introduce',
+  Actor: 'Actor',
 };
 
 export {

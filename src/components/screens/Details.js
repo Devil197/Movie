@@ -24,6 +24,7 @@ import {
   WIDTH,
   HEIGHT,
 } from '../../constants/constants';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons';
 import { MySpinner, MyHighLightButton } from '../views';
 import { ROUTE_KEY, STATUS_BAR_CURRENT_HEIGHT } from '../../constants/constants';
@@ -37,6 +38,7 @@ import starData from './childScreens/data';
 import StarRating from 'react-native-star-rating';
 import { SkypeIndicator } from 'react-native-indicators';
 import { followMovie } from '../../Redux/actions/followAction';
+import { CastItem } from '../views'
 
 const HEADER_BAR_HEIGHT = 20;
 
@@ -187,6 +189,8 @@ export default function Details({ navigation, route }) {
             position: 'absolute',
             alignItems: 'center',
             width: WIDTH,
+            flex: 1,
+            paddingBottom: 200
           }}>
 
           <View style={{ height: STATUS_BAR_CURRENT_HEIGHT, width: WIDTH }} />
@@ -198,9 +202,9 @@ export default function Details({ navigation, route }) {
               alignItems: 'center',
               height: HEIGHT * 0.05,
             }}>
-            <MyHighLightButton onPress={() => navigation.goBack()} style={{ flex: 1, }}>
+            <TouchableWithoutFeedback onPress={() => navigation.goBack()} style={{ flex: 1, }}>
               <Icons name="arrow-left" color={ptColor.white} size={22} />
-            </MyHighLightButton>
+            </TouchableWithoutFeedback>
 
             <Animated.View
               style={{
@@ -444,6 +448,8 @@ export default function Details({ navigation, route }) {
                   style={{
                     marginLeft: WIDTH * 0.03,
                     paddingTop: HEIGHT * 0.03,
+                    height: 200,
+                    width: '100%',
                   }}>
                   <Text
                     style={{
@@ -452,9 +458,17 @@ export default function Details({ navigation, route }) {
                       color: ptColor.gray2,
                     }}>ACTORS</Text>
 
-                  <Text style={{ fontSize: 36 }}>NEED AN API FOR GET ACTORS BY MOVIE ID. OLD API IS GET ACTOR BY KEYWORD.</Text>
-
+                  <FlatList
+                    data={dataMovie?.cast}
+                    keyExtractor={(item) => {
+                      return item._id;
+                    }}
+                    renderItem={({ item, index }) => <CastItem navigation={navigation} item={item} />}
+                    horizontal={true}
+                  />
                 </View>
+
+                <View style={{ height: 25 * WIDTH_SCALE, width: WIDTH }} />
 
               </View>
             </View>
@@ -495,7 +509,6 @@ export default function Details({ navigation, route }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#fff',
     height: HEIGHT * 0.9
   },
