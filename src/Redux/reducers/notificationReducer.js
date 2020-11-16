@@ -1,5 +1,6 @@
 import { REDUX } from '../store/types';
 import update from 'react-addons-update';
+import moment from 'moment'
 const initialState = {
     list: []
 };

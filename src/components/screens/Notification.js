@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, Image, ScrollView, FlatList } from 'react-native'
+import { StyleSheet, Text, View, Image, ScrollView, FlatList, Alert } from 'react-native'
 import { Appbar, Card, Avatar } from 'react-native-paper';
 import { ptColor } from '../../constants/styles';
 import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY, typeNotification } from '../../constants/constants';
@@ -17,12 +17,27 @@ import {
 } from 'react-native-popup-menu';
 import moment from 'moment'
 import { REDUX } from '../../Redux/store/types';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+
+function compareFirstNames(a, b) {
+    if (moment(a.create_at).isAfter(b.create_at)) {
+        return -1;
+    }
+    if (moment(b.create_at).isAfter(a.create_at)) {
+        return 1;
+    }
+    return 0;
+}
+
 
 export default function Notification({ navigation }) {
     const data = useSelector(state => state.notificationReducer)
     const dispatch = useDispatch()
     const dataMomentDay = data?.list.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() === moment().format('YYYY-MM-DD').toString())
+    dataMomentDay.sort(compareFirstNames)
     const dataMomentNoDay = data?.list.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() !== moment().format('YYYY-MM-DD').toString())
+    dataMomentNoDay.sort(compareFirstNames)
+
     function Header() {
         const _goBack = () => navigation.goBack();
         return (
@@ -134,23 +149,94 @@ const ItemNotification = React.memo(({ item, index, dispatch, navigation }) => {
                     type: REDUX.UPDATE_NOTIFICATION,
                     payload: itemClick
                 })
-                navigation.navigate(ROUTE_KEY.Details, { _id: itemClick.movie_id })
+                if (item.item.type === typeNotification.MOVIE) {
+                    navigation.navigate(ROUTE_KEY.Details, { _id: itemClick.movie_id })
+                } else if (item.item.type === typeNotification.VIDEO) {
+                    Alert.alert('Qua screen Video ne` !')
+                } else if (item.item.type === typeNotification.CAST) {
+                    Alert.alert('Qua screen cast ne` !')
+                }
+
             }}
             style={{ paddingTop: 10 * WIDTH_SCALE, backgroundColor: item?.item?.userInteraction ? 'white' : '#A9F5F2' }}>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
                 {item.item.type === typeNotification.CAST ?
-                    <Avatar.Image size={60 * WIDTH_SCALE} source={{ uri: item?.item?.cover_image }} style={{ marginLeft: 5 * WIDTH_SCALE }} />
+                    <View style={{ alignItems: 'center', flex: 1, margin: 5 * WIDTH_SCALE, }}>
+                        <Avatar.Image size={60 * WIDTH_SCALE} source={{ uri: item?.item?.cover_image }} style={{ marginLeft: 5 * WIDTH_SCALE, }} />
+                    </View>
                     : null
                 }
                 {item.item.type === typeNotification.MOVIE ?
                     <Image source={{ uri: item.item.cover_image }} style={{ width: 120 * WIDTH_SCALE, height: 80 * WIDTH_SCALE, margin: 10 * WIDTH_SCALE }} />
                     : null
                 }
-                <View style={{ paddingLeft: 20 * WIDTH_SCALE }}>
+                {item.item.type === typeNotification.VIDEO ?
+                    <Image source={{ uri: item.item.cover_image }} style={{ width: 120 * WIDTH_SCALE, height: 80 * WIDTH_SCALE, margin: 10 * WIDTH_SCALE }} />
+                    : null
+                }
+                <View style={{ flex: 2 }}>
                     <Text style={{ fontSize: 15 * WIDTH_SCALE }}>{item?.item?.name}</Text>
-                    <Text style={{ fontStyle: 'italic', color: 'gray' }}>{item?.item?.des}</Text>
+                    {item.item.type === typeNotification.CAST ?
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 * WIDTH_SCALE }}>
+                            {item.item.isFollow ?
+                                <TouchableOpacity
+                                    disabled={true}
+                                    style={{
+                                        backgroundColor: '#3f5b92',
+                                        width: WIDTH * 0.56,
+                                        alignItems: 'center',
+                                        height: 30 * WIDTH_SCALE,
+                                        justifyContent: 'center',
+                                        borderRadius: 5 * WIDTH_SCALE,
+                                        marginRight: 10 * WIDTH_SCALE,
+                                    }}
+                                >
+                                    <Text style={{ color: ptColor.white }}>Đã follow</Text>
+                                </TouchableOpacity>
+                                :
+                                <>
+                                    <TouchableOpacity
+                                        style={{
+                                            backgroundColor: '#4A80EA',
+                                            width: WIDTH * 0.28,
+                                            alignItems: 'center',
+                                            height: 30 * WIDTH_SCALE,
+                                            justifyContent: 'center',
+                                            borderRadius: 5 * WIDTH_SCALE,
+                                            marginRight: 10 * WIDTH_SCALE,
+                                        }}
+                                    >
+                                        <Text style={{ color: ptColor.white }}>Follow</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{
+                                            backgroundColor: '#d6dbdb',
+                                            width: WIDTH * 0.28,
+                                            alignItems: 'center',
+                                            height: 30 * WIDTH_SCALE,
+                                            justifyContent: 'center',
+                                            borderRadius: 5 * WIDTH_SCALE,
+                                            marginRight: 10 * WIDTH_SCALE,
+                                        }}
+                                    >
+                                        <Text style={{ color: 'red' }}>Xóa</Text>
+                                    </TouchableOpacity>
+                                </>
+                            }
+
+                        </View>
+                        :
+                        <Text style={{ fontStyle: 'italic', color: 'gray', width: WIDTH * 0.5 }}>{item?.item?.des}</Text>
+                    }
                 </View>
             </View>
+            {item.item.type === typeNotification.MOVIE ?
+                <View style={{ position: 'absolute', bottom: 5 * WIDTH_SCALE, right: 5 * WIDTH_SCALE }}>
+                    <Text style={{ fontStyle: 'italic', color: 'grey' }}>{moment(item.item.create_at).format('HH:mm')}</Text>
+                </View>
+                :
+                null
+            }
         </MyHighLightButton>
     )
 })

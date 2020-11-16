@@ -15,7 +15,8 @@ import {
 } from 'react-native';
 import { store } from '../../Redux/store';
 import { persistStore } from 'redux-persist';
-import { ROUTE_KEY } from '../../constants/constants';
+import { ROUTE_KEY, typeNotification } from '../../constants/constants';
+// import { styles } from '../../constants/style/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
@@ -39,6 +40,7 @@ const IMAGE = {
 import { getValueToShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
 import { getNewNotification, setNewNotification, clearNewNotification } from '../../utils/asyncStorage'
 import { REDUX } from '../../Redux/store/types';
+import { getItemsFollowByUserId } from '../../Redux/actions/followAction';
 
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
@@ -88,8 +90,18 @@ export default function Splash({ navigation }) {
         messaging().subscribeToTopic('N-M-M');
       } catch (error) { }
 
+      PushNotification.createChannel(
+        {
+          channelId: channel.id, // (required)
+          channelName: channel.name, // (required)
+          channelDescription: channel.description, // (optional) default: undefined.
+        },
+        (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
+      );
+
       await messaging().onMessage(async (remoteMessage) => {
-        console.log('29148 : unsubscribe -> remoteMessage', remoteMessage);
+        // console.log('29148 : unsubscribe -> remoteMessage', remoteMessage);
+
         if (remoteMessage && remoteMessage.notification && Platform.OS === 'android') {
           console.log('29148 : unsubscribe -> remoteMessage', remoteMessage);
           const movie_id = remoteMessage.notification.body.split('/')
@@ -101,7 +113,7 @@ export default function Splash({ navigation }) {
             /* iOS and Android properties */
             priority: 'high',
             bigPictureUrl: remoteMessage.notification.android.imageUrl,
-            title: remoteMessage.notification.title + 'abdddd', // (optional)
+            title: remoteMessage.notification.title, // (optional)
             message: movie_id[0], // (required)
             number: 1,
             showWhen: true,
@@ -114,14 +126,15 @@ export default function Splash({ navigation }) {
       })
 
       await persistStore(store, null, async () => {
-        console.log('1001 store', store.getState().notificationReducer.listMovie);
-        const isLogin = store.getState().userReducer.loggedIn
+
+        const userRedux = store.getState().userReducer
+        const dataFollowRedux = await store.getState().followReducer.list
+        console.log('1001 redux', dataFollowRedux);
         await getValueToShowIntroduceOrNot((isShow) => {
 
           if (isShow === false) {
-            if (isLogin) {
-              //navigation.navigate(ROUTE_KEY.BottomNavigation)
-              timeOut(ROUTE_KEY.BottomNavigation)
+            if (userRedux.loggedIn) {
+              navigation.navigate(ROUTE_KEY.BottomNavigation)
             } else {
               //navigation.navigate(ROUTE_KEY.Login)
               timeOut(ROUTE_KEY.Login)
@@ -129,6 +142,13 @@ export default function Splash({ navigation }) {
           }
           setIsShowIntroduce(isShow);
         });
+        // notification  video
+        setTimeout(() => {
+          dataFollowRedux.map((e) => {
+            messaging().subscribeToTopic(e._id.toString())
+
+          })
+        }, 1000)
       });
 
       setTimeout(() => {
@@ -138,54 +158,121 @@ export default function Splash({ navigation }) {
           },
           onNotification: async function (notification) {
             console.log('1002 onNotification ', notification);
-            const movieNotification = {
-              name: notification.title,
-              userInteraction: notification.userInteraction,
-              cover_image: notification.largeIconUrl,
-              movie_id: notification.data.movie_id,
-              type: notification.data.type,
-              des: notification.message,
-              create_at: moment().format('YYYY-MM-DD HH:mm:ss')
-            };
+            if (notification.data.type === typeNotification.VIDEO) {
+              console.log('1001 data ne` đã chạy', notification);
+              const movieNotification = {
+                name: notification.title,
+                userInteraction: notification.userInteraction,
+                cover_image: notification.largeIconUrl,
+                movie_id: notification.data.movie_id,
+                video_id: notification.data.video_id,
+                type: notification.data.type,
+                des: notification.message,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                position: notification.data.position
+              };
+              if (notification.userInteraction) {
+                dispatch({
+                  type: REDUX.UPDATE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+              } else {
+                dispatch({
+                  type: REDUX.ADD_MOVIE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                ToastAndroid.show(
+                  'vừa nhận thông báo ' + movieNotification.name + ' ra mắt tập ' + movieNotification.position,
+                  ToastAndroid.SHORT,
+                );
+              }
+            } else if (notification.data.type === typeNotification.MOVIE) {
+              const movieNotification = {
+                name: notification.title,
+                userInteraction: notification.userInteraction,
+                cover_image: notification.largeIconUrl,
+                movie_id: notification.data.movie_id,
+                type: notification.data.type,
+                des: notification.message,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss')
+              };
 
-            if (notification.userInteraction) {
-              dispatch({
-                type: REDUX.UPDATE_NOTIFICATION,
-                payload: movieNotification
-              })
-              navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
-            } else {
-              dispatch({
-                type: REDUX.ADD_MOVIE_NOTIFICATION,
-                payload: movieNotification
-              })
-              ToastAndroid.show(
-                'vừa nhận thông báo có phim mới ' + movieNotification.name,
-                ToastAndroid.SHORT,
-              );
+              if (notification.userInteraction) {
+                dispatch({
+                  type: REDUX.UPDATE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+              } else {
+                dispatch({
+                  type: REDUX.ADD_MOVIE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                ToastAndroid.show(
+                  'vừa nhận thông báo có phim mới ' + movieNotification.name,
+                  ToastAndroid.SHORT,
+                );
+              }
+            }
+            else if (notification.data.type === typeNotification.CAST) {
+              const movieNotification = {
+                name: notification.title,
+                userInteraction: notification.userInteraction,
+                cover_image: notification.largeIconUrl,
+                cast_id: notification.data.cast_id,
+                type: notification.data.type,
+                des: notification.message,
+                create_at: moment().format('YYYY-MM-DD HH:mm:ss'),
+                isFollow: false
+              };
+
+              if (notification.userInteraction) {
+                dispatch({
+                  type: REDUX.UPDATE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                // navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+              } else {
+                dispatch({
+                  type: REDUX.ADD_MOVIE_NOTIFICATION,
+                  payload: movieNotification
+                })
+                ToastAndroid.show(
+                  'vừa nhận thông báo có phim mới ' + movieNotification.name,
+                  ToastAndroid.SHORT,
+                );
+              }
             }
           },
-
           onAction: function (notification) {
             console.log('1002 Long ACTION:', notification);
           },
+          permissions: {
+            alert: true,
+            badge: true,
+            sound: true,
+          },
+
+          // Should the initial notification be popped automatically
+          // default: true
+          popInitialNotification: true,
+
+          /**
+           * (optional) default: true
+           * - Specified if permissions (ios) and token (android and ios) will requested or not,
+           * - if not, you must call PushNotificationsHandler.requestPermissions() later
+           * - if you are not using remote notification or do not have Firebase installed, use this:
+           *     requestPermissions: Platform.OS === 'ios'
+           */
+          requestPermissions: true,
         });
       }, 1000);
-
-      PushNotification.createChannel(
-        {
-          channelId: channel.id, // (required)
-          channelName: channel.name, // (required)
-          channelDescription: channel.description, // (optional) default: undefined.
-        },
-        (created) => console.log(`createChannel returned '${created}'`), // (optional) callback returns whether the channel was created, false means it already existed.
-      );
     }
     initApplicationData()
 
 
     return () => console.log('29148 : Splash -> unsubscribe');
-
   }, [])
 
   if (isShowIntroduce === true) {
