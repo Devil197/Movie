@@ -6,7 +6,6 @@ import MyHighLightButton from './MyHighLightButton';
 import Play from './Play';
 import Divider from './Divider';
 import Player from './Player';
-
 export {
   FilmItem,
   CastItem,

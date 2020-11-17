@@ -22,9 +22,7 @@ import { REDUX } from '../../Redux/store/types';
 import { WIDTH_SCALE, WIDTH } from '../../constants/constants'
 import { Appbar, useTheme } from 'react-native-paper';
 
-
 const Follow = ({ navigation }) => {
-  const dispatch = useDispatch();
   const [data, setData] = useState();
   const [selectAll, setSelectAll] = useState(false)
   const [isUpdate, setUpdate] = useState(false)
@@ -35,7 +33,7 @@ const Follow = ({ navigation }) => {
   const userId = user?.userInfo?._id;
   useEffect(() => {
     getDataFromAPI();
-  }, []);
+  }, [userId]);
 
   function deleteFollow() {
     let dataItem;

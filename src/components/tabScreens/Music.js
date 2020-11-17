@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Text,
   View,
@@ -6,12 +6,13 @@ import {
   TextInput,
   Dimensions,
   Image,
-  FlatList,
   StyleSheet,
+  Animated,
+  FlatList,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Swiper from 'react-native-swiper';
-import { MySpinner, MyHighLightButton } from '../views';
+import { MySpinner, MyHighLightButton, Play, Player } from '../views';
 import { ROUTE_KEY } from '../../constants/constants';
 
 import {
@@ -19,8 +20,23 @@ import {
   HEIGHT_SCALE,
   WIDTH,
   HEIGHT,
+  STATUS_BAR_CURRENT_HEIGHT,
+  HEADER_HEIGHT,
 } from '../../constants/constants';
-import MyCarousel from '../views/MyCarousel';
+import ViewPager from '@react-native-community/viewpager';
+import PageMusic from '../views/PageMusic';
+import { useDispatch, useSelector } from 'react-redux';
+import EvilIcon from 'react-native-vector-icons/EvilIcons';
+import { ptColor } from '../../constants/styles';
+import { Fonts } from '../../utils/Fonts';
+import {
+  searchAPI,
+  addKeywordActionRedux,
+  hotContentsAPI,
+} from '../../Redux/actions/keywordAction';
+import {
+  getMovieByCategories,
+} from '../../Redux/actions/movieAction';
 
 var { height, width } = Dimensions.get('window');
 const TRACKS = [
@@ -59,10 +75,111 @@ const TRACKS = [
 ];
 
 const Music = () => {
+
+
+  const scrollY = new Animated.Value(0);
+  const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
+
+  const translateY = diffClamp.interpolate({
+    inputRange: [0, HEADER_HEIGHT],
+    outputRange: [0, -HEADER_HEIGHT],
+  });
+
+  const dispatch = useDispatch();
+
+  const inputRef = useRef(keyword);
+
+  const [keyword, setKeyword] = useState('');
+  const [isVisible, setVisible] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+  const url = 'mP3fGkpmVM0'
+  const handleSearchOnPress = () => {
+    setVisible(true);
+    addKeywordActionRedux(dispatch, keyword);
+    handleGetDataByKeyword(keyword);
+  };
+
+  const closeIconOnPress = () => {
+    setKeyword('');
+    setVisible(false);
+  };
+
+  const handleGetDataByKeyword = async (keyword) => {
+    console.log('Search API Called');
+    setLoading(true);
+    if (keyword === '') {
+      return;
+    }
+    await searchAPI(keyword)
+      .then((json) => {
+        setdataAfterSearch([...json?.cast, ...json?.movie]);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   return (
     <View style={{ flex: 1 }}>
-      <MyCarousel />
-    </View>
+      {/* <MyCarousel /> */}
+      {/* <Text>Music</Text> */}
+      <Animated.View
+        style={{
+          transform: [{ translateY: translateY }],
+          zIndex: 10,
+          backgroundColor: 'white',
+          borderRadius: 40 * WIDTH_SCALE,
+          margin: 20 * WIDTH_SCALE,
+        }}>
+        <View style={styles.searchBarContainer}>
+          <View style={styles.searchBar}>
+            <View style={styles.searchInputContainer}>
+              <EvilIcon
+                name="search"
+                size={22 * WIDTH_SCALE}
+                color={ptColor.gray2}
+              />
+              <TextInput
+                autoFocus={false}
+                value={keyword}
+                onChangeText={(txt) => {
+                  setKeyword(txt);
+                  setVisible(false);
+                }}
+                style={styles.searchInput}
+                //placeholder={'Search on GEA'}
+                placeholderTextColor={ptColor.gray2}
+                onSubmitEditing={handleSearchOnPress}
+                returnKeyType="search"
+              />
+              {keyword !== '' ? (
+                <EvilIcon
+                  onPress={() => closeIconOnPress()}
+                  style={styles.closeIcon}
+                  name="close"
+                  size={22 * WIDTH_SCALE}
+                  color={ptColor.gray2}
+                />
+              ) : null}
+            </View>
+          </View>
+        </View>
+      </Animated.View>
+      <ViewPager style={styles.viewPager} initialPage={1}>
+        <View key="1">
+          <PageMusic id={"5f63279ee02d2a2de853e2ba"} />
+        </View>
+        <View key="2">
+          <PageMusic id={"5f63280be02d2a2de853e2bc"} />
+        </View>
+        <View key="2">
+          <PageMusic id={"5f7c1a72ed32570004cf5f65"} />
+        </View>
+      </ViewPager>
+      {/* <View style={{ height: 0.26 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>
+        <Player url={url} />
+      </View> */}
+    </View >
   );
 };
 export default Music;
@@ -72,5 +189,35 @@ const styles = StyleSheet.create({
     width: WIDTH,
     height: HEIGHT,
   },
-
+  viewPager: {
+    flex: 1,
+  },
+  searchBarContainer: {
+    borderBottomWidth: 0.2,
+    borderBottomColor: 'rgba(166, 164, 164, 0.1)',
+    alignItems: 'center',
+  },
+  searchBar: {
+    height: HEADER_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  searchInputContainer: {
+    flex: 5,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    height: HEIGHT * 0.06,
+    paddingLeft: WIDTH * 0.06,
+    marginRight: WIDTH * 0.03,
+    borderRadius: 20,
+  },
+  searchInput: {
+    width: WIDTH * 0.6,
+    color: ptColor.gray2,
+    fontSize: 16 * WIDTH_SCALE,
+    height: HEIGHT * 0.06,
+    paddingLeft: WIDTH * 0.015,
+  },
 });
