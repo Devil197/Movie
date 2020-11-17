@@ -19,7 +19,7 @@ const followReducer = (state = initialState, action) => {
         }
         case REDUX.UPDATE_FOLLOW: {
             const newFollow = state?.list.map((val) => {
-                return val.movie_id === action.payload.movie_id ? action.payload : val;
+                return val._id === action.payload._id ? action.payload : val;
             });
             return {
                 ...state,

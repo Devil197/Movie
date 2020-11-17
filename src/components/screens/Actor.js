@@ -11,6 +11,7 @@ import { SkypeIndicator } from 'react-native-indicators';
 export default function Actor({ navigation, route }) {
 
     const _actorId = route.params._id;
+    console.log('1003 ', _actorId);
     const [actorDataAPI, setActorData] = useState();
     const [birthdayFormated, setBirthday] = useState();
     const [zodiac, setZodiac] = useState('Zodiac');

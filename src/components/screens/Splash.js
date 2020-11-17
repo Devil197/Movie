@@ -160,7 +160,7 @@ export default function Splash({ navigation }) {
             console.log('1002 onNotification ', notification);
             if (notification.data.type === typeNotification.VIDEO) {
               console.log('1001 data ne` đã chạy', notification);
-              const movieNotification = {
+              const videoNotification = {
                 name: notification.title,
                 userInteraction: notification.userInteraction,
                 cover_image: notification.largeIconUrl,
@@ -174,16 +174,16 @@ export default function Splash({ navigation }) {
               if (notification.userInteraction) {
                 dispatch({
                   type: REDUX.UPDATE_NOTIFICATION,
-                  payload: movieNotification
+                  payload: videoNotification
                 })
-                navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+                navigation.navigate(ROUTE_KEY.Details, { _id: videoNotification.movie_id })
               } else {
                 dispatch({
                   type: REDUX.ADD_MOVIE_NOTIFICATION,
-                  payload: movieNotification
+                  payload: videoNotification
                 })
                 ToastAndroid.show(
-                  'vừa nhận thông báo ' + movieNotification.name + ' ra mắt tập ' + movieNotification.position,
+                  'vừa nhận thông báo ' + videoNotification.name + ' ra mắt tập ' + videoNotification.position,
                   ToastAndroid.SHORT,
                 );
               }
@@ -216,7 +216,7 @@ export default function Splash({ navigation }) {
               }
             }
             else if (notification.data.type === typeNotification.CAST) {
-              const movieNotification = {
+              const castNotification = {
                 name: notification.title,
                 userInteraction: notification.userInteraction,
                 cover_image: notification.largeIconUrl,
@@ -228,18 +228,19 @@ export default function Splash({ navigation }) {
               };
 
               if (notification.userInteraction) {
+                console.log('1001 click cast ne1 ', castNotification.cast_id);
                 dispatch({
                   type: REDUX.UPDATE_NOTIFICATION,
-                  payload: movieNotification
+                  payload: castNotification
                 })
-                // navigation.navigate(ROUTE_KEY.Details, { _id: movieNotification.movie_id })
+                navigation.navigate(ROUTE_KEY.Actor, { _id: castNotification.cast_id })
               } else {
                 dispatch({
                   type: REDUX.ADD_MOVIE_NOTIFICATION,
-                  payload: movieNotification
+                  payload: castNotification
                 })
                 ToastAndroid.show(
-                  'vừa nhận thông báo có phim mới ' + movieNotification.name,
+                  'vừa nhận thông báo có phim mới ' + castNotification.name,
                   ToastAndroid.SHORT,
                 );
               }

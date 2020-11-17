@@ -21,9 +21,36 @@ const notificationReducer = (state = initialState, action) => {
             };
         }
 
-        case REDUX.UPDATE_NOTIFICATION: {
+        case REDUX.UPDATE_NOTIFICATION_MOVIE: {
             const newNoti = state?.list.map((val) => {
                 return val.movie_id === action.payload.movie_id ? action.payload : val;
+            });
+            return {
+                ...state,
+                list: newNoti,
+            };
+        }
+        case REDUX.UPDATE_NOTIFICATION_VIDEO: {
+            const newNoti = state?.list.map((val) => {
+                return val.video_id === action.payload.video_id ? action.payload : val;
+            });
+            return {
+                ...state,
+                list: newNoti,
+            };
+        }
+        case REDUX.UPDATE_NOTIFICATION_CAST: {
+            const newNoti = state?.list.map((val) => {
+                return val.cast_id === action.payload.cast_id ? action.payload : val;
+            });
+            return {
+                ...state,
+                list: newNoti,
+            };
+        }
+        case REDUX.UPDATE_NOTIFICATION_MUSIC: {
+            const newNoti = state?.list.map((val) => {
+                return val.music_id === action.payload.music_id ? action.payload : val;
             });
             return {
                 ...state,

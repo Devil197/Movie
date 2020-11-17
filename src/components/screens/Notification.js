@@ -132,29 +132,34 @@ export default function Notification({ navigation }) {
 
 const HEIGHT_BLOG_ITEM = HEIGHT * 0.08
 const ItemNotification = React.memo(({ item, index, dispatch, navigation }) => {
-    console.log('1001 item', item);
+    // console.log('1001 item', item);
     return (
         <MyHighLightButton
             onPress={() => {
                 const itemClick = {
-                    name: item.item.name,
-                    userInteraction: item.item.userInteraction ? true : true,
-                    cover_image: item.item.cover_image,
-                    movie_id: item.item.movie_id,
-                    des: item.item.des,
-                    create_at: item.item.create_at,
-                    type: item.item.type
+                    ...item.item,
+                    userInteraction: true
                 }
-                dispatch({
-                    type: REDUX.UPDATE_NOTIFICATION,
-                    payload: itemClick
-                })
+                console.log('1001 item.item', itemClick);
                 if (item.item.type === typeNotification.MOVIE) {
+                    dispatch({
+                        type: REDUX.UPDATE_NOTIFICATION_MOVIE,
+                        payload: itemClick
+                    })
                     navigation.navigate(ROUTE_KEY.Details, { _id: itemClick.movie_id })
                 } else if (item.item.type === typeNotification.VIDEO) {
                     Alert.alert('Qua screen Video ne` !')
+                    dispatch({
+                        type: REDUX.UPDATE_NOTIFICATION_VIDEO,
+                        payload: itemClick
+                    })
                 } else if (item.item.type === typeNotification.CAST) {
-                    Alert.alert('Qua screen cast ne` !')
+                    console.log('1001 cast id ', item.item);
+                    dispatch({
+                        type: REDUX.UPDATE_NOTIFICATION_CAST,
+                        payload: itemClick
+                    })
+                    navigation.navigate(ROUTE_KEY.Actor, { _id: item.item.cast_id })
                 }
 
             }}

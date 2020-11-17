@@ -1,4 +1,7 @@
 import { axiosConfig } from '../../utils/api';
+import React from 'react'
+import { View, Text, Alert, ToastAndroid } from 'react-native'
+import { REDUX } from '../../Redux/store/types'
 
 export const getItemsFollowByUserId = (userId) =>
   new Promise((resolve, reject) => {
@@ -30,4 +33,18 @@ export const followMovie = async (movie_id, user_id) => {
     console.log("Follow API ERROR: ", err);
     return { data: [] }
   }
+}
+
+export const deleteFollowAPI = async (user_id, follow_id) => {
+  await axiosConfig.get(`/v5/follow/delete/${user_id}/${follow_id}`)
+    .then(res => {
+      if (!res.data.result) {
+        return res
+      }
+      console.log('1000 delete follow ', res);
+    })
+    .catch(e => {
+      console.log('1001 delete follow fail ', e)
+      return e
+    })
 }
