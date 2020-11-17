@@ -19,6 +19,7 @@ import { name as appName } from './app.json';
 import 'react-native-gesture-handler';
 import PushNotification from 'react-native-push-notification';
 import SomeTaskName from './src/Headless/SomeTaskName'
+import TrackPlayer from 'react-native-track-player'
 LogBox.ignoreAllLogs(true);
 
 const channel = {
@@ -45,3 +46,4 @@ StatusBar.setBarStyle('dark-content');
 // Orientation.lockToPortrait();
 AppRegistry.registerHeadlessTask('SomeTaskName', () => SomeTaskName);
 AppRegistry.registerComponent(appName, () => App);
+TrackPlayer.registerPlaybackService(() => require('./service.js'));
