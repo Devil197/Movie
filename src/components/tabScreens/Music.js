@@ -23,7 +23,6 @@ import {
   STATUS_BAR_CURRENT_HEIGHT,
   HEADER_HEIGHT,
 } from '../../constants/constants';
-import MyCarousel from '../views/MyCarousel';
 import ViewPager from '@react-native-community/viewpager';
 import PageMusic from '../views/PageMusic';
 import { useDispatch, useSelector } from 'react-redux';
