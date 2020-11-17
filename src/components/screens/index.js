@@ -6,4 +6,5 @@ import History from './History';
 import Search from './Search';
 import Setting from './Setting';
 import Notification from './Notification';
-export {Login, Videos, Splash, Details, History, Search, Setting, Notification};
+import Actor from './Actor';
+export { Login, Videos, Splash, Details, History, Search, Setting, Notification, Actor };

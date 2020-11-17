@@ -1,26 +1,26 @@
 import React from 'react';
-import {Dimensions, Image, Text, View, StyleSheet} from 'react-native';
-import {TouchableWithoutFeedback} from 'react-native-gesture-handler';
-import {Fonts} from '../../utils/Fonts';
-import {ROUTE_KEY} from '../../constants/constants';
+import { Dimensions, Image, Text, View, StyleSheet } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { Fonts } from '../../utils/Fonts';
+import { ROUTE_KEY } from '../../constants/constants';
 
-const {width} = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
-const FilmFollowItem = ({navigation, params}) => {
+const FilmFollowItem = ({ navigation, params }) => {
   const item = params.item;
   return (
     <TouchableWithoutFeedback
       key={item._id}
-      onPress={() => navigation.push(ROUTE_KEY.Details, {_id: item._id})}>
+      onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item?._id })}>
       <View style={styles.item}>
-        <Image source={{uri: item.cover_img}} style={styles.itemImg} />
+        <Image source={{ uri: item?.cover_img }} style={styles.itemImg} />
         <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.itemTitle}>
           {item.name}
         </Text>
         <View style={[styles.row]}>
-          <Text style={styles.newEp}>{item.episode}</Text>
-          <Text style={{marginHorizontal: 8, color: '#a5a5a5'}}>/</Text>
-          <Text style={styles.lastEp}> 69</Text>
+          <Text style={styles.newEp}>{item?.status}</Text>
+          <Text style={{ marginHorizontal: 8, color: '#a5a5a5' }}>/</Text>
+          <Text style={styles.lastEp}> {item?.episode ? item?.episode : '??'}</Text>
         </View>
       </View>
     </TouchableWithoutFeedback>

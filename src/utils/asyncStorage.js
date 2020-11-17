@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 export const setNewNotification = async (remote) => {
     try {
-        await AsyncStorage.setItem('@newNotifications', remote)
+        await AsyncStorage.setItem('@newNotifications', JSON.stringify(remote.length ? remote : []))
     } catch (e) {
         console.log(e);
     }
@@ -11,10 +11,11 @@ export const setNewNotification = async (remote) => {
 export const getNewNotification = async () => {
     try {
         let list = await AsyncStorage.getItem('@newNotifications')
-        return list
+        const outputData = JSON.parse(list);
+        return outputData && outputData.length ? outputData : []
     } catch (e) {
         console.log(e);
-        return []
+        return false
     }
 }
 
@@ -25,3 +26,23 @@ export const clearNewNotification = async () => {
         console.log(e);
     }
 }
+
+export const setNotificationList = async (listNotification) => {
+    try {
+        await AsyncStorage.setItem(
+            '@getNotificationList:key',
+            JSON.stringify(listNotification.length ? listNotification : []),
+        );
+    } catch (e) {
+        console.log(e);
+    }
+};
+export const getNotificationList = async () => {
+    try {
+        const notiList = await AsyncStorage.getItem('@getNotificationList:key');
+        const outputData = JSON.parse(notiList);
+        return outputData && outputData.length ? outputData : [];
+    } catch (error) {
+        return false;
+    }
+};
