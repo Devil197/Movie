@@ -254,31 +254,33 @@ export default function Splash({ navigation }) {
           sound: true,
         },
 
-        return() => {
-        return unsubscribe;
-      };
+      })
+    })
+    return () => {
+      console.log('1001 aaaa');
+    };
 
-    }, [])
+  }, [])
 
-    if (isShowIntroduce === true) {
-      return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;
-    }
-
-    return (
-      <View style={styles.container}>
-        <ImageBackground source={IMAGE} style={styles.image_background}>
-          <View style={{ width: 60, height: 60, borderRadius: 20 }}>
-            <SkypeIndicator
-              color={ptColor.appColor}
-              style={{
-                padding: 16 * WIDTH_SCALE,
-                backgroundColor: 'rgba(166, 164, 164, 0.4)',
-                borderRadius: 10,
-              }}
-              size={40 * WIDTH_SCALE}
-            />
-          </View>
-        </ImageBackground>
-      </View>
-    );
+  if (isShowIntroduce === true) {
+    return <Introduce turnOffIntroduce={() => setIsShowIntroduce(false)} />;
   }
+
+  return (
+    <View style={styles.container}>
+      <ImageBackground source={IMAGE} style={styles.image_background}>
+        <View style={{ width: 60, height: 60, borderRadius: 20 }}>
+          <SkypeIndicator
+            color={ptColor.appColor}
+            style={{
+              padding: 16 * WIDTH_SCALE,
+              backgroundColor: 'rgba(166, 164, 164, 0.4)',
+              borderRadius: 10,
+            }}
+            size={40 * WIDTH_SCALE}
+          />
+        </View>
+      </ImageBackground>
+    </View>
+  );
+}

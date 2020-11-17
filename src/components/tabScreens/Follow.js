@@ -23,6 +23,7 @@ import { WIDTH_SCALE, WIDTH } from '../../constants/constants'
 import { Appbar, useTheme } from 'react-native-paper';
 
 const Follow = ({ navigation }) => {
+  const dispatch = useDispatch()
   const [data, setData] = useState();
   const [selectAll, setSelectAll] = useState(false)
   const [isUpdate, setUpdate] = useState(false)
@@ -39,7 +40,7 @@ const Follow = ({ navigation }) => {
     let dataItem;
     if (dataUpdate.length > 0) {
       MySpinner.show()
-      followReducer.list.map((e, i) => {
+      followReducer?.list?.map((e, i) => {
         dataItem = dataUpdate.find((e1) => e.movie_id._id === e1._id)
       })
       dataUpdate.map((e) => {
