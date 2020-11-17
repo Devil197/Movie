@@ -9,7 +9,6 @@ import {
   TouchableWithoutFeedback,
   Alert,
   BackHandler,
-  Image,
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
 import {
@@ -28,16 +27,13 @@ import {
   GraphRequest,
   GraphRequestManager,
 } from 'react-native-fbsdk';
-import { MySpinner, MyHighLightButton } from '../views';
-import {
-  WIDTH_SCALE,
-  HEIGHT_SCALE,
-  WIDTH,
-  HEIGHT,
-} from '../../constants/constants';
-import { ptColor } from '../../constants/styles';
+import { MySpinner } from '../views';
 
 const LOGIN_LOGO_HEIGHT = 80;
+const IMAGE = {
+  uri:
+    'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
+};
 
 export default function Login({ navigation }) {
   const dispatch = useDispatch();
@@ -73,35 +69,32 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image
-        source={require('../../assets/icons/gea_logo.png')}
-        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', marginTop: HEIGHT * 0.13 }} />
+      <ImageBackground source={IMAGE} style={styles.imageBackground}>
+        <View style={styles.headerTitleContainer}>
+          <Text style={styles.title1}>Welcome To</Text>
+          <Text style={styles.title2}>GEA</Text>
+        </View>
 
-      <View style={styles.headerTitleContainer}>
-        <Text style={styles.title1}>Welcome To</Text>
-        <View style={{ height: 10 * WIDTH_SCALE }} />
-        <Text style={styles.title2}>GEA</Text>
-      </View>
+        <View style={styles.loginContainer}>
+          <TouchableWithoutFeedback onPress={loginFacebook}>
+            <View style={styles.buttonFB}>
+              <Icons name="sc-facebook" size={24} color="#fff" />
+              <View style={{ width: 10 }} />
+              <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
+            </View>
+          </TouchableWithoutFeedback>
 
-      <View style={styles.loginContainer}>
-        <MyHighLightButton onPress={loginFacebook}>
-          <View style={styles.buttonFB}>
-            <Icons name="sc-facebook" size={24} color="#fff" />
-            <View style={{ width: 10 }} />
-            <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
-          </View>
-        </MyHighLightButton>
+          <View style={{ height: 15 }} />
 
-        <View style={{ height: 15 }} />
-
-        <MyHighLightButton onPress={loginGoogle}>
-          <View style={styles.buttonGG}>
-            <Icons name="sc-google-plus" size={24} color="#fff" />
-            <View style={{ width: 10 }} />
-            <Text style={styles.titleBtnFB}>Sign In With Google</Text>
-          </View>
-        </MyHighLightButton>
-      </View>
+          <TouchableWithoutFeedback onPress={loginGoogle}>
+            <View style={styles.buttonGG}>
+              <Icons name="sc-google-plus" size={24} color="#fff" />
+              <View style={{ width: 10 }} />
+              <Text style={styles.titleBtnFB}>Sign In With Google</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -112,24 +105,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  headerTitleContainer: {
+  imageBackground: {
     flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  headerTitleContainer: {
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
   },
   title1: {
-    color: ptColor.gray2,
-    fontSize: 20 * WIDTH_SCALE,
+    color: '#FFF',
+    fontSize: 16,
     fontFamily: Fonts.SansLight,
   },
   title2: {
-    color: ptColor.black,
-    fontSize: 30 * WIDTH_SCALE,
+    color: '#fff',
+    fontSize: 20,
     fontFamily: Fonts.SansBold,
   },
   loginContainer: {
-    width: WIDTH,
-    height: HEIGHT * 0.3,
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -137,8 +135,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#4267B2',
     height: 45,
-    width: WIDTH * 0.6,
-    borderRadius: 45 / 2,
+    width: '55%',
+    borderRadius: 20,
     justifyContent: 'flex-start',
     paddingLeft: 15,
     alignItems: 'center',
@@ -147,8 +145,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#a81a13',
     height: 45,
-    width: WIDTH * 0.6,
-    borderRadius: 45 / 2,
+    width: '55%',
+    borderRadius: 20,
     justifyContent: 'flex-start',
     paddingLeft: 15,
     alignItems: 'center',

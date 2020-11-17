@@ -1,11 +1,10 @@
 import AsyncStorage from '@react-native-community/async-storage';
-import { combineReducers } from 'redux';
-import { persistReducer } from 'redux-persist';
+import {combineReducers} from 'redux';
+import {persistReducer} from 'redux-persist';
 // import
 import userReducer from './userReducer';
 import keywordReducer from './keywordReducer'
-import notificationReducer from './notificationReducer'
-import followReducer from './followReducer'
+
 const reducers = combineReducers({
   userReducer: persistReducer(
     {
@@ -21,21 +20,6 @@ const reducers = combineReducers({
     },
     keywordReducer,
   ),
-  notificationReducer: persistReducer(
-    {
-      key: 'notificationReducer',
-      storage: AsyncStorage,
-    },
-    notificationReducer,
-  ),
-  followReducer: persistReducer(
-    {
-      key: 'followReducer',
-      storage: AsyncStorage,
-    },
-    followReducer,
-  ),
 });
-
 // Exports
 export default reducers;
