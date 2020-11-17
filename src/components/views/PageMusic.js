@@ -32,7 +32,7 @@ import {
 } from '../../Redux/actions/movieAction';
 import { Fonts } from '../../utils/Fonts';
 import { Icon as IconElement } from 'react-native-elements';
-import { Play, Player } from '../views';
+import Players from '../views/Players';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 import YoutubePlayer, { YoutubeIframeRef } from "react-native-youtube-iframe";
@@ -120,7 +120,9 @@ export default function PageMusic({
                     )}
                 />
             </View>
-
+            <View>
+                {/* <Players songs={films} /> */}
+            </View>
         </ScrollView>
     );
 }

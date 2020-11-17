@@ -37,7 +37,8 @@ import {
 import {
   getMovieByCategories,
 } from '../../Redux/actions/movieAction';
-
+import Players from '../views/Players';
+import { films } from '../../constants/data/fakeData'
 var { height, width } = Dimensions.get('window');
 const TRACKS = [
   {
@@ -176,9 +177,9 @@ const Music = () => {
           <PageMusic id={"5f7c1a72ed32570004cf5f65"} />
         </View>
       </ViewPager>
-      {/* <View style={{ height: 0.26 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>
-        <Player url={url} />
-      </View> */}
+      <View style={{ height: 0.26 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>
+        <Players songs={films} />
+      </View>
     </View >
   );
 };
