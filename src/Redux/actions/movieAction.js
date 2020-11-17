@@ -118,17 +118,4 @@ export const getMovieByScore = () =>
       .catch((err) => reject(err));
   });
 
-export const getMovieByCategories = (_id) =>
-  new Promise((resolve, reject) => {
-    axiosConfig
-      .get(`/v3/movie/get/category/${_id}`)
-      .then((response) => {
-        if (response.data.result) {
-          resolve(response.data);
-        } else {
-          Alert.alert('get movie failed');
-        }
-      })
-      .catch((err) => reject(err));
-  });
 

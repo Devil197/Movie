@@ -2,38 +2,32 @@ const films = [
     {
         "id": 1,
         "title": "Maou Gakuin no Futekigoushaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-        "thumb": "https://img.anime47.com/imgur/xVuhyWc.jpg",
-        "_id": "P8qEusQiwsw",
+        "thumb": "https://img.anime47.com/imgur/xVuhyWc.jpg"
     },
     {
         "id": 2,
         "title": "Peter Grill to Kenja no Jikan",
-        "thumb": "https://img.anime47.com/imgur/6hhR2bl.jpg",
-        "_id": "vP4zGMdTDPM",
+        "thumb": "https://img.anime47.com/imgur/6hhR2bl.jpg"
     },
     {
         "id": 3,
         "title": "Dokyuu Hentai HxEros",
-        "thumb": "https://img.anime47.com/imgur/gEfsKK8.jpg",
-        "_id": "QihWKyosoYw",
+        "thumb": "https://img.anime47.com/imgur/gEfsKK8.jpg"
     },
     {
         "id": 4,
         "title": "Kanojo, Okarishimasu",
-        "thumb": "https://img.anime47.com/imgur/KKrknWT.jpg",
-        "_id": "WNeLUngb-Xg",
+        "thumb": "https://img.anime47.com/imgur/KKrknWT.jpg"
     },
     {
         "id": 5,
         "title": "Deca-Dence",
-        "thumb": "https://img.anime47.com/imgur/4A8EO07.jpg",
-        "_id": "2JL_KcEzkqg",
+        "thumb": "https://img.anime47.com/imgur/4A8EO07.jpg"
     },
     {
         "id": 6,
         "title": "Re:Zero kara Hajimeru Isekai Seikatsu 2nd Season",
-        "thumb": "https://img.anime47.com/imgur/9HpTWLd.jpg",
-        "_id": "j__Q13iAxNk",
+        "thumb": "https://img.anime47.com/imgur/9HpTWLd.jpg"
     },
     {
         "id": 7,
