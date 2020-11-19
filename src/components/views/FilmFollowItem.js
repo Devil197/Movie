@@ -11,13 +11,13 @@ import { ptColor } from '../../constants/styles';
 const { width } = Dimensions.get('window');
 
 const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, checkedItemUpdate, selectAll, dispatch }) => {
-  // console.log('1000 parmars ', params);
+  // console.log('1000 parmars ', params.item);
   const item = params.item.movie_id;
   const [checked, setChecked] = useState(selectAll ? selectAll : false)
   const movie = followReducer?.find((e) => e.movie_id._id === item._id)
   const clickItemFollow = () => {
     navigation.push(ROUTE_KEY.Details, { _id: item?._id })
-    console.log('1000 params.item', params.item);
+    // console.log('1000 params.item', params.item);
     dispatch({
       type: REDUX.UPDATE_FOLLOW,
       payload: params.item

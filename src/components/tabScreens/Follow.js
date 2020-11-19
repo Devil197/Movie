@@ -30,11 +30,12 @@ const Follow = ({ navigation }) => {
   const [dataUpdate, setDataUpdate] = useState([])
   const user = useSelector((state) => state.userReducer);
   const followReducer = useSelector((state) => state.followReducer)
-  console.log('1000 ', followReducer);
+  console.log('1000 follow redux', followReducer);
   const userId = user?.userInfo?._id;
+  console.log('1000 userId', userId);
   useEffect(() => {
     getDataFromAPI();
-  }, [userId]);
+  }, []);
 
   function deleteFollow() {
     let dataItem;
@@ -101,15 +102,17 @@ const Follow = ({ navigation }) => {
     MySpinner.show();
     let json = await getItemsFollowByUserId(userId).then((json) => {
       return json;
-    });
+    }).catch((e) => {
+      console.log('1000 fail api', e);
+    })
     console.log('0103 json', json);
     setData(json.items);
     console.log('0103 data', data);
-    if (followReducer?.first) {
+    if (!followReducer?.first) {
       console.log('1001 chay redux');
       dispatch({
         type: REDUX.SET_FOLLOW,
-        payload: data.items
+        payload: json.items
       })
       dispatch({
         type: REDUX.FIRST_FOLLOW
