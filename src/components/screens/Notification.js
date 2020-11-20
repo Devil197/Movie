@@ -6,7 +6,7 @@ import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY, typeNotification }
 import { Icon as IconElement } from 'react-native-elements';
 import { films } from '../../constants/data/fakeData';
 import { Fonts } from '../../utils/Fonts';
-import { MyHighLightButton, NotificationItem } from '../views/index';
+import { MyHighLightButton, MySpinner, NotificationItem } from '../views/index';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -33,6 +33,15 @@ function compareFirstNames(a, b) {
 export default function Notification({ navigation }) {
     const data = useSelector(state => state.notificationReducer)
     console.log('1002 noti redux ', data);
+
+
+    useEffect(() => {
+        MySpinner.show()
+        setTimeout(() => {
+            MySpinner.hide()
+        }, 1000 * 2)
+    }, [])
+
     const dispatch = useDispatch()
     const dataMomentDay = data?.list.filter((e) => moment(e.create_at).format('YYYY-MM-DD').toString() === moment().format('YYYY-MM-DD').toString())
     dataMomentDay.sort(compareFirstNames)
