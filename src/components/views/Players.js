@@ -10,9 +10,10 @@ import {
     StyleSheet,
 } from "react-native";
 
-import TrackPlayer, { Event } from 'react-native-track-player';
+import TrackPlayer, { Capability, Event } from 'react-native-track-player';
 // import songs from "../../constants/data/song";
 import Controller from "./Controller";
+import SliderComp from "./SliderComp";
 
 const { width, height } = Dimensions.get("window");
 
@@ -41,6 +42,16 @@ export default function Players({ songs }) {
             await TrackPlayer.add(songs);
             isPlayerReady.current = true;
             // TrackPlayer.play()
+            await TrackPlayer.updateOptions({
+                stopWithApp: false,
+                alwaysPauseOnInterruption: true,
+                capabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.SkipToNext,
+                    Capability.SkipToPrevious,
+                ],
+            })
         });
 
         return () => {
@@ -49,7 +60,7 @@ export default function Players({ songs }) {
     }, []);
 
     useEffect(() => {
-        if (isPlayerReady) {
+        if (isPlayerReady.current) {
             TrackPlayer.skip(songs[songIndex].id)
         }
 
@@ -112,7 +123,7 @@ export default function Players({ songs }) {
                 <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{songs[songIndex].title}</Text>
                 <Text style={styles.artist}>{songs[songIndex].id}</Text>
             </View>
-
+            <SliderComp />
             <Controller onNext={goNext} onPrv={goPrv} />
         </SafeAreaView>
     );
@@ -131,5 +142,6 @@ const styles = StyleSheet.create({
     },
     container: {
         flex: 1,
+        alignItems: 'center',
     },
 });
