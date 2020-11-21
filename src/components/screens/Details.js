@@ -11,7 +11,10 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  Animated
+  Animated,
+  Modal,
+  ToastAndroid,
+  Alert
 } from 'react-native';
 import { getFullMovie, getMovieByCategories, getAllMovie } from '../../Redux/actions/movieAction';
 import {
@@ -28,12 +31,16 @@ import { ptColor } from '../../constants/styles';
 import Orientation from 'react-native-orientation';
 import Header from '../views/HeaderMovie';
 import Icons from 'react-native-vector-icons/Feather'
+import FollowIcons from 'react-native-vector-icons/Entypo'
 import StarRating from 'react-native-star-rating';
-import { getEvalByMovieId } from '../../Redux/actions/evalAction';
+import { getEvalByMovieId, ratingAPI } from '../../Redux/actions/evalAction';
+import { SkypeIndicator } from 'react-native-indicators';
+import { useSelector } from 'react-redux';
+import { isFollowAPI, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
 const HEADER_BAR_HEIGHT = 45 * WIDTH_SCALE;
 
 export default function Details({ navigation, route }) {
-
+  const userInfo = useSelector((state) => state.userReducer?.userInfo);
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_BAR_HEIGHT);
   const backgroundColor = scrollY.interpolate({
@@ -47,7 +54,7 @@ export default function Details({ navigation, route }) {
   // video ====
   const [height, setHeight] = useState();
   const [trailer, setTrailer] = useState('');
-
+  const [isFollow, setFollow] = useState(false);
   //=====
   const _id = route.params._id;
   const [dataMovie, setDataMovie] = useState();
@@ -58,30 +65,80 @@ export default function Details({ navigation, route }) {
   const [numberOfLines, setNumberOfLines] = useState(4);
   const [tabOfTheDescription, setTabs] = useState("Xem thêm");
   const [sqrtEvalMovie, setEval] = useState();
-  const url = 'aF8U_uSsXSA';
+  const [reloadScreen, setReload] = useState(false);
+  //Modal rating
+  const [isVisible, setVisible] = useState(false);
+  const [defaultRating, setDefaultRating] = useState(2);
+  const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
+  const starImageFilled = require('../../assets/icons/star_filled.png');
+  const starImageCorner = require('../../assets/icons/star_corner.png');
+
+  const toastAndroid = (text) => {
+    ToastAndroid.showWithGravityAndOffset(
+      text,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      0,
+      100
+    );
+  }
+
+  const CustomRatingBar = () => {
+    return (
+      <View style={styles.customRatingBarStyle}>
+        {maxRating.map((item, key) => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              key={item}
+              onPress={() => setDefaultRating(item)}>
+              <Image
+                style={styles.starImageStyle}
+                source={
+                  item <= defaultRating
+                    ? starImageFilled
+                    : starImageCorner
+                }
+              />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  };
+
+  const _onDoneRating = async () => {
+    hideModal();
+    setLoading(true);
+    await ratingAPI(userInfo?._id, _id, defaultRating).then((response) => {
+      if (response?.data?.result) {
+        setReload(true);
+        toastAndroid("Cảm ơn bạn đã đánh giá!")
+      } else {
+        toastAndroid("Lỗi sự cố trong khi xử lý!\nVui lòng thử lại sau.")
+      }
+    })
+  }
 
   // useState ALL MOVIE tạm thời 
   const [allMovie, setAllMovie] = useState();
 
   const initial = Orientation.getInitialOrientation();
   useEffect(() => {
-    MySpinner.show();
     getFullMovie(_id)
       .then((fullMovie) => {
-        console.log("===: ", fullMovie);
         setDataMovie(fullMovie);
         setTrailer(fullMovie?.movie[0]?.trailer);
-        setLoading(false);
         getDayUpdateMovie(fullMovie?.movie[0]?.create_at)
+        setLoading(false);
+        setReload(false);
       })
       .catch((err) => console.log('Failed', err));
 
     handleEvalAPI();
-
-    //handleMovieWithCategoryAPI();
-
     handleGetAllMovieAPI();
-  }, []);
+    handleCheckFollowAPI();
+  }, [reloadScreen]);
 
   const handleEvalAPI = async () => {
     await getEvalByMovieId(_id).then(result => {
@@ -89,9 +146,14 @@ export default function Details({ navigation, route }) {
     })
   }
 
-  const handleMovieWithCategoryAPI = async () => {
-    await getMovieByCategories(_id).then(result => {
-      console.log("MOVIE API: ", result);
+  const handleCheckFollowAPI = async () => {
+    await isFollowAPI('movie', userInfo?._id).then(res => {
+      console.log("SHOW: ", res?.items);
+      res?.items.map((c, i) => {
+        if (c?.movie_id?._id === _id) {
+          setFollow(true);
+        }
+      })
     })
   }
 
@@ -101,6 +163,7 @@ export default function Details({ navigation, route }) {
       setAllMovie(result);
     })
   }
+  //============
 
   const getDayUpdateMovie = (data) => {
     let getDate = new Date(data);
@@ -135,23 +198,6 @@ export default function Details({ navigation, route }) {
     }
   }
 
-  if (loading) {
-    MySpinner.show();
-    return (
-      <View
-        style={{
-          flex: 1,
-          width: WIDTH,
-          height: HEIGHT,
-          position: 'absolute',
-          zIndex: 9999,
-        }}
-      />
-    );
-  } else {
-    MySpinner.hide();
-  }
-
   const onFullScreen = (fullScreen) => {
     if (fullScreen) {
       Orientation.lockToPortrait();
@@ -172,6 +218,53 @@ export default function Details({ navigation, route }) {
     }
   }
 
+  const handleCancelFollowMovie = async () => {
+    await deleteFollowAPI(userInfo?._id, _id, 'movie').then(data => {
+      console.log("HUY THEO DOI: ", data);
+      if (data?.position === 200) {
+        toastAndroid("Bạn đã hủy theo dõi nội dung!")
+        setFollow(false);
+      } else {
+        toastAndroid("Xảy ra sự cố khi xử lý\nVui lòng thử lại sau!")
+      }
+    })
+  }
+
+  const handleFollowOnPress = async () => {
+
+    if (isFollow) {
+      Alert.alert(
+        "Hủy theo dõi",
+        "Bạn muốn hủy theo dõi nội dung này?",
+        [
+          {
+            text: "Không",
+            //onPress: () => console.log("Bỏ qua"),
+            style: "cancel"
+          },
+          {
+            text: "Có",
+            onPress: () => { handleCancelFollowMovie() }
+          }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      await followMovie(dataMovie?.movie[0]?._id, userInfo?._id, 'movie').then(response => {
+        if (response?.data?.position === 200) {
+          toastAndroid("Cảm ơn bạn đã theo dõi!")
+          setFollow(true);
+        } else {
+          console.log("THEO DOIX: ", response);
+          toastAndroid("Có sự cố khi xử lý.\nVui lòng thử lại sau!")
+        }
+      })
+    }
+
+  }
+
+  const showModal = () => setVisible(true);
+  const hideModal = () => setVisible(false);
   return (
     <View
       style={{ backgroundColor: '#fff', flex: 1 }}
@@ -182,11 +275,19 @@ export default function Details({ navigation, route }) {
       <Animated.View
         style={[styles.headerStyle, { backgroundColor: backgroundColor, transform: [{ translateY: translateY }] }
         ]}>
-        <Icons
-          onPress={() => navigation.goBack()}
-          name={'arrow-left'}
-          size={18 * WIDTH_SCALE}
-          color={ptColor.white} />
+        <MyHighLightButton
+          style={{
+            height: '100%',
+            width: WIDTH * 0.1,
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
+          onPress={() => navigation.goBack()}>
+          <Icons
+            name={'arrow-left'}
+            size={18 * WIDTH_SCALE}
+            color={ptColor.white} />
+        </MyHighLightButton>
       </Animated.View>
 
       <Animated.ScrollView
@@ -194,6 +295,7 @@ export default function Details({ navigation, route }) {
         scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: false }
         )}>
 
         <View style={{ height: HEIGHT * 0.3 }}>
@@ -273,8 +375,6 @@ export default function Details({ navigation, route }) {
                 fontFamily: Fonts.SansMedium,
                 fontSize: 18 * WIDTH_SCALE
               }}> {sqrtEvalMovie}</Text>
-
-            {/* <Icons name={'edit-3'} size={18 * WIDTH_SCALE} color={ptColor.gray2} /> */}
           </View>
 
           <View
@@ -412,7 +512,7 @@ export default function Details({ navigation, route }) {
       {/* BOTTOM TAB */}
       <View
         style={{
-          height: 50 * WIDTH_SCALE,
+          height: 60 * WIDTH_SCALE,
           width: WIDTH,
           backgroundColor: ptColor.white,
           position: 'absolute',
@@ -428,26 +528,50 @@ export default function Details({ navigation, route }) {
           zIndex: 10,
           flexDirection: 'row',
           justifyContent: 'center',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: 4 * WIDTH_SCALE,
         }}>
 
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <MyHighLightButton
             onPress={() => {
-              console.log("Danh gia clicked");
+              showModal()
             }}
             style={{ height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Icons name={'edit'} size={18 * WIDTH_SCALE} color={ptColor.black} />
+            <Icons name={'edit'} size={18 * WIDTH_SCALE} color={'red'} />
 
             <Text style={{ color: ptColor.black, fontFamily: Fonts.SansLight, fontSize: 14 * WIDTH_SCALE, marginTop: 3 * WIDTH_SCALE }}>Đánh giá</Text>
           </MyHighLightButton>
           <MyHighLightButton
             onPress={() => {
-              console.log("Theo doi clicked");
+              handleFollowOnPress();
             }}
             style={{ height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Icons name={'heart'} size={18 * WIDTH_SCALE} color={ptColor.black} />
-            <Text style={{ color: ptColor.black, fontFamily: Fonts.SansLight, fontSize: 14 * WIDTH_SCALE, marginTop: 3 * WIDTH_SCALE }}>Theo dõi</Text>
+            {isFollow ?
+              <FollowIcons
+                name={'heart'}
+                size={22 * WIDTH_SCALE}
+                color={'red'} />
+              :
+              <FollowIcons
+                name={'heart-outlined'}
+                size={22 * WIDTH_SCALE}
+                color={'red'} />}
+            {isFollow ?
+              <Text
+                style={{
+                  color: ptColor.black,
+                  fontFamily: Fonts.SansLight,
+                  fontSize: 14 * WIDTH_SCALE,
+                  marginTop: 3 * WIDTH_SCALE
+                }}>Bỏ theo dõi</Text> :
+              <Text
+                style={{
+                  color: ptColor.black,
+                  fontFamily: Fonts.SansLight,
+                  fontSize: 14 * WIDTH_SCALE,
+                  marginTop: 3 * WIDTH_SCALE
+                }}>Theo dõi</Text>}
           </MyHighLightButton>
         </View>
 
@@ -467,7 +591,84 @@ export default function Details({ navigation, route }) {
 
       </View>
 
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isVisible}
+        onRequestClose={() => {
+          Alert.alert("Modal has been closed.");
+        }}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'transparent'
+          }}>
+
+          <MyHighLightButton
+            onPress={() => hideModal()}
+            style={{ flex: 2, backgroundColor: 'transparent' }} />
+
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              borderTopLeftRadius: 10 * WIDTH_SCALE,
+              borderTopRightRadius: 10 * WIDTH_SCALE,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <Text style={{ color: ptColor.white }}>Hãy đánh giá bộ phim này!</Text>
+            <CustomRatingBar />
+            <MyHighLightButton
+              style={{
+                backgroundColor: 'red',
+                borderRadius: 4 * WIDTH_SCALE,
+                justifyContent: 'center',
+                alignItems: 'center',
+                width: '30%',
+                height: '20%',
+                marginTop: 30 * WIDTH_SCALE
+              }}
+              onPress={() => {
+                _onDoneRating()
+              }}>
+              <Text style={{ color: ptColor.white }}>Đánh giá</Text>
+            </MyHighLightButton>
+
+          </View>
+
+        </View>
+      </Modal>
+
+      {
+        loading ?
+          <View style={{
+            flex: 1,
+            position: 'absolute',
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            width: WIDTH,
+            height: HEIGHT,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9999,
+          }}>
+            <View style={{ width: 60, height: 60, borderRadius: 20 }}>
+              <SkypeIndicator
+                color={ptColor.appColor}
+                style={{
+                  padding: 20 * WIDTH_SCALE,
+                  backgroundColor: 'rgba(166, 164, 164, 0.4)',
+                  borderRadius: 10,
+                }}
+                size={40 * WIDTH_SCALE}
+              />
+            </View>
+          </View>
+          : null
+      }
+
     </View >
+
   );
 }
 
@@ -484,7 +685,6 @@ const styles = StyleSheet.create({
     height: HEADER_BAR_HEIGHT,
     width: WIDTH,
     alignItems: 'center',
-    paddingLeft: 10 * WIDTH_SCALE,
     flexDirection: 'row',
   },
   detailChildContainer: {
@@ -501,5 +701,15 @@ const styles = StyleSheet.create({
     color: ptColor.black,
     fontSize: 14 * WIDTH_SCALE,
     fontFamily: Fonts.SansLight,
-  }
+  },
+  customRatingBarStyle: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  starImageStyle: {
+    width: 40,
+    height: 40,
+    resizeMode: 'cover',
+  },
 });

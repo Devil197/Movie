@@ -17,34 +17,39 @@ export const getItemsFollowByUserId = (type, userId) =>
       .catch((err) => reject(err));
   });
 
-export const followMovie = async (movie_id, user_id) => {
+export const followMovie = async (movie_id, user_id, type) => {
   const json = JSON.stringify({
     movie_id: movie_id,
     user_id: user_id
   });
   try {
-    let data = await axiosConfig.post(`/v1/follow/create`, json, {
+    let data = await axiosConfig.post(`/v1/follow/create/${type}`, json, {
       headers: {
         'Content-Type': 'application/json',
       },
     });
     return data;
   } catch (error) {
-    console.log("Follow API ERROR: ", err);
+    console.log("Follow API ERROR: ", error);
     return { data: [] }
   }
 }
 
-export const deleteFollowAPI = async (user_id, follow_id, type) => {
-  await axiosConfig.get(`/v5/follow/delete/${type}/${user_id}/${follow_id}`)
-    .then(res => {
-      if (!res.data.result) {
-        return res
-      }
-      console.log('1000 delete follow ', res);
-    })
-    .catch(e => {
-      console.log('1001 delete follow fail ', e)
-      return e
-    })
+export const deleteFollowAPI = async (user_id, _id, type) => {
+  try {
+    let data = await axiosConfig.get(`/v5/follow/delete/${type}/${user_id}/${_id}`);
+    return data.data;
+  } catch (error) {
+    console.log("ERROR IN DELETE FOLLOW API: ", error);
+  }
+}
+
+export const isFollowAPI = async (type, user_id) => {
+  try {
+    let data = await axiosConfig.get(`/v3/follow/get/${type}/${user_id}`)
+    return data.data;
+  } catch (error) {
+    console.log("Follow API ERROR: ", err);
+    return { data: [] }
+  }
 }
