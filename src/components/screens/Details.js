@@ -13,7 +13,7 @@ import {
   ImageBackground,
   Animated
 } from 'react-native';
-import { getFullMovie, getMovieByCategories } from '../../Redux/actions/movieAction';
+import { getFullMovie, getMovieByCategories, getAllMovie } from '../../Redux/actions/movieAction';
 import {
   WIDTH_SCALE,
   HEIGHT_SCALE,
@@ -30,8 +30,20 @@ import Header from '../views/HeaderMovie';
 import Icons from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating';
 import { getEvalByMovieId } from '../../Redux/actions/evalAction';
+const HEADER_BAR_HEIGHT = 45 * WIDTH_SCALE;
 
 export default function Details({ navigation, route }) {
+
+  const scrollY = new Animated.Value(0);
+  const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_BAR_HEIGHT);
+  const backgroundColor = scrollY.interpolate({
+    inputRange: [0, HEIGHT],
+    outputRange: ['transparent', 'rgba(0,0,0,0.4)'],
+  });
+  const translateY = diffClamp.interpolate({
+    inputRange: [0, HEADER_BAR_HEIGHT],
+    outputRange: [0, -HEADER_BAR_HEIGHT],
+  })
   // video ====
   const [height, setHeight] = useState();
   const [trailer, setTrailer] = useState('');
@@ -43,10 +55,13 @@ export default function Details({ navigation, route }) {
   const [fullScreen, setFullScreen] = useState(false);
   const [dayOfUpdate, setDayUpdate] = useState();
   const [releaseDate, setReleaseDate] = useState();
-  const [numberOfLines, setNumberOfLines] = useState(24);
+  const [numberOfLines, setNumberOfLines] = useState(4);
   const [tabOfTheDescription, setTabs] = useState("Xem thêm");
   const [sqrtEvalMovie, setEval] = useState();
   const url = 'aF8U_uSsXSA';
+
+  // useState ALL MOVIE tạm thời 
+  const [allMovie, setAllMovie] = useState();
 
   const initial = Orientation.getInitialOrientation();
   useEffect(() => {
@@ -65,6 +80,7 @@ export default function Details({ navigation, route }) {
 
     //handleMovieWithCategoryAPI();
 
+    handleGetAllMovieAPI();
   }, []);
 
   const handleEvalAPI = async () => {
@@ -76,6 +92,13 @@ export default function Details({ navigation, route }) {
   const handleMovieWithCategoryAPI = async () => {
     await getMovieByCategories(_id).then(result => {
       console.log("MOVIE API: ", result);
+    })
+  }
+
+  // tạm thời.
+  const handleGetAllMovieAPI = async () => {
+    await getAllMovie().then(result => {
+      setAllMovie(result);
     })
   }
 
@@ -155,30 +178,23 @@ export default function Details({ navigation, route }) {
       showsVerticalScrollIndicator={false}
       scrollEventThrottle={16}>
 
-      <ScrollView style={{ flex: 1, zIndex: 1 }}>
+      {/* HEADER */}
+      <Animated.View
+        style={[styles.headerStyle, { backgroundColor: backgroundColor, transform: [{ translateY: translateY }] }
+        ]}>
+        <Icons
+          onPress={() => navigation.goBack()}
+          name={'arrow-left'}
+          size={18 * WIDTH_SCALE}
+          color={ptColor.white} />
+      </Animated.View>
 
-        {/* HEADER */}
-        <View
-          style={{
-            position: 'absolute',
-            top: 0,
-            zIndex: 10,
-            backgroundColor: 'transparent',
-            height: 45,
-            width: WIDTH,
-          }}>
-
-          <View style={{ flex: 1, justifyContent: 'center', paddingLeft: 10 * WIDTH_SCALE }}>
-            <MyHighLightButton onPress={() => navigation.goBack()}>
-              <Icons name={'arrow-left'} size={18 * WIDTH_SCALE} color={ptColor.white} />
-            </MyHighLightButton>
-          </View>
-
-          {/* <View style={{flex: 1}}>
-            <Icons name={'arrow-left'} size={18 * WIDTH_SCALE} color={ptColor.white}/>
-          </View> */}
-
-        </View>
+      <Animated.ScrollView
+        contentContainerStyle={{ zIndex: 1, paddingBottom: 60 * WIDTH_SCALE }}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+        )}>
 
         <View style={{ height: HEIGHT * 0.3 }}>
           <ImageBackground
@@ -337,7 +353,61 @@ export default function Details({ navigation, route }) {
 
         </View>
 
-      </ScrollView>
+        {/* Movie gợi ý */}
+        <View
+          style={{
+            padding: 10 * WIDTH_SCALE,
+            width: WIDTH
+          }}>
+          <Text
+            style={{
+              color: ptColor.black,
+              fontFamily: Fonts.SansMedium,
+              fontSize: 18 * WIDTH_SCALE
+            }}>Có thể bạn sẽ thích</Text>
+        </View>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}>
+          {allMovie?.items.map((c, i) => {
+            return (
+              <MyHighLightButton
+                key={c._id}
+                style={{
+                  width: WIDTH / 3,
+                  height: HEIGHT / 4,
+                  padding: 4,
+                }}
+                onPress={() =>
+                  navigation.push(ROUTE_KEY.Details, { _id: c._id })
+                }>
+                <Image
+                  style={{
+                    flex: 1,
+                    borderRadius: 4,
+                    resizeMode: 'cover',
+                    marginBottom: 5 * WIDTH_SCALE,
+                  }} source={{ uri: c.cover_img }} />
+                <View
+                  style={{
+                    width: '100%',
+                    justifyContent: 'center',
+                    alignItems: 'center'
+                  }}>
+                  <Text
+                    style={{
+                      fontFamily: Fonts.SansLight,
+                      fontSize: 12 * WIDTH_SCALE,
+                    }}
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                  >{c.name}</Text>
+                </View>
+              </MyHighLightButton>
+            );
+          })}
+        </ScrollView>
+
+      </Animated.ScrollView>
 
       {/* BOTTOM TAB */}
       <View
@@ -361,8 +431,24 @@ export default function Details({ navigation, route }) {
           alignItems: 'center'
         }}>
 
-        <View style={{ flex: 2 }}>
+        <View style={{ flex: 1, flexDirection: 'row' }}>
+          <MyHighLightButton
+            onPress={() => {
+              console.log("Danh gia clicked");
+            }}
+            style={{ height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Icons name={'edit'} size={18 * WIDTH_SCALE} color={ptColor.black} />
 
+            <Text style={{ color: ptColor.black, fontFamily: Fonts.SansLight, fontSize: 14 * WIDTH_SCALE, marginTop: 3 * WIDTH_SCALE }}>Đánh giá</Text>
+          </MyHighLightButton>
+          <MyHighLightButton
+            onPress={() => {
+              console.log("Theo doi clicked");
+            }}
+            style={{ height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <Icons name={'heart'} size={18 * WIDTH_SCALE} color={ptColor.black} />
+            <Text style={{ color: ptColor.black, fontFamily: Fonts.SansLight, fontSize: 14 * WIDTH_SCALE, marginTop: 3 * WIDTH_SCALE }}>Theo dõi</Text>
+          </MyHighLightButton>
         </View>
 
         <MyHighLightButton
@@ -389,6 +475,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: ptColor.white,
+  },
+  headerStyle: {
+    zIndex: 99,
+    position: 'absolute',
+    top: 0,
+    zIndex: 10,
+    height: HEADER_BAR_HEIGHT,
+    width: WIDTH,
+    alignItems: 'center',
+    paddingLeft: 10 * WIDTH_SCALE,
+    flexDirection: 'row',
   },
   detailChildContainer: {
     flexDirection: 'row',
