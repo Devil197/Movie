@@ -177,7 +177,8 @@ const Music = () => {
           <PageMusic id={"5f7c1a72ed32570004cf5f65"} />
         </View>
       </ViewPager>
-      <View style={{ height: 0.26 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>
+      <View style={{ height: 0.3 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>
+        {/* <Players songs={films} /> */}
         <Players songs={films} />
       </View>
     </View >
