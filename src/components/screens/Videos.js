@@ -18,15 +18,10 @@ import { getVideoByMovie, getFullMovie } from '../../Redux/actions/movieAction';
 import { Play, Player } from '../views';
 import Orientation from 'react-native-orientation';
 import moment from 'moment';
-
 import { MySpinner, MyHighLightButton } from '../views';
-
 import { HEIGHT, WIDTH, WIDTH_SCALE } from '../../constants/constants';
 import { onChange } from 'react-native-reanimated';
 import { ptColor } from '../../constants/styles';
-import starData from '../views/childScreens/data';
-import StarRating from 'react-native-star-rating';
-
 //NguyenHai editted from here
 import { addHistoryByMovieId } from '../../Redux/actions/historyAction'
 import { useSelector } from 'react-redux';
@@ -57,9 +52,6 @@ const Videos = ({ navigation, params, route }) => {
 
   const [videoId, setVideoId] = useState('');
   const [watchedVideoAt, setTimeWatchedVideo] = useState(new Date());
-  const [starCount, setStarCount] = useState();
-  const [sumStar, setSumStar] = useState();
-  const [sqrtStar, setSqrtStar] = useState();
   const [page, setPage] = useState(0);
   const videoRef = useRef(videoId)
 
@@ -119,20 +111,6 @@ const Videos = ({ navigation, params, route }) => {
     }
   }, [])
 
-  const calSumStar = () => {
-    let sumStar = 0;
-    let countUserVote = 0;
-
-    starData.map((star) => {
-      sumStar = sumStar + star.detail.length * star.starNum;
-      countUserVote = countUserVote + star.detail.length;
-    });
-    setSumStar(sumStar);
-    setStarCount(countUserVote);
-
-    setSqrtStar(Math.round(sumStar / countUserVote * 10) / 10);
-  };
-
   //=====================//
 
   //console.log('1001 type play video screen ', fullScreen);
@@ -156,8 +134,6 @@ const Videos = ({ navigation, params, route }) => {
     onFullScreen();
 
     autoHiddenModal();
-
-    calSumStar();
 
   }, []);
 

@@ -288,24 +288,20 @@ export default function Splash({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={{ opacity: animOpacity }} >
-
-      </Animated.View>
-      <Animated.View
-        style={{ opacity: animOpacity }}>
-        <View style={{ width: 40, height: 40, borderRadius: 20 }}>
-          <SkypeIndicator
-            color={ptColor.appColor}
-            style={{
-              padding: 16 * WIDTH_SCALE,
-              backgroundColor: 'rgba(166, 164, 164, 0.4)',
-              borderRadius: 10,
-            }}
-            size={20 * WIDTH_SCALE}
-          />
-        </View>
-      </Animated.View>
+      <Image
+        source={require('../../assets/icons/gea_logo.png')}
+        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} />
+      <View style={{ width: 40, height: 40, borderRadius: 20 }}>
+        <SkypeIndicator
+          color={ptColor.appColor}
+          style={{
+            padding: 16 * WIDTH_SCALE,
+            backgroundColor: 'rgba(166, 164, 164, 0.4)',
+            borderRadius: 10,
+          }}
+          size={20 * WIDTH_SCALE}
+        />
+      </View>
     </View>
   );
 }
