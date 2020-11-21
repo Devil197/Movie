@@ -14,7 +14,7 @@ const CastFollowItem = React.memo(({ item, update, selectAll, navigation, dispat
             onPress={() => {
                 if (update) {
                     setChecked(!checked)
-                    checkedItemUpdateCast(item.item.cast_id, !checked)
+                    checkedItemUpdateCast(item.item, !checked)
                 }
             }}
             style={{ alignItems: 'center', justifyContent: 'center', width: WIDTH / 3 - 5 * WIDTH_SCALE, padding: 5 * WIDTH_SCALE, margin: 5 * WIDTH_SCALE }}>

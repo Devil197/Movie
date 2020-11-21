@@ -88,15 +88,18 @@ const Follow = ({ navigation }) => {
     }
   }
   function deleteFollowCast() {
+    console.log('0909 dataCast ', dataCast);
+    console.log('0909 dataUpdateCast', dataUpdateCast);
     let dataItem;
     if (dataUpdateCast.length > 0) {
+
       MySpinner.show()
-      dataCast.map((e, i) => {
-        dataItem = dataUpdateCast.find((e1) => e.cast_id._id === e1._id)
-      })
+      // dataCast.map((e, i) => {
+      //   dataItem = dataUpdateCast.find((e1) => e.cast_id._id === e1._id)
+      // })
       dataUpdateCast.map((e) => {
-        console.log('1001 e ne` :', e);
-        deleteFollowAPI(userId, e._id, followType.cast).then(res => {
+        // console.log('0909 e',e);
+        deleteFollowAPI(userId, e.cast_id._id, followType.cast).then(res => {
           ToastAndroid.show(
             'Xóa thành công ' + e?.name,
             ToastAndroid.SHORT,
@@ -107,7 +110,7 @@ const Follow = ({ navigation }) => {
           })
         }).catch(err => {
           ToastAndroid.show(
-            'Xóa thất bại ' + e.name + ' : ' + err,
+            'Xóa thất bại ' + e.cast_id.name + ' : ' + err,
             ToastAndroid.SHORT,
           );
           console.log('1000 err delete follow ', err);
