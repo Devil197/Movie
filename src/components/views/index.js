@@ -6,6 +6,7 @@ import MyHighLightButton from './MyHighLightButton';
 import Play from './Play';
 import Divider from './Divider';
 import Player from './Player';
+import CastFollowItem from './CastFollowItem'
 export {
   FilmItem,
   CastItem,
@@ -15,4 +16,5 @@ export {
   Play,
   Divider,
   Player,
+  CastFollowItem
 };

@@ -45,6 +45,13 @@ const typeNotification = {
   CAST: 'cast',
   VIDEO: 'video'
 }
+
+const followType = {
+  cast: 'cast',
+  movie: 'movie'
+}
+
+
 const ROUTE_KEY = {
   Splash: 'Splash',
   Film: 'Film',
@@ -68,6 +75,7 @@ const ROUTE_KEY = {
 };
 
 export {
+  followType,
   WIDTH,
   WIDTH_SCALE,
   HEIGHT,

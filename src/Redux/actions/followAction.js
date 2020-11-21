@@ -3,10 +3,10 @@ import React from 'react'
 import { View, Text, Alert, ToastAndroid } from 'react-native'
 import { REDUX } from '../../Redux/store/types'
 
-export const getItemsFollowByUserId = (userId) =>
+export const getItemsFollowByUserId = (type, userId) =>
   new Promise((resolve, reject) => {
     axiosConfig
-      .get(`/v3/follow/get/${userId}`)
+      .get(`/v3/follow/get/${type}/${userId}`)
       .then((response) => {
         if (response.data.result) {
           resolve(response.data);
@@ -35,8 +35,8 @@ export const followMovie = async (movie_id, user_id) => {
   }
 }
 
-export const deleteFollowAPI = async (user_id, follow_id) => {
-  await axiosConfig.get(`/v5/follow/delete/${user_id}/${follow_id}`)
+export const deleteFollowAPI = async (user_id, follow_id, type) => {
+  await axiosConfig.get(`/v5/follow/delete/${type}/${user_id}/${follow_id}`)
     .then(res => {
       if (!res.data.result) {
         return res

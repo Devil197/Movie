@@ -11,10 +11,10 @@ import { ptColor } from '../../constants/styles';
 const { width } = Dimensions.get('window');
 
 const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, checkedItemUpdate, selectAll, dispatch }) => {
-  // console.log('1000 parmars ', params.item);
+  console.log('1000 parmars ', params.item);
   const item = params.item.movie_id;
   const [checked, setChecked] = useState(selectAll ? selectAll : false)
-  const movie = followReducer?.find((e) => e.movie_id._id === item._id)
+  const movie = followReducer?.find((e) => e.movie_id?._id === item?._id)
   const clickItemFollow = () => {
     navigation.push(ROUTE_KEY.Details, { _id: item?._id })
     // console.log('1000 params.item', params.item);
@@ -32,7 +32,7 @@ const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, 
         update ? checkedItemUpdate(params.item, !checked) : null
       }}
     >
-      {checked ?
+      {checked && update ?
         <View
           style={{
             width: width / 3,
@@ -55,7 +55,7 @@ const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, 
       }}>
         <Image source={{ uri: item?.cover_img }} style={styles.itemImg} />
         <Text numberOfLines={1} ellipsizeMode={'tail'} style={styles.itemTitle}>
-          {item.name}
+          {item?.name}
         </Text>
         <View style={[styles.row]}>
           {item.status - movie?.movie_id?.status > 0 ?
