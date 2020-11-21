@@ -129,7 +129,7 @@ export default function Splash({ navigation }) {
 
         const userRedux = store.getState().userReducer
         console.log('1000 userRedux', userRedux);
-        const dataFollowRedux = await store.getState().followReducer.list
+        const dataFollowRedux = await store.getState().followReducer
         console.log('1001 redux', dataFollowRedux);
         await getValueToShowIntroduceOrNot((isShow) => {
 
@@ -145,10 +145,15 @@ export default function Splash({ navigation }) {
         });
         // notification  video
         setTimeout(() => {
-          dataFollowRedux.map((e) => {
+          dataFollowRedux.list.map((e) => {
             messaging().subscribeToTopic(e.movie_id._id.toString())
 
           })
+          dataFollowRedux.listCast.map((e) => {
+            messaging().subscribeToTopic(e.cast_id._id.toString())
+
+          })
+
         }, 1000)
       });
 
