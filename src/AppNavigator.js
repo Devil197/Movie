@@ -11,7 +11,8 @@ import {
   Search,
   Setting,
   Notification,
-  Actor
+  Actor,
+  Players,
 } from './components/screens';
 import { NavigationContainer } from '@react-navigation/native';
 import BottomNavigation from './BottomNavigation';
@@ -34,6 +35,7 @@ function StackNavigator() {
       <Stack.Screen name={ROUTE_KEY.Setting} component={Setting} />
       <Stack.Screen name={ROUTE_KEY.Notification} component={Notification} />
       <Stack.Screen name={ROUTE_KEY.Actor} component={Actor} />
+      <Stack.Screen name={ROUTE_KEY.Players} component={Players} />
     </Stack.Navigator>
   );
 }
