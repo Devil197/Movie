@@ -93,46 +93,55 @@ export default function History({ navigation }) {
   return (
     <View style={styles.container}>
       <Header />
-      {dataHistory?.items.map((e, i) => {
-        return (
-          <Card style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
-            <View style={{ flexDirection: 'row', margin: 10 * WIDTH_SCALE }} >
-              <MyHighLightButton onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}>
-                <Image source={{ uri: e?.movie_id?.cover_img }} style={{ width: WIDTH * 0.4, height: 100 * WIDTH_SCALE }} resizeMode={'cover'} />
-              </MyHighLightButton>
+      {dataHistory ?
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'gray' }}>Bạn chưa có history</Text>
+        </View>
+        :
+        <>
+          {dataHistory?.items.map((e, i) => {
+            return (
+              <Card style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
+                <View style={{ flexDirection: 'row', margin: 10 * WIDTH_SCALE }} >
+                  <MyHighLightButton onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}>
+                    <Image source={{ uri: e?.movie_id?.cover_img }} style={{ width: WIDTH * 0.4, height: 100 * WIDTH_SCALE }} resizeMode={'cover'} />
+                  </MyHighLightButton>
 
-              <MyHighLightButton
-                onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}
-                style={{ margin: 5 * WIDTH_SCALE, alignItems: 'center', justifyContent: 'flex-start' }}>
-                <Text>{e?.movie_id?.name}</Text>
-                <Text>Đã Xem : {e?.duration} s</Text>
+                  <MyHighLightButton
+                    onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}
+                    style={{ margin: 5 * WIDTH_SCALE, alignItems: 'center', justifyContent: 'flex-start' }}>
+                    <Text>{e?.movie_id?.name}</Text>
+                    <Text>Đã Xem : {e?.duration} s</Text>
 
-                <Text>{e?.movie_id?.score} lượt xem</Text>
+                    <Text>{e?.movie_id?.score} lượt xem</Text>
 
-              </MyHighLightButton>
-              <View style={{ alignItems: 'center', position: 'absolute', right: 0, width: 30 * WIDTH_SCALE, zIndex: 9999,height: 30 * WIDTH_SCALE }}>
-                <Menu>
-                  <MenuTrigger >
-                    <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
-                  </MenuTrigger>
-                  <MenuOptions>
-                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }} onSelect={() => remove(e?._id)}>
-                      <Text>Xóa Khỏi Lịch Sử Xem</Text>
-                    </MenuOption>
-                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
-                      <Text>Xóa Tất Cả Lịch Sử Xem </Text>
-                    </MenuOption>
-                    <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }}>
-                      <Text>Share</Text>
-                    </MenuOption>
-                  </MenuOptions>
-                </Menu>
-              </View>
-            </View>
-            <Divider />
-          </Card>
-        )
-      })}
+                  </MyHighLightButton>
+                  <View style={{ alignItems: 'center', position: 'absolute', right: 0, width: 30 * WIDTH_SCALE, zIndex: 9999, height: 30 * WIDTH_SCALE }}>
+                    <Menu>
+                      <MenuTrigger >
+                        <IconElement name="dots-three-vertical" type="entypo" color={ptColor.black} size={18 * WIDTH_SCALE} />
+                      </MenuTrigger>
+                      <MenuOptions>
+                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }} onSelect={() => remove(e?._id)}>
+                          <Text>Xóa Khỏi Lịch Sử Xem</Text>
+                        </MenuOption>
+                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
+                          <Text>Xóa Tất Cả Lịch Sử Xem </Text>
+                        </MenuOption>
+                        <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }}>
+                          <Text>Share</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
+                  </View>
+                </View>
+                <Divider />
+              </Card>
+            )
+          })}
+        </>
+      }
+
     </View>
   )
 }

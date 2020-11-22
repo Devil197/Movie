@@ -23,6 +23,7 @@ import {
 } from '../../constants/constants';
 import FastImage from 'react-native-fast-image';
 import ProgressCircle from 'react-native-progress-circle';
+
 import common from '../../constants/style/common';
 import { ptColor } from '../../constants/styles';
 import { Musicitem } from '../views/index';
@@ -32,11 +33,11 @@ import {
 } from '../../Redux/actions/movieAction';
 import { Fonts } from '../../utils/Fonts';
 import { Icon as IconElement } from 'react-native-elements';
-import Players from '../views/Players';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 import YoutubePlayer, { YoutubeIframeRef } from "react-native-youtube-iframe";
 import YouTube, { YouTubeStandaloneIOS, YouTubeStandaloneAndroid } from 'react-native-youtube';
+import { ROUTE_KEY } from '../../constants/constants';
 export default function PageMusic({
     id,
     // navigation,
@@ -88,7 +89,12 @@ export default function PageMusic({
         return (
 
             <TouchableOpacity style={[styles.row, { margin: 5, marginTop: 10 }]}
-            // onPress={() => console.log(item._id)}
+                // onPress={() =>
+                //     navigation.push(ROUTE_KEY.Details, { _id: c._id })
+                //   }
+                onPress={() =>
+                    navigation.push(ROUTE_KEY.Players, { index: item.index, songs: films })
+                }
             >
                 <View style={{ flexDirection: "row" }}>
                     <Image style={styles.imageC} source={{ uri: item.item.thumb }} />
