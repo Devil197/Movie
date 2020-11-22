@@ -37,7 +37,7 @@ import { getEvalByMovieId, ratingAPI } from '../../Redux/actions/evalAction';
 import { SkypeIndicator } from 'react-native-indicators';
 import { useSelector } from 'react-redux';
 import { getItemsFollowByUserId, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
-const HEADER_BAR_HEIGHT = 45 * WIDTH_SCALE;
+const HEADER_BAR_HEIGHT = 55 * WIDTH_SCALE;
 
 export default function Details({ navigation, route }) {
   const userInfo = useSelector((state) => state.userReducer?.userInfo);
@@ -45,7 +45,7 @@ export default function Details({ navigation, route }) {
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_BAR_HEIGHT);
   const backgroundColor = scrollY.interpolate({
     inputRange: [0, HEIGHT],
-    outputRange: ['transparent', 'rgba(0,0,0,0.4)'],
+    outputRange: ['transparent', 'rgba(0,0,0,0.6)'],
   });
   const translateY = diffClamp.interpolate({
     inputRange: [0, HEADER_BAR_HEIGHT],
@@ -72,7 +72,7 @@ export default function Details({ navigation, route }) {
   const [maxRating, setMaxRating] = useState([1, 2, 3, 4, 5]);
   const starImageFilled = require('../../assets/icons/star_filled.png');
   const starImageCorner = require('../../assets/icons/star_corner.png');
-
+  const [isShowDayUpdateMovie, setIsShowDayUpdateMovie] = useState(true);
   const toastAndroid = (text) => {
     ToastAndroid.showWithGravityAndOffset(
       text,
@@ -132,6 +132,7 @@ export default function Details({ navigation, route }) {
         getDayUpdateMovie(fullMovie?.movie[0]?.create_at)
         setLoading(false);
         setReload(false);
+        handleShowDayUpdate(fullMovie);
       })
       .catch((err) => console.log('Failed', err));
 
@@ -256,6 +257,16 @@ export default function Details({ navigation, route }) {
     }
   }
 
+  const handleShowDayUpdate = (fullMovie) => {
+    let string = fullMovie?.movie[0]?.name;
+    let lastChar = string.indexOf(']');
+    let finalString = string.slice(1, lastChar);
+    console.log(string + lastChar + finalString);
+    if (finalString === '10Min') {
+      setIsShowDayUpdateMovie(false);
+    }
+  }
+
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   return (
@@ -273,12 +284,28 @@ export default function Details({ navigation, route }) {
             height: '100%',
             width: WIDTH * 0.1,
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'flex-start',
+            flex: 1,
           }}
           onPress={() => navigation.goBack()}>
           <Icons
             name={'arrow-left'}
-            size={18 * WIDTH_SCALE}
+            size={21 * WIDTH_SCALE}
+            color={ptColor.white} />
+        </MyHighLightButton>
+        <MyHighLightButton
+          style={{
+            height: '100%',
+            width: WIDTH * 0.1,
+            justifyContent: 'center',
+            alignItems: 'flex-end',
+            flex: 1,
+            paddingRight: 15 * WIDTH_SCALE,
+          }}
+          onPress={() => navigation.navigate(ROUTE_KEY.Search)}>
+          <Icons
+            name={'search'}
+            size={21 * WIDTH_SCALE}
             color={ptColor.white} />
         </MyHighLightButton>
       </Animated.View>
@@ -302,39 +329,65 @@ export default function Details({ navigation, route }) {
               justifyContent: 'flex-end'
             }}>
 
-            <Text
-              style={{
-                fontFamily: Fonts.SansBold,
-                color: ptColor.white,
-                fontSize: 20 * WIDTH_SCALE,
-                marginLeft: 10 * WIDTH_SCALE,
-              }}>
-              {dataMovie?.movie[0]?.name}
-            </Text>
+            <View style={{ flexDirection: 'row' }}>
+              <View
+                style={{
+                  flexDirection: 'row'
+                }}>
 
-            <View
-              style={{
-                flexDirection: 'row',
-              }}>
+                {dataMovie?.category.map((val, ind) => {
+                  return (
+                    <Text
+                      key={val?._id}
+                      style={{
+                        backgroundColor: 'rgba(0,0,0,0.4)',
+                        padding: 4 * WIDTH_SCALE,
+                        color: ptColor.white,
+                        fontFamily: Fonts.SansItalic,
+                        marginLeft: 10 * WIDTH_SCALE,
+                        marginBottom: 5 * WIDTH_SCALE,
+                        marginTop: 5 * WIDTH_SCALE,
+                        fontSize: 12 * WIDTH_SCALE,
+                      }}>
+                      {val?.name}
+                    </Text>
+                  )
+                })}
+              </View>
 
-              {dataMovie?.category.map((val, ind) => {
-                return (
-                  <Text
-                    key={val?._id}
-                    style={{
-                      backgroundColor: 'rgba(0,0,0,0.4)',
-                      padding: 4 * WIDTH_SCALE,
-                      color: ptColor.white,
-                      fontFamily: Fonts.SansItalic,
-                      marginLeft: 10 * WIDTH_SCALE,
-                      marginBottom: 5 * WIDTH_SCALE,
-                      marginTop: 5 * WIDTH_SCALE,
-                      fontSize: 12 * WIDTH_SCALE,
-                    }}>
-                    {val?.name}
-                  </Text>
-                )
-              })}
+
+              <View
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.4)',
+                  justifyContent: 'flex-start',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  alignSelf: 'flex-start',
+                  paddingLeft: 7 * WIDTH_SCALE,
+                  paddingVertical: 3.5 * WIDTH_SCALE,
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0,
+                }} >
+                <StarRating
+                  activeOpacity={1}
+                  starStyle={{ width: 22 * WIDTH_SCALE }}
+                  starSize={18}
+                  fullStarColor={'red'}
+                  disabled={false}
+                  maxStars={1}
+                  rating={sqrtEvalMovie}
+                  emptyStarColor={'#f1c40f'}
+                />
+                <Text
+                  style={{
+                    marginRight: 10,
+                    color: ptColor.white,
+                    fontFamily: Fonts.SansMedium,
+                    fontSize: 18 * WIDTH_SCALE
+                  }}> {sqrtEvalMovie}</Text>
+              </View>
+
             </View>
           </ImageBackground>
         </View>
@@ -343,52 +396,39 @@ export default function Details({ navigation, route }) {
           style={{
             padding: 15 * WIDTH_SCALE,
           }}>
-          <View
+
+          <Text
             style={{
-              flexDirection: 'row',
-              marginBottom: 10,
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: WIDTH,
-            }} >
-            <StarRating
-              activeOpacity={1}
-              starStyle={{ width: 22 * WIDTH_SCALE }}
-              starSize={18}
-              fullStarColor={'#f1c40f'}
-              disabled={false}
-              maxStars={5}
-              rating={sqrtEvalMovie}
-              emptyStarColor={'#f1c40f'}
-            />
-            <Text
-              style={{
-                marginRight: 10,
-                color: "#e056fd",
-                fontFamily: Fonts.SansMedium,
-                fontSize: 18 * WIDTH_SCALE
-              }}> {sqrtEvalMovie}</Text>
-          </View>
+              fontFamily: Fonts.SansBold,
+              color: ptColor.black,
+              fontSize: 20 * WIDTH_SCALE,
+              marginVertical: 15 * WIDTH_SCALE,
+            }}>
+            {dataMovie?.movie[0]?.name}
+          </Text>
 
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center'
+              alignItems: 'center',
             }}>
-            <Text
-              style={{
-                color: ptColor.gray2,
-                fontSize: 14 * WIDTH_SCALE,
-                fontFamily: Fonts.SansLight,
-              }}>
-              Cập nhật vào {dayOfUpdate} hàng tuần!
-          </Text>
+            {isShowDayUpdateMovie ?
+              <Text
+                style={{
+                  color: ptColor.gray2,
+                  fontSize: 14 * WIDTH_SCALE,
+                  fontFamily: Fonts.SansLight,
+                }}>
+                Cập nhật vào {dayOfUpdate} hàng tuần!
+              </Text> : null
+            }
+
           </View>
 
           <View
             style={styles.detailChildContainer}>
             <Text
-              style={styles.detailName}>Phát hành: </Text>
+              style={styles.detailName}>Công chiếu: </Text>
             <Text
               style={styles.detailData}>{releaseDate}</Text>
           </View>
@@ -424,14 +464,26 @@ export default function Details({ navigation, route }) {
             </Text>
           </View>
 
+          {/* Trailer Component */}
+          <View style={{}}>
+            <Player url={dataMovie?.movie[0]?.trailer} fullScreen={onFullScreen} height={HEIGHT * 0.32} />
+          </View>
+
           <View>
+            <Text
+              style={{
+                color: ptColor.black,
+                fontFamily: Fonts.SansMedium,
+                fontSize: 20 * WIDTH_SCALE,
+                marginVertical: 15 * WIDTH_SCALE,
+              }}>NỘI DUNG</Text>
             <Text
               numberOfLines={numberOfLines}
               ellipsizeMode={'tail'}
               style={{
                 color: ptColor.gray2,
                 fontFamily: Fonts.SansLight,
-              }}>{dataMovie?.movie[0]?.introduction}, {dataMovie?.movie[0]?.introduction}, {dataMovie?.movie[0]?.introduction}</Text>
+              }}>{dataMovie?.movie[0]?.introduction}</Text>
             <MyHighLightButton onPress={() => handleReadMore()} >
               <Text
                 style={{
@@ -679,10 +731,11 @@ const styles = StyleSheet.create({
     width: WIDTH,
     alignItems: 'center',
     flexDirection: 'row',
+    paddingHorizontal: 8 * WIDTH_SCALE,
   },
   detailChildContainer: {
     flexDirection: 'row',
-    marginTop: 5 * WIDTH_SCALE,
+    marginTop: 10 * WIDTH_SCALE,
     alignItems: 'center'
   },
   detailName: {
