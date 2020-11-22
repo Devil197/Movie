@@ -19,7 +19,7 @@ const FilmItem = ({ navigation, params }) => {
   const item = params?.item;
   return (
     <TouchableOpacity
-      key={item._id}
+      key={item?._id}
       onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item?._id })}>
       <View style={styles.item}>
         <Image source={{ uri: item?.cover_img }} style={styles.itemImg} />

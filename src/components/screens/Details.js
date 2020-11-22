@@ -25,7 +25,7 @@ import {
 } from '../../constants/constants';
 import { Fonts } from '../../utils/Fonts'
 import { MySpinner, MyHighLightButton } from '../views';
-import { ROUTE_KEY } from '../../constants/constants';
+import { ROUTE_KEY, followType } from '../../constants/constants';
 import { Play, Player } from '../views';
 import { ptColor } from '../../constants/styles';
 import Orientation from 'react-native-orientation';
@@ -36,7 +36,7 @@ import StarRating from 'react-native-star-rating';
 import { getEvalByMovieId, ratingAPI } from '../../Redux/actions/evalAction';
 import { SkypeIndicator } from 'react-native-indicators';
 import { useSelector } from 'react-redux';
-import { isFollowAPI, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
+import { getItemsFollowByUserId, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
 const HEADER_BAR_HEIGHT = 45 * WIDTH_SCALE;
 
 export default function Details({ navigation, route }) {
@@ -147,8 +147,7 @@ export default function Details({ navigation, route }) {
   }
 
   const handleCheckFollowAPI = async () => {
-    await isFollowAPI('movie', userInfo?._id).then(res => {
-      console.log("SHOW: ", res?.items);
+    await getItemsFollowByUserId(followType.movie, userInfo?._id).then(res => {
       res?.items.map((c, i) => {
         if (c?.movie_id?._id === _id) {
           setFollow(true);
@@ -219,14 +218,9 @@ export default function Details({ navigation, route }) {
   }
 
   const handleCancelFollowMovie = async () => {
-    await deleteFollowAPI(userInfo?._id, _id, 'movie').then(data => {
-      console.log("HUY THEO DOI: ", data);
-      if (data?.position === 200) {
-        toastAndroid("Bạn đã hủy theo dõi nội dung!")
-        setFollow(false);
-      } else {
-        toastAndroid("Xảy ra sự cố khi xử lý\nVui lòng thử lại sau!")
-      }
+    await deleteFollowAPI(userInfo?._id, _id, followType.movie).then(res => {
+      toastAndroid("Bạn đã hủy theo dõi nội dung!")
+      setFollow(false);
     })
   }
 
@@ -250,8 +244,8 @@ export default function Details({ navigation, route }) {
         { cancelable: false }
       );
     } else {
-      await followMovie(dataMovie?.movie[0]?._id, userInfo?._id, 'movie').then(response => {
-        if (response?.data?.position === 200) {
+      await followMovie(followType.movie, _id, userInfo?._id).then(response => {
+        if (response?.position === 200) {
           toastAndroid("Cảm ơn bạn đã theo dõi!")
           setFollow(true);
         } else {
@@ -260,7 +254,6 @@ export default function Details({ navigation, route }) {
         }
       })
     }
-
   }
 
   const showModal = () => setVisible(true);

@@ -58,7 +58,7 @@ const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, 
           {item?.name}
         </Text>
         <View style={[styles.row]}>
-          {item.status - movie?.movie_id?.status > 0 ?
+          {item?.status - movie?.movie_id?.status > 0 ?
             <Text style={styles.newEp}>{item?.status - movie?.movie_id?.status} tập phim mới</Text>
             :
             <Text style={{ ...styles.newEp, backgroundColor: null }}></Text>

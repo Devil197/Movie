@@ -178,7 +178,7 @@ const Follow = ({ navigation }) => {
       console.log('1000 fail api', e);
     })
     console.log('0103 json', json);
-    setData(json.items);
+    setData(json?.items);
     console.log('0103 data', data);
     if (!followReducer?.first) {
       console.log('1001 chay redux');
