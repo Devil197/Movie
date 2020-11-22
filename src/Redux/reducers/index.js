@@ -6,6 +6,7 @@ import userReducer from './userReducer';
 import keywordReducer from './keywordReducer'
 import notificationReducer from './notificationReducer'
 import followReducer from './followReducer'
+import historyReducer from './historyReducer'
 
 const reducers = combineReducers({
   userReducer: persistReducer(
@@ -35,6 +36,13 @@ const reducers = combineReducers({
       storage: AsyncStorage,
     },
     followReducer,
+  ),
+  historyReducer: persistReducer(
+    {
+      key: 'historyReducer',
+      storage: AsyncStorage,
+    },
+    historyReducer,
   ),
 
 });
