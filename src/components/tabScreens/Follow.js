@@ -24,8 +24,10 @@ import { WIDTH_SCALE, WIDTH, followType } from '../../constants/constants'
 import { Appbar, useTheme } from 'react-native-paper';
 import ViewPager from '@react-native-community/viewpager';
 import update from 'react-addons-update';
+import { useIsFocused } from '@react-navigation/native';
 
 const Follow = ({ navigation }) => {
+  const isFocused = useIsFocused();
   const viewPagerRef = useRef()
   const dispatch = useDispatch()
   const [data, setData] = useState();
@@ -43,7 +45,7 @@ const Follow = ({ navigation }) => {
   useEffect(() => {
     getDataFromAPIMovieFollow();
     getDataFromAPICastFollow()
-  }, []);
+  }, [isFocused]);
 
   function deleteFollow() {
     let dataItem;

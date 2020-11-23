@@ -13,6 +13,7 @@ import {
   ImageBackground,
   Animated,
   Modal,
+  StatusBar,
   ToastAndroid,
   Alert
 } from 'react-native';
@@ -35,11 +36,14 @@ import FollowIcons from 'react-native-vector-icons/Entypo'
 import StarRating from 'react-native-star-rating';
 import { getEvalByMovieId, ratingAPI } from '../../Redux/actions/evalAction';
 import { SkypeIndicator } from 'react-native-indicators';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { getItemsFollowByUserId, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
 const HEADER_BAR_HEIGHT = 55 * WIDTH_SCALE;
+import { REDUX } from '../../Redux/store/types'
+import { Appbar, useTheme, Card } from 'react-native-paper';
 
 export default function Details({ navigation, route }) {
+  const dispatch = useDispatch()
   const userInfo = useSelector((state) => state.userReducer?.userInfo);
   const scrollY = new Animated.Value(0);
   const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_BAR_HEIGHT);
@@ -73,6 +77,9 @@ export default function Details({ navigation, route }) {
   const starImageFilled = require('../../assets/icons/star_filled.png');
   const starImageCorner = require('../../assets/icons/star_corner.png');
   const [isShowDayUpdateMovie, setIsShowDayUpdateMovie] = useState(true);
+
+  console.log('1001 datamovie ', dataMovie?.movie);
+
   const toastAndroid = (text) => {
     ToastAndroid.showWithGravityAndOffset(
       text,
@@ -219,9 +226,14 @@ export default function Details({ navigation, route }) {
   }
 
   const handleCancelFollowMovie = async () => {
+
     await deleteFollowAPI(userInfo?._id, _id, followType.movie).then(res => {
       toastAndroid("Bạn đã hủy theo dõi nội dung!")
       setFollow(false);
+      dispatch({
+        type: REDUX.DELETE_FOLLOW,
+        payload: followMovie?.movie
+      })
     })
   }
 
@@ -249,6 +261,10 @@ export default function Details({ navigation, route }) {
         if (response?.position === 200) {
           toastAndroid("Cảm ơn bạn đã theo dõi!")
           setFollow(true);
+          dispatch({
+            type: REDUX.ADD_FOLLOW,
+            payload: dataMovie?.movie
+          })
         } else {
           console.log("THEO DOIX: ", response);
           toastAndroid("Có sự cố khi xử lý.\nVui lòng thử lại sau!")
@@ -274,7 +290,7 @@ export default function Details({ navigation, route }) {
       style={{ backgroundColor: '#fff', flex: 1 }}
       showsVerticalScrollIndicator={false}
       scrollEventThrottle={16}>
-
+      <StatusBar translucent={false} backgroundColor="#fff" />
       {/* HEADER */}
       <Animated.View
         style={[styles.headerStyle, { backgroundColor: backgroundColor, transform: [{ translateY: translateY }] }
@@ -317,8 +333,7 @@ export default function Details({ navigation, route }) {
           [{ nativeEvent: { contentOffset: { y: scrollY } } }],
           { useNativeDriver: false }
         )}>
-
-        <View style={{ height: HEIGHT * 0.3 }}>
+        <Card style={{ height: HEIGHT * 0.3 }}>
           <ImageBackground
             source={{ uri: dataMovie?.movie[0]?.cover_img }}
             style={{
@@ -390,9 +405,9 @@ export default function Details({ navigation, route }) {
 
             </View>
           </ImageBackground>
-        </View>
+        </Card>
 
-        <View
+        <Card
           style={{
             padding: 15 * WIDTH_SCALE,
           }}>
@@ -496,7 +511,7 @@ export default function Details({ navigation, route }) {
             </MyHighLightButton>
           </View>
 
-        </View>
+        </Card>
 
         {/* Movie gợi ý */}
         <View
@@ -512,6 +527,7 @@ export default function Details({ navigation, route }) {
             }}>Có thể bạn sẽ thích</Text>
         </View>
         <ScrollView
+          horizontal
           showsHorizontalScrollIndicator={false}>
           {allMovie?.items.map((c, i) => {
             return (
