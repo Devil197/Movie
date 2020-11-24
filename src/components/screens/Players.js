@@ -29,7 +29,10 @@ const { width, height } = Dimensions.get("window");
 
 export default function Players({ navigation, route }) {
     function Header() {
-        const _goBack = () => navigation.goBack();
+        const _goBack = () => {
+            navigation.goBack()
+            // TrackPlayer.stop()
+        };
         return (
             <Appbar.Header
                 style={{ backgroundColor: '#fafafa', elevation: 0, justifyContent: 'space-between' }}>
@@ -41,7 +44,7 @@ export default function Players({ navigation, route }) {
                     color={ptColor.black}
                     size={24}
                 />
-                <Text style={{ fontSize: 18 * WIDTH_SCALE }}>Setting</Text>
+                <Text style={{ fontSize: 18 * WIDTH_SCALE }}></Text>
                 <View style={{ width: '10%' }} />
             </Appbar.Header>
         )
@@ -58,22 +61,32 @@ export default function Players({ navigation, route }) {
     const isItFromUser = useRef(true);
     const playbackState = usePlaybackState();
     const { index, songs } = route.params
-    useEffect(() => {
 
+    const index1 = useRef(0)
+    console.log('66666-> index: ', index);
+    useEffect(() => {
+        setSongIndex(index);
         scrollX.addListener(({ value }) => {
             const val = Math.round(value / width);
 
             setSongIndex(val);
         });
-        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, (e) => {
+        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
             console.log('8888 -> e : ', e);
+            // let state = await TrackPlayer.getState();
+            // TrackPlayer.skip((index + 1) + "");
+            let trackId = await TrackPlayer.getCurrentTrack();
+            let trackObject = await TrackPlayer.getTrack(trackId);
+            console.log('9999 -> trackId : ', trackId);
+            console.log('9999 -> trackObject : ', trackObject);
+
         })
         TrackPlayer.setupPlayer().then(async () => {
             console.log('Player Ready');
             await TrackPlayer.reset();
             await TrackPlayer.add(songs);
             isPlayerReady.current = true;
-            // TrackPlayer.play()
+            TrackPlayer.play()
             await TrackPlayer.updateOptions({
                 stopWithApp: false,
                 alwaysPauseOnInterruption: true,
@@ -90,91 +103,9 @@ export default function Players({ navigation, route }) {
             scrollX.removeAllListeners();
         };
     }, []);
-    // useEffect(() => {
-    //     // position.addListener(({ value }) => {
-    //     //   console.log(value);
-    //     // });
 
-    //     scrollX.addListener(({ value }) => {
-    //         const val = Math.round(value / width);
-
-    //         setSongIndex(val);
-    //     });
-
-    //     TrackPlayer.setupPlayer().then(async () => {
-    //         // The player is ready to be used
-    //         console.log('Player ready');
-    //         // add the array of songs in the playlist
-    //         await TrackPlayer.reset();
-    //         await TrackPlayer.add(songs);
-    //         TrackPlayer.play();
-    //         isPlayerReady.current = true;
-
-    //         await TrackPlayer.updateOptions({
-    //             stopWithApp: false,
-    //             alwaysPauseOnInterruption: true,
-    //             capabilities: [
-    //                 Capability.Play,
-    //                 Capability.Pause,
-    //                 Capability.SkipToNext,
-    //                 Capability.SkipToPrevious,
-    //             ],
-    //         });
-    //         //add listener on track change
-    //         TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
-    //             console.log('song ended', e);
-
-    //             const trackId = (await TrackPlayer.getCurrentTrack()) - 1; //get the current id
-
-    //             console.log('track id', trackId, 'index', index.current);
-
-    //             if (trackId !== index.current) {
-    //                 setSongIndex(trackId);
-    //                 isItFromUser.current = false;
-
-    //                 if (trackId > index.current) {
-    //                     goNext();
-    //                 } else {
-    //                     goPrv();
-    //                 }
-    //                 setTimeout(() => {
-    //                     isItFromUser.current = true;
-    //                 }, 200);
-    //             }
-
-    //             // isPlayerReady.current = true;
-    //         });
-
-    //         //monitor intterupt when other apps start playing music
-    //         TrackPlayer.addEventListener(Event.RemoteDuck, (e) => {
-    //             // console.log(e);
-    //             if (e.paused) {
-    //                 // if pause true we need to pause the music
-    //                 TrackPlayer.pause();
-    //             } else {
-    //                 TrackPlayer.play();
-    //             }
-    //         });
-    //     });
-
-    //     return () => {
-    //         scrollX.removeAllListeners();
-    //         TrackPlayer.destroy();
-
-    //         // exitPlayer();
-    //     };
-    // }, []);
-    // useEffect(() => {
-    //     if (isPlayerReady.current && isItFromUser.current) {
-    //         TrackPlayer.skip(songs[songIndex].id)
-    //             .then((_) => {
-    //                 console.log('changed track');
-    //             })
-    //             .catch((e) => console.log('error in changing track ', e));
-    //     }
-    //     index.current = songIndex;
-    // }, [songIndex]);
     useEffect(() => {
+
         if (isPlayerReady.current) {
             TrackPlayer.skip(songs[songIndex].id)
         }
@@ -192,6 +123,7 @@ export default function Players({ navigation, route }) {
             offset: (songIndex + 1) * width,
         });
         await TrackPlayer.play();
+        TrackPlayer.skipToNext();
     };
     const goPrv = async () => {
         slider.current.scrollToOffset({
@@ -199,20 +131,6 @@ export default function Players({ navigation, route }) {
         });
         await TrackPlayer.play();
     };
-    // const goNext = async () => {
-    //     slider.current.scrollToOffset({
-    //         offset: (index.current + 1) * width,
-    //     });
-
-    //     await TrackPlayer.play();
-    // };
-    // const goPrv = async () => {
-    //     slider.current.scrollToOffset({
-    //         offset: (index.current - 1) * width,
-    //     });
-
-    //     await TrackPlayer.play();
-    // };
 
     const renderItem = ({ index, item }) => {
         return (
@@ -231,7 +149,7 @@ export default function Players({ navigation, route }) {
                 }}
             >
                 <Animated.Image
-                    source={{ uri: item.thumb }}
+                    source={{ uri: songs[songIndex].thumb }}
                     style={{ width: 320, height: 320, borderRadius: 5 }}
                 />
             </Animated.View>

@@ -37,7 +37,7 @@ export default function Controller({ onNext, onPrv }) {
     }
     const onPlayPause = () => {
 
-        console.log('222222 -> state: ', playbackState);
+        // console.log('222222 -> state: ', playbackState);
         if (playbackState === 3 || playbackState === "playing") {
             TrackPlayer.pause()
         } else if (playbackState === 2 || playbackState === "paused") {
