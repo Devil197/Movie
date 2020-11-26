@@ -7,6 +7,8 @@ import Play from './Play';
 import Divider from './Divider';
 import Player from './Player';
 import CastFollowItem from './CastFollowItem'
+import MyCarousel from './MyCarousel'
+import RenderMovie10Min from './RenderMovie10Min'
 export {
   FilmItem,
   CastItem,
@@ -16,5 +18,7 @@ export {
   Play,
   Divider,
   Player,
-  CastFollowItem
+  CastFollowItem,
+  MyCarousel,
+  RenderMovie10Min
 };

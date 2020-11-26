@@ -34,8 +34,6 @@ function renderDays(idx) {
   }
 }
 
-const url = 'r_G69vVBaww';
-
 const Videos = ({ navigation, params, route }) => {
 
   const _id = route.params?._id;
@@ -46,7 +44,7 @@ const Videos = ({ navigation, params, route }) => {
   const [idx, setIndex] = useState(0);
   const [title, setTitle] = useState();
   const initial = Orientation.getInitialOrientation();
-
+  const [url, setUrl] = useState('r_G69vVBaww');
   //NguyenHai editted here
   const userInfo = useSelector((state) => state.userReducer?.userInfo);
 
@@ -63,15 +61,17 @@ const Videos = ({ navigation, params, route }) => {
   const fadeIn = () => {
     Animated.timing(fadeAnim, {
       toValue: 1,
-      duration: 800
-    }, { useNativeDriver: true }).start();
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
   };
 
   const fadeOut = () => {
     Animated.timing(fadeAnim, {
       toValue: 0,
-      duration: 800
-    }, { useNativeDriver: true }).start();
+      duration: 800,
+      useNativeDriver: true,
+    }).start();
   };
 
   useEffect(() => {
@@ -120,7 +120,7 @@ const Videos = ({ navigation, params, route }) => {
       .then(video => {
         setDataVideo(video);
         setLoading(false);
-        console.log(video);
+        console.log("EPISODES VIDEO: ", video);
       })
       .catch((err) => console.log('Failed', err));
 

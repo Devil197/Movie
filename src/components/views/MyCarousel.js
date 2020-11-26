@@ -1,0 +1,120 @@
+import React, { useRef, useState, useEffect } from 'react';
+import Carousel, { ParallaxImage } from 'react-native-snap-carousel';
+import {
+    View,
+    Text,
+    Dimensions,
+    StyleSheet,
+    TouchableOpacity,
+    Platform,
+} from 'react-native';
+import { Fonts } from '../../utils/Fonts';
+import {
+    WIDTH_SCALE,
+    HEIGHT_SCALE,
+    WIDTH,
+    HEIGHT,
+    STATUS_BAR_CURRENT_HEIGHT,
+    HEADER_HEIGHT,
+} from '../../constants/constants';
+const { width: screenWidth } = Dimensions.get('window');
+import MyHighLightButton from '../views/MyHighLightButton';
+import { ROUTE_KEY } from '../../constants/constants';
+
+const MyCarousel = ({ movieData, navigation }) => {
+    //console.log("CAROUSEL: ", movieData);
+    const [entries, setEntries] = useState([]);
+    const carouselRef = useRef(null);
+
+    const goForward = () => {
+        carouselRef.current.snapToNext();
+    };
+
+    useEffect(() => {
+        setEntries(movieData);
+    }, []);
+
+    const handleMovieName = (name) => {
+        let lastCharSplitIndex = name.indexOf(']');
+        let mainName = name.slice(lastCharSplitIndex + 1, name.length);
+        if (mainName.indexOf(' ') === 0) {
+            return mainName.slice(1, mainName.length);
+        }
+        return mainName
+    }
+
+    const renderItem = ({ item, index }, parallaxProps) => {
+        return (
+            <MyHighLightButton
+                onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
+                style={styles.item}>
+                <ParallaxImage
+                    source={{ uri: item.cover_img }}
+                    containerStyle={styles.imageContainer}
+                    style={styles.image}
+                    parallaxFactor={0}
+                    {...parallaxProps}
+                />
+                <View
+                    style={{
+                        position: 'absolute',
+                        bottom: 0,
+                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                        width: '100%',
+                        borderBottomRightRadius: 8,
+                        borderBottomLeftRadius: 8,
+                        height: '10%',
+                        justifyContent: 'center',
+                        paddingLeft: 10,
+                    }}>
+                    <Text
+                        style={{
+                            fontFamily: Fonts.SansMedium,
+                            fontSize: 16 * WIDTH_SCALE,
+                            color: '#fff'
+                        }}
+                        numberOfLines={2}>
+                        {handleMovieName(item.name)} ({item.years})
+          </Text>
+                </View>
+
+            </MyHighLightButton>
+        );
+    };
+
+    return (
+        <View style={styles.container}>
+            <Carousel
+                ref={carouselRef}
+                sliderWidth={screenWidth}
+                sliderHeight={screenWidth}
+                itemWidth={screenWidth - 60}
+                data={entries}
+                renderItem={renderItem}
+                hasParallaxImages={true}
+            />
+        </View>
+    );
+};
+
+export default MyCarousel;
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    item: {
+        width: screenWidth - 90,
+        height: screenWidth - 90,
+    },
+    imageContainer: {
+        flex: 1,
+        marginBottom: Platform.select({ ios: 0, android: 1 }), // Prevent a random Android rendering issue
+        backgroundColor: 'white',
+        borderRadius: 8,
+    },
+    image: {
+        ...StyleSheet.absoluteFillObject,
+        resizeMode: 'cover',
+    },
+});

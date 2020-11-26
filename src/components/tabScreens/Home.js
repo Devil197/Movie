@@ -1,18 +1,17 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
-  ScrollView,
   TouchableOpacity,
   View,
   Text,
   StyleSheet,
-  Image, StatusBar, Dimensions
+  Image, StatusBar, Dimensions, Animated, Easing, ScrollView, TextInput, FlatList, ImageBackground
 } from 'react-native';
 import { Play, Player } from '../views';
 import { set } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import Icon from 'react-native-vector-icons/Feather';
+import Icons from 'react-native-vector-icons/Feather';
 import styled from 'styled-components';
 import {
   height,
@@ -27,6 +26,8 @@ import ImageA from '../../constants/style/image';
 import MyTouchableOpacity from '../../constants/style/MyTouchableOpacity';
 import MyView from '../../constants/style/MyView';
 import TextC from '../../constants/style/Text';
+import { ptColor } from '../../constants/styles'
+
 import {
   getAllMovie,
   getCartoon,
@@ -37,106 +38,91 @@ import {
 import {
   getCategory
 } from '../../Redux/actions/categoryAction'
-import { MySpinner, MyHighLightButton } from '../views';
-import { ROUTE_KEY } from '../../constants/constants';
+import { MySpinner, MyHighLightButton, MyCarousel } from '../views';
+import { ROUTE_KEY, STATUS_BAR_CURRENT_HEIGHT } from '../../constants/constants';
 import { useDispatch, useSelector } from 'react-redux';
 import autoMergeLevel1 from 'redux-persist/es/stateReconciler/autoMergeLevel1';
 import Orientation from 'react-native-orientation';
 import colors from '../../constants/style/colors';
 import { Fonts } from '../../utils/Fonts';
-// import YouTube from 'react-native-youtube';
+import { getEvalByMovieId } from '../../Redux/actions/evalAction';
 
-//Fake data 
-const menu = ["Nổi bật", "Phim bộ", "Điện Ảnh", "TV Show", "Thiếu Nhi", "Nổi bật 2", "Phim bộ 2", "Điện Ảnh 2", "TV Show 2", "Thiếu Nhi 2"]
-
+const IMAGE_SIZE = 45 * WIDTH_SCALE;
+const HEADER_HEIGHT = 110 * WIDTH_SCALE;
+const AnimatedIcon = Animated.createAnimatedComponent(Icons);
 
 export default function Home({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer);
-  // console.log('1001 image,: ', userReducer);
+  //console.log('1001 USER INFO:', userReducer);
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
-  const [dataMovie, setDataMovie] = useState();
+  const [allMovieData, setAllMovieData] = useState();
   const [dataCartoon, setDataCartoon] = useState();
   const [dataCate, setDataCate] = useState();
-
   const [dataMovieByCreat, setDataMovieByCreat] = useState();
   const [dataMovieByScore, setDataMovieByScore] = useState();
-  const [height, setHeight] = useState();
-  const [page, setPage] = useState(1);
-  const [scrollY, setScrollY] = useState(0)
-  const [fullScreen, setFullScreen] = useState(false);
-  const url = 'aF8U_uSsXSA';
-  const initial = Orientation.getInitialOrientation();
+  const [ratingDataMovieScore, setRatingDataMovieScore] = useState();
 
-  // const navigation = useNavigation();
-  // console.log(dataMovie.length);
-
-  // for(var i=0; i<creat; i++){
-  //   console.log("7777777: ", creat[i]);
-  // }
+  const [txtValue, setTxtValue] = useState('');
+  const offset = new Animated.Value(0);
 
   useEffect(() => {
 
-    //get cate
-    getCategory()
-      .then((category) => {
-        setLoading(false), setDataCate(category);
-      })
-      .catch((err) => console.log('Failed'));
+    // //get cate
+    // getCategory()
+    //   .then((category) => {
+    //     setLoading(false), setDataCate(category);
+    //   })
+    //   .catch((err) => console.log('Failed'));
 
-    // xet data cho cartoon
-    getCartoon()
-      .then((cartoon) => {
-        setLoading(false), setDataCartoon(cartoon);
-      })
-      .catch((err) => console.log('Failed'));
+    // // xet data cho cartoon
+    // getCartoon()
+    //   .then((cartoon) => {
+    //     setLoading(false), setDataCartoon(cartoon);
+    //   })
+    //   .catch((err) => console.log('Failed'));
 
-    getAllMovie()
-      .then((movie) => {
-        console.log('movie', movie.items[0].trailer),
-          // console.log('==========', movie.items[1].create_at),
-          setLoading(false),
-          setDataMovie(movie);
+    // getAllMovie()
+    //   .then((movie) => {
+    //     //console.log('movie', movie.items[0].trailer),
+    //     // console.log('==========', movie.items[1].create_at),
+    //     setLoading(false),
+    //       setDataMovie(movie);
 
-        // setDataTrailer();
-      })
-      .catch((err) => console.log('Failed'));
+    //     // setDataTrailer();
+    //   })
+    //   .catch((err) => console.log('Failed'));
 
-    getCast()
-      .then((cast) => {
-        // console.log('movie', movie),
-        setLoading(false), setDataCast(cast);
-      })
-      .catch((err) => console.log('failed'));
+    // getCast()
+    //   .then((cast) => {
+    //     // console.log('movie', movie),
+    //     setLoading(false), setDataCast(cast);
+    //   })
+    //   .catch((err) => console.log('failed'));
 
-    getMovieByCreatAt()
-      .then((movieByCreat) => {
-        // console.log('==========', movie.items[1].create_at),
-        setLoading(false), setDataMovieByCreat(movieByCreat);
-
-        // setDataTrailer();
-      })
-      .catch((err) => console.log('Failed'));
-
-    getMovieByScore()
-      .then((movieScore) => {
-        // console.log('movie', movie),
-        setLoading(false), setDataMovieByScore(movieScore);
-      })
-      .catch((err) => console.log('failed'));
+    handleGetAllMovieAPI();
+    handleGetMovieScoreAPI();
   }, []);
 
-  //   const creat =  dataMovie?.items.map((c, i) => ({
+  const handleGetAllMovieAPI = async () => {
+    await getAllMovie()
+      .then((result) => {
+        console.log("MOVIE ALL: ", result?.items);
+        setAllMovieData(result?.items);
+      })
+      .catch((err) => console.log('Failed'));
+  }
 
-  //     create_at: c.create_at
+  const handleGetMovieScoreAPI = async () => {
+    await getMovieByScore()
+      .then(result => {
+        //console.log("MOVIE BY SCORE: ", result?.items);
+        setDataMovieByScore(result?.items);
+        setLoading(false);
+      })
+      .catch((err) => console.log('MOVIE SCORE: ', err));
+  }
 
-  // }));
-
-  // console.log("---------------",creat);
-
-  // console.log('map ', dataMovie);
-
-  // loading
   if (loading) {
     MySpinner.show();
     return (
@@ -154,715 +140,596 @@ export default function Home({ navigation }) {
     MySpinner.hide();
   }
 
-  const onFullScreen = (fullScreen) => {
-    if (fullScreen) {
-      Orientation.lockToPortrait();
-      setFullScreen(false);
-    } else {
-      Orientation.lockToLandscape();
-      setFullScreen(true);
-    }
+
+  //ANIMATION ============================
+  //artist profile image position from left
+  const _getImageRightPosition = offset.interpolate({
+    inputRange: [0, 50],
+    outputRange: [15, 10],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  //artist profile image position from top
+  const _getImageTopPosition = offset.interpolate({
+    inputRange: [0, 50],
+    outputRange: [8, 6],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  //artist profile image height
+  const _getImageSize = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [IMAGE_SIZE, IMAGE_SIZE - 5],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  //artist profile image border width
+  const _getImageBorderWidth = offset.interpolate({
+    inputRange: [0, 50],
+    outputRange: [2, 1],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  //top title opacity 
+  const _getTopTitleOpacity = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.2, HEADER_HEIGHT * 0.6],
+    outputRange: [1, 0.1, 0],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  //get header backgroundColor
+  const backgroundColor = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: ['rgba(254, 254, 254, 0)', 'rgba(254, 254, 254, 1)'],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  const _getHeaderHeight = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [HEADER_HEIGHT, HEADER_HEIGHT * 0.5],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getTextInputWidth = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.25, HEADER_HEIGHT * 0.5],
+    outputRange: [WIDTH * 0.92, WIDTH * 0.5, WIDTH * 0.075],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getTextInputHeight = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.25, HEADER_HEIGHT * 0.5],
+    outputRange: [HEADER_HEIGHT * 0.4, HEADER_HEIGHT * 0.3, HEADER_HEIGHT * 0.2],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getTextInputTopPosition = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [50, 25],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  const _getTextInputRightPosition = offset.interpolate({
+    inputRange: [0, 50],
+    outputRange: [15, WIDTH - 50],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  });
+
+  const _getIconOpacity = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5, HEADER_HEIGHT * 0.75, HEADER_HEIGHT],
+    outputRange: [0, 0, 0.5, 1],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getSearchIconTopPosition = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5, HEADER_HEIGHT * 0.75, HEADER_HEIGHT],
+    outputRange: [25, 17, 15, 10],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getSearchIconRightPosition = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5, HEADER_HEIGHT * 0.75, HEADER_HEIGHT],
+    outputRange: [WIDTH - 60, WIDTH - 50, WIDTH - 45, WIDTH - 40],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getHeightHeaderBar = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [HEADER_HEIGHT * 0.5, HEADER_HEIGHT * 0.5],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getTextPadding = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [5 * WIDTH_SCALE, 3 * WIDTH_SCALE],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getTextPaddingE = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.5],
+    outputRange: [7 * WIDTH_SCALE, 5 * WIDTH_SCALE],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  const _getOpacityTextInput = offset.interpolate({
+    inputRange: [0, HEADER_HEIGHT * 0.25, HEADER_HEIGHT * 0.5],
+    outputRange: [1, 0.5, 1],
+    extrapolate: 'clamp',
+    useNativeDriver: true
+  })
+
+  //ANIMATION ============================
+
+  const handleSearchOnPress = () => {
+    navigation.push(ROUTE_KEY.Search, { _keyword: txtValue })
   };
 
-  const onScroll = (event) => {
-    let posY = event.nativeEvent.contentOffset.y
-    //console.log(posY);
-    setScrollY(posY)
+  const handleMovieName = (name) => {
+    let lastCharSplitIndex = name.indexOf(']');
+    let mainName = name.slice(lastCharSplitIndex + 1, name.length);
+    if (mainName.indexOf(' ') === 0) {
+      return mainName.slice(1, mainName.length);
+    }
+    return mainName
+  }
+
+  const handleMainCatOfMovie = (name) => {
+    let firtChar = name.indexOf('[');
+    let lastCharSplitIndex = name.indexOf(']');
+    if (firtChar === -1 || lastCharSplitIndex === -1) {
+      return 'Movie';
+    }
+    return name.slice(firtChar + 1, lastCharSplitIndex)
   }
 
 
-
   return (
-    <View style={styles.container} >
-      <StatusBar translucent={false} backgroundColor="#fff" />
-      <View style={styles.topNav} >
-        <View style={styles.topNavTop} >
-          <View style={{ flex: 1 }}>
-            <Image
-              style={styles.topNavAvt}
-              source={{
-                uri:
-                  userReducer.facebookInfo?.photo !== undefined
-                    ? userReducer?.facebookInfo?.photo
-                    : userReducer?.googleInfo?.photo,
-              }}
-            />
-          </View>
+    <View style={{ flex: 1, backgroundColor: ptColor.white }}>
 
-          <View style={styles.topNavIcon}>
-            <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Search)}>
-              <Icon name="search" size={24} color="#000" />
-            </TouchableOpacity>
+      <StatusBar translucent={false} backgroundColor={'#fff'} />
 
-            <View style={{ width: 16 }} />
+      {/* HEADER */}
+      <Animated.View
+        style={{
+          position: 'absolute',
+          zIndex: 100,
+          height: _getHeaderHeight,
+          width: WIDTH,
+          backgroundColor: backgroundColor,
+        }}>
 
-            <TouchableOpacity>
-              <Icon name="bell" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-        </View>
+        {/* Top title */}
+        <Animated.View
+          style={[{
+            flexDirection: 'row',
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: _getHeightHeaderBar,
+          }]}>
+          <Animated.Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 25 * WIDTH_SCALE,
+              color: ptColor.white,
+              backgroundColor: 'black',
+              paddingLeft: _getTextPadding,
+              paddingRight: _getTextPadding,
+              borderRadius: 5 * WIDTH_SCALE,
+            }}>G</Animated.Text>
+          <View style={{ height: '100%', width: 3 * WIDTH_SCALE }} />
+          <Animated.Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 25 * WIDTH_SCALE,
+              color: ptColor.white,
+              backgroundColor: '#f0ab0a',
+              paddingLeft: _getTextPaddingE,
+              paddingRight: _getTextPaddingE,
+              borderRadius: 5 * WIDTH_SCALE,
+            }}>E</Animated.Text>
+          <View style={{ height: '100%', width: 3 * WIDTH_SCALE }} />
+          <Animated.Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 25 * WIDTH_SCALE,
+              color: ptColor.white,
+              backgroundColor: 'black',
+              paddingLeft: _getTextPadding,
+              paddingRight: _getTextPadding,
+              borderRadius: 5 * WIDTH_SCALE,
+            }}>A</Animated.Text>
+        </Animated.View>
 
-        <ScrollView
-
-          style={styles.bottomNav}
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-        >
-          {dataCate?.items.map((c, i) => {
-            return (
-              <TouchableOpacity style={styles.cate}>
-                <Text style={{ fontFamily: Fonts.SansMedium }}>{c.name}</Text>
-              </TouchableOpacity>
-            );
-          })}
-        </ScrollView>
-      </View>
-
-      <ScrollView style={styles.container}
-        onScroll={onScroll}
-      >
-        {/* Continue Watching */}
-        {/* <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Continue Watching</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonB}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageB} source={{ uri: c.cover_img }} />
-
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View> */}
-
-        {/* Trending */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Trending</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* New */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >New</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* Recommend */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Recommend</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonD}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageD} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* Trailer */}
-        {/* <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Trailer</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton style={styles.buttonF}>
-                  <Player url={c.trailer} fullScreen={onFullScreen} />
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View> */}
-
-        {/* Cast */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Cast</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonA}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageA} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-
-        {/* Action Film */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Action</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* Romance Film */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Romance</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* Science Film */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Science</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* Cartoon Film */}
-        <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { flex: 1 }]} >Cartoon</Text>
-            <TouchableOpacity>
-              <Icon name="chevron-right" size={24} color="#000" />
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView
-            showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonC}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageC} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={{ fontFamily: Fonts.Sans }}
-                    numberOfLines={1}
-                    ellipsizeMode="tail"
-                  >{c.name}</Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
-
-        {/* <View style={styles.containerA}>
-        <View style={[styles.groupA,]}>
-          <Image
-            style={styles.imageA}
-            source={{
-              uri:
-                userReducer.facebookInfo?.photo !== undefined
-                  ? userReducer?.facebookInfo?.photo
-                  : userReducer?.googleInfo?.photo,
+        {/* SEARCH */}
+        <Animated.View
+          style={[{
+            flexDirection: 'row',
+            position: 'absolute',
+            zIndex: 11,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 40 * WIDTH_SCALE,
+            borderWidth: 1,
+            borderColor: '#f0ab0a',
+            width: _getTextInputWidth,
+            height: _getTextInputHeight,
+            opacity: _getTopTitleOpacity,
+            transform: [
+              { translateY: _getTextInputTopPosition },
+              { translateX: _getTextInputRightPosition }
+            ]
+          }]}>
+          <TextInput
+            caretHidden={true}
+            value={txtValue}
+            onChangeText={(txt) => {
+              setTxtValue(txt);
             }}
+            placeholder={'Tìm kiếm thế giới của bạn!'}
+            placeholderTextColor={ptColor.gray2}
+            onSubmitEditing={handleSearchOnPress}
+            returnKeyType="search"
+            style={[{
+              textAlign: 'center',
+              width: '90%',
+              fontSize: 14 * WIDTH_SCALE,
+            }]}
           />
-        </View>  
-        <View style={styles.groupA1}>
-          <TextC
-            color="#333"
-            medium
-            heavy
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            {userReducer.facebookInfo?.name !== undefined
-              ? userReducer.facebookInfo?.name
-              : userReducer.googleInfo.name}
-          </TextC>
-          <TextC
-            a
-            color="#333"
-            medium
-            light
-            numberOfLines={1}
-            ellipsizeMode="tail">
-            ID:{' '}
-            {userReducer.facebookInfo?.id !== undefined
-              ? userReducer.facebookInfo?.id
-              : userReducer.googleInfo.id}
-          </TextC>
-        </View>  
-     >
-      </View> */}
+          {txtValue !== '' ? (
+            <Icons
+              onPress={() => setTxtValue('')}
+              name="x"
+              size={20 * WIDTH_SCALE}
+              color={ptColor.gray2}
+              style={{ position: 'absolute', right: 10 }}
+            />
+          ) : null}
+        </Animated.View>
 
-        {/* <View style={styles.groupB}>
-          <Text style={styles.textB}>Continue Watching</Text>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonB}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageB} source={{ uri: c.cover_img }} />
-                  <View style={styles.myViewB}>
-                    <Icon name={'play'} size={20} color="#fff" />
-                  </View>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View> */}
-        {/* 
-        <View style={styles.groupB}>
-          <Text style={styles.textContent}>New</Text>
+        <AnimatedIcon
+          onPress={() => navigation.push(ROUTE_KEY.Search, { _keyword: '' })}
+          name={'search'}
+          size={32 * WIDTH_SCALE}
+          color={'#f0ab0a'}
+          style={[{
+            position: 'absolute',
+            zIndex: 12,
+            opacity: _getIconOpacity,
+            transform: [
+              { translateY: _getSearchIconTopPosition },
+              { translateX: _getSearchIconRightPosition }
+            ]
+          }]}
+        />
 
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovieByCreat?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonB}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageB} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={styles.textC}
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {c.name}
-                  </Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
+      </Animated.View>
+
+      {/* Top User Image */}
+      <Animated.Image
+        style={[{
+          position: 'absolute',
+          zIndex: 101,
+          borderWidth: _getImageBorderWidth,
+          borderColor: '#ceddf5',
+          borderRadius: 50 / 2,
+          height: _getImageSize,
+          width: _getImageSize,
+          transform: [
+            { translateY: _getImageTopPosition },
+            { translateX: _getImageRightPosition }
+          ]
+        }]}
+        source={{
+          uri:
+            userReducer.facebookInfo?.photo !== undefined
+              ? userReducer?.facebookInfo?.photo
+              : userReducer?.googleInfo?.photo,
+        }}
+        resizeMode={'cover'}
+      />
+
+      <Animated.ScrollView
+        contentContainerStyle={{
+          marginTop: 15 + HEADER_HEIGHT,
+          paddingBottom: HEIGHT * 0.46 / 1.5,
+        }}
+        showsVerticalScrollIndicator={false}
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{
+            nativeEvent:
+            {
+              contentOffset:
+                { y: offset }
+            }
+          }],
+          { useNativeDriver: false }
+        )}
+      >
+
+        {/* TOP 5 HOT MOVIE GET BY SCORE  */}
+        <View
+          style={{
+            marginTop: 10 * WIDTH_SCALE,
+            marginBottom: 25 * WIDTH_SCALE,
+          }}>
+          {/* <MyCarousel movieData={dataMovieByScore} navigation={navigation} /> */}
         </View>
 
-        <View style={styles.groupB}>
-          <Text style={styles.textContent}>Recommed</Text>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovieByCreat?.items.map((c, i) => {
+        {/* PHIM XỊN TRONG NĂM */}
+        <View
+          style={{
+            height: HEIGHT * 0.46,
+            width: WIDTH,
+          }}>
+
+          <Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 18 * WIDTH_SCALE,
+              paddingLeft: 17 * WIDTH_SCALE,
+              marginBottom: 10 * WIDTH_SCALE,
+              color: ptColor.black
+            }}>
+            TOP 5 PHIM XỊN CỦA NĂM!
+          </Text>
+
+          <FlatList
+            showsHorizontalScrollIndicator={false}
+            scrollEventThrottle={3}
+            keyExtractor={(item) => String(item._id)}
+            data={dataMovieByScore}
+            renderItem={({ item, index }) => {
               return (
                 <MyHighLightButton
-                  style={styles.buttonB}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageB} source={{ uri: c.cover_img }} />
-                  <Text
-                    style={styles.textC}
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {c.name}
+                  onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
+                  style={{
+                    height: HEIGHT * 0.45,
+                    width: WIDTH * 0.42,
+                    paddingLeft: 17 * WIDTH_SCALE,
+                  }}>
+
+                  <ImageBackground
+                    source={{ uri: item.cover_img }}
+                    style={{
+                      height: HEIGHT * 0.35,
+                      width: WIDTH * 0.39,
+                    }}
+                    imageStyle={{
+                      borderRadius: 10 * WIDTH_SCALE,
+                      marginBottom: 5 * WIDTH_SCALE,
+                    }}
+                    resizeMode={'cover'}
+                  >
+                    <Text
+                      style={{
+                        paddingHorizontal: 5 * WIDTH_SCALE,
+                        paddingVertical: 5 * WIDTH_SCALE,
+                        backgroundColor: 'rgba(0,0,0, 0.5)',
+                        position: 'absolute',
+                        zIndex: 12,
+                        bottom: 0,
+                        right: 0,
+                        color: '#fff',
+                        width: '100%',
+                        borderBottomLeftRadius: 10 * WIDTH_SCALE,
+                        borderBottomRightRadius: 10 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansLight,
+                        fontSize: 14 * WIDTH_SCALE
+                      }}>{item.language}</Text>
+
+                    <Text
+                      style={{
+                        backgroundColor: 'rgba(0,0,0, 0.5)',
+                        position: 'absolute',
+                        zIndex: 12,
+                        top: 0,
+                        right: 0,
+                        color: '#fff',
+                        width: '100%',
+                        borderTopLeftRadius: 10 * WIDTH_SCALE,
+                        borderTopRightRadius: 10 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansMedium,
+                        fontSize: 14 * WIDTH_SCALE,
+                        paddingHorizontal: 5 * WIDTH_SCALE,
+                        paddingVertical: 5 * WIDTH_SCALE,
+                        textAlign: 'center'
+                      }}
+                    >
+                      {handleMainCatOfMovie(item.name)} Of Year
                   </Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
+                  </ImageBackground>
 
-        <View style={styles.groupB}>
-          <Text style={styles.textContent}>Trending</Text>
-
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovieByScore?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  style={styles.buttonB}
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                  }>
-                  <Image style={styles.imageB} source={{ uri: c.cover_img }} />
                   <Text
-                    style={styles.textC}
+                    style={{
+                      fontFamily: Fonts.SansMedium,
+                      fontSize: 14 * WIDTH_SCALE,
+                      paddingHorizontal: 5 * WIDTH_SCALE,
+                      marginTop: 5 * WIDTH_SCALE,
+                    }}
                     numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {c.name}
+                    ellipsizeMode='tail'
+                  >
+                    {handleMovieName(item.name)}
                   </Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View>
 
-        <View style={styles.groupA1}>
-          <Text style={styles.textD}>Cartoon</Text>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={false}>
-            {dataCartoon?.items.map((c, i) => {
-              return (
-                <MyHighLightButton
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: c.movie_id._id })
-                  }>
-                  <View style={styles.containerD}>
-                    <View style={styles.groupA}>
-                      <Image
-                        style={styles.imageD}
-                        source={{ uri: c.movie_id.cover_img }}
-                      />
-                    </View>
-                    <View style={[styles.groupA1, styles.mT]}>
-                      <Text
-                        style={styles.textCartoon}
-                        numberOfLines={1}
-                        ellipsizeMode="tail">
-                        {c.movie_id.name}
-                      </Text>
-                      <Text
-                        style={styles.textCartoon}
-                        numberOfLines={1}
-                        ellipsizeMode="tail">
-                        {c.movie_id.episode} Tập
+                  <View style={{ flexDirection: 'row', paddingHorizontal: 5 * WIDTH_SCALE, marginTop: 5 * WIDTH_SCALE }}>
+                    <Text style={{ fontSize: 13 * WIDTH_SCALE, fontFamily: Fonts.SansLight }}>
+                      IMDb: {item.score.toFixed(1)}
                     </Text>
-                    </View>
-                    <View style={styles.mT}>
-                      <MyHighLightButton>
-                        <Feather
-                          name={'more-horizontal'}
-                          size={30}
-                          color="#be2edd"
-                        />
-                      </MyHighLightButton>
-                    </View>
                   </View>
+
                 </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
+              )
+            }}
+            horizontal={true}
+          />
         </View>
 
-        <View style={{ alignItems: 'center' }}>
-          <MyHighLightButton style={styles.buttonD}>
-            <Text style={[styles.textF, styles.c]}>View more</Text>
-          </MyHighLightButton>
+        {/* New movies */}
+        <View style={{ marginTop: 25 * WIDTH_SCALE, marginHorizontal: 15 * WIDTH_SCALE }}>
+          <View style={{
+            marginBottom: 10 * WIDTH_SCALE,
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+            <Text
+              style={{
+                fontFamily: Fonts.SansBold,
+                fontSize: 18 * WIDTH_SCALE,
+                color: ptColor.black,
+                flex: 7,
+              }}>PHIM MỚI CẬP NHẬT</Text>
+
+            <Text
+              style={{
+                fontFamily: Fonts.SansLight,
+                fontSize: 14 * WIDTH_SCALE,
+              }}
+            >Xem thêm..</Text>
+          </View>
+          <View>
+            {dataMovieByScore.map((val, ind) => {
+              if (ind < 5) {
+                return (
+                  <View
+                    key={val?._id}
+                    style={{
+                      flexDirection: 'row',
+                      marginVertical: 10 * WIDTH_SCALE,
+                    }}>
+                    <Image
+                      source={{ uri: val?.cover_img }}
+                      style={{
+                        flex: 1.2,
+                        height: WIDTH * 0.42,
+                        width: WIDTH * 0.4,
+                      }} />
+                    <Text
+                      style={{
+                        position: 'absolute',
+                        left: WIDTH * 0.34,
+                        bottom: 0,
+                        paddingHorizontal: 5 * WIDTH_SCALE,
+                        paddingVertical: 5 * WIDTH_SCALE,
+                        backgroundColor: '#f0ab0a',
+                        fontFamily: Fonts.SansMedium,
+                        color: '#fff',
+                      }}>IMDB: {val?.score.toFixed(1)}/10</Text>
+
+                    <View style={{ flex: 0.2 }} />
+
+                    <View
+                      style={{
+                        flex: 1.6,
+                        paddingTop: 10 * WIDTH_SCALE,
+                      }}>
+
+                      <Text
+                        style={{
+                          fontFamily: Fonts.SansBold,
+                          fontSize: 17 * WIDTH_SCALE,
+                          marginBottom: 10 * WIDTH_SCALE,
+                        }}>{handleMovieName(val?.name)}</Text>
+
+                      {val?.duration < 60 ?
+                        <Text style={styles.timeStyles}>
+                          {val?.duration} phút
+                        </Text> :
+                        <Text style={styles.timeStyles}>
+                          {Math.floor(val?.duration / 60)} giờ {(val?.duration % 60)} phút
+                        </Text>}
+
+                      <Text
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          right: 0,
+                          marginTop: 10 * WIDTH_SCALE,
+                          fontFamily: Fonts.SansLight,
+                          fontSize: 16 * WIDTH_SCALE,
+                          color: '#fff',
+                          paddingHorizontal: 5 * WIDTH_SCALE,
+                          paddingVertical: 5 * WIDTH_SCALE,
+                          backgroundColor: 'rgba(0,0,0, 0.8)',
+                          alignSelf: 'flex-start'
+                        }}>{handleMainCatOfMovie(val?.name)}</Text>
+
+                      <Text
+                        style={styles.timeStyles}
+                      >Năm: {val?.years}</Text>
+
+                      <Text
+                        style={styles.timeStyles}
+                      >Quốc gia: {val?.country}</Text>
+
+                    </View>
+                  </View>)
+              }
+            })}
+          </View>
         </View>
 
-        <View style={styles.groupB}>
-          <Text style={styles.textContent}>Trailer</Text>
+        {/* Phim 10 Phút */}
+        <View style={{ marginTop: 25 * WIDTH_SCALE }}>
+          <View style={{
+            marginBottom: 10 * WIDTH_SCALE,
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingRight: 15 * WIDTH_SCALE,
+          }}>
+            <Text
+              style={{
+                fontFamily: Fonts.SansBold,
+                fontSize: 18 * WIDTH_SCALE,
+                color: ptColor.black,
+                flex: 7,
+                paddingLeft: 15 * WIDTH_SCALE,
+              }}>PHIM 10 PHÚT</Text>
 
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataMovie?.items.map((c, i) => {
-              //console.log('00006 -> trailer', c.trailer);
-              return (
-                <MyHighLightButton style={styles.buttonF}>
-                  <Player url={c.trailer} fullScreen={onFullScreen} />
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
+            <Text
+              style={{
+                fontFamily: Fonts.SansLight,
+                fontSize: 14 * WIDTH_SCALE,
+              }}
+            >Xem thêm..</Text>
+          </View>
+          {/* {allMovieData.map((val, ind) => {
+            if (val?.duration === 10) {
+              let i = 0;
+              return
+            }
+          })} */}
         </View>
 
-        <View style={styles.groupB}> */}
-        {/* <Text style={styles.textContent}>Cast</Text>
-          <ScrollView showsHorizontalScrollIndicator={false} horizontal={true}>
-            {dataCast?.cast.map((c, i) => {
-              return (
-                <MyHighLightButton style={styles.buttonE}>
-                  <Image style={styles.imageD} source={{ uri: c.cover_image }} />
-                  <Text
-                    style={styles.textE}
-                    numberOfLines={1}
-                    ellipsizeMode="tail">
-                    {c.name}
-                  </Text>
-                </MyHighLightButton>
-              );
-            })}
-          </ScrollView>
-        </View> */}
-      </ScrollView>
-    </View >
+      </Animated.ScrollView>
+
+    </View>
+
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    zIndex: 2
-  },
-  topNav: {
-    flexDirection: "column",
-    padding: 16,
-    zIndex: 1,
-    backgroundColor: "#fff"
-  },
-
-  topNavTop: {
-    flexDirection: "row",
-    marginBottom: 8
-  },
-  topNavAvt: {
-    width: 40,
-    height: 40,
-    borderRadius: 20
-  },
-  topNavIcon: {
-    flexDirection: "row"
-  }
-  ,
-  bottomNav: {
-
-  },
-  cate: {
-    marginRight: 12
-  },
-  cateText: {
-    color: colors.black,
-    fontFamily: Fonts.SansMedium
-  }
-  ,
-  cateTextActive: {
-    color: "#fff"
-  },
-  section: {
-    flexDirection: "column",
-    padding: 4,
-
-    marginBottom: 16
-  },
-
-  sectionTitle: {
-    fontFamily: Fonts.SansMedium,
-    fontSize: 22,
-
-  },
-  sectionHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 8
-  },
-  //A
-  buttonA: {
-    alignItems: "center",
-    padding: 4
-  },
-
-  imageA: {
-    flex: 1,
-    width: WIDTH / 5,
-    height: WIDTH / 5,
-    borderRadius: WIDTH / 3
-
-  },
-  //B
-
-
-  //C
-  buttonC: {
-    width: WIDTH / 3,
-    height: HEIGHT / 4.5,
-    padding: 4
-  },
-  imageC: {
-    flex: 1,
-    borderRadius: 4
-  },
-  textC: {
-    fontFamily: Fonts.Sans
-  },
-  //D,
-  buttonD: {
-    width: WIDTH / 2,
-    height: HEIGHT / 4.5,
-    padding: 4
-  },
-  imageD: {
-    flex: 1,
-    borderRadius: 4
-  },
-  textD: {
-    fontFamily: Fonts.Sans
-  },
-  //E
-
-  textE: {
-    color: '#333',
-    fontSize: 13 * WIDTH_SCALE,
-    fontFamily: 'ProductSans-Bold',
-  },
-  buttonE: {
-    width: 0.2 * WIDTH,
-    height: 0.12 * HEIGHT,
-    margin: 5 * WIDTH_SCALE,
-  },
-  //F
-  textF: {
-    fontFamily: 'ProductSans-Regular',
+  timeStyles: {
+    fontFamily: Fonts.SansLight,
     fontSize: 16 * WIDTH_SCALE,
-  },
-  buttonF: {
-    width: WIDTH,
-    height: WIDTH / 2
-  },
-  //-----------**------------//
-  mR: {
-    marginRight: 10 * WIDTH_SCALE,
-  },
-  mL: {
-    marginLeft: 10 * WIDTH_SCALE,
-  },
-  mT: {
-    marginTop: 15 * WIDTH_SCALE,
-  },
-  m: {
-    margin: 5 * WIDTH_SCALE,
-  },
-  aI: {
-    alignItems: 'center',
-  },
-  jC: {
-    justifyContent: 'flex-start',
-  },
-  c: {
-    color: '#be2edd',
-  },
+    marginTop: 5 * WIDTH_SCALE,
+  }
 });

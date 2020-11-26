@@ -309,6 +309,7 @@ export default function Details({ navigation, route }) {
             size={21 * WIDTH_SCALE}
             color={ptColor.white} />
         </MyHighLightButton>
+        <View style={{ flex: 8 }} />
         <MyHighLightButton
           style={{
             height: '100%',

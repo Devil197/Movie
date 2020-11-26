@@ -9,6 +9,7 @@ import {
   ScrollView,
   FlatList,
   TouchableWithoutFeedback,
+  Easing,
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -34,14 +35,23 @@ import { Chip } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { ROUTE_KEY } from '../../constants/constants';
 
-export default function Search({ navigation }) {
-  const scrollY = new Animated.Value(0);
-  const diffClamp = Animated.diffClamp(scrollY, 0, HEADER_HEIGHT);
+export default function Search({ navigation, route }) {
+  const __keyword = route.params._keyword;
+  const animValue = new Animated.Value(0);
 
-  const translateY = diffClamp.interpolate({
-    inputRange: [0, HEADER_HEIGHT],
-    outputRange: [0, -HEADER_HEIGHT],
+  const translateX = animValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-30, 10],
   });
+
+  const animStart = () => {
+    Animated.timing(animValue, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.out(Easing.exp),
+      useNativeDriver: true
+    }).start();
+  }
 
   const dispatch = useDispatch();
 
@@ -53,8 +63,12 @@ export default function Search({ navigation }) {
   const [hotContentsData, setHotContentsData] = useState([]);
 
   useEffect(() => {
+    animStart();
     inputRef.current = keyword;
     handleHotMovieAPI();
+    if (__keyword !== '') {
+      handleGetDataByKeyword(__keyword);
+    }
   }, []);
 
   const handleGetDataByKeyword = async (keyword) => {
@@ -66,6 +80,7 @@ export default function Search({ navigation }) {
     await searchAPI(keyword)
       .then((json) => {
         setdataAfterSearch([...json?.cast, ...json?.movie]);
+        setVisible(true);
         setLoading(false);
       })
       .catch((err) => {
@@ -95,24 +110,33 @@ export default function Search({ navigation }) {
   return (
     <View style={styles.container}>
       <StatusBar backgroundColor={ptColor.white} />
-      <Animated.View
+      <View
         style={{
-          transform: [{ translateY: translateY }],
+          top: 0,
+          position: 'absolute',
+          width: WIDTH,
+          height: 50 * WIDTH_SCALE,
           zIndex: 10,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#fff',
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 9,
+          },
+          shadowOpacity: 0.50,
+          shadowRadius: 12.35,
+          elevation: 10,
         }}>
-        <View style={styles.searchBarContainer}>
+        <Animated.View style={[styles.searchBarContainer, { transform: [{ translateX: translateX }], }]}>
           <View style={styles.searchBar}>
             <MyHighLightButton
               style={styles.backIcon}
               onPress={() => navigation.goBack()}>
-              <FontAwesome5 name="arrow-left" size={18} color={ptColor.black} />
+              <FontAwesome5 name="arrow-left" size={18} color={'rgba(0,0,0,0.5)'} />
             </MyHighLightButton>
             <View style={styles.searchInputContainer}>
-              <EvilIcon
-                name="search"
-                size={22 * WIDTH_SCALE}
-                color={ptColor.gray2}
-              />
               <TextInput
                 autoFocus={true}
                 value={keyword}
@@ -121,8 +145,8 @@ export default function Search({ navigation }) {
                   setVisible(false);
                 }}
                 style={styles.searchInput}
-                //placeholder={'Search on GEA'}
-                placeholderTextColor={ptColor.gray2}
+                placeholder={'Nhập từ khóa'}
+                placeholderTextColor={ptColor.white}
                 onSubmitEditing={handleSearchOnPress}
                 returnKeyType="search"
               />
@@ -132,15 +156,17 @@ export default function Search({ navigation }) {
                   style={styles.closeIcon}
                   name="close"
                   size={22 * WIDTH_SCALE}
-                  color={ptColor.gray2}
+                  color={ptColor.white}
                 />
               ) : null}
             </View>
           </View>
-        </View>
-      </Animated.View>
+        </Animated.View>
+      </View>
 
-      {!isVisible ? (
+      <View style={{ height: 65 * WIDTH_SCALE, width: WIDTH }} />
+
+      {/* {!isVisible ? (
         <ScrollView contentContainerStyle={styles.hotKeyWordContainer}>
           <Text
             style={{
@@ -150,35 +176,30 @@ export default function Search({ navigation }) {
             }}>
             POPULAR KEYWORD
           </Text>
-          <View style={{ padding: WIDTH * 0.02, flexDirection: 'row' }}>
+          <View
+            style={{
+              marginVertical: 15 * WIDTH_SCALE,
+              alignSelf: 'flex-start'
+            }}>
             {hotContentsData.map((value, index) => {
               return (
-                <MyHighLightButton
+                <Chip
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderRadius: 20 * WIDTH_SCALE,
+                    borderColor: '#f0ab0a',
+                    marginVertical: 5 * WIDTH_SCALE,
+                  }}
                   key={value?._id}
+                  icon="movie"
                   onPress={() =>
                     navigation.push(ROUTE_KEY.Details, { _id: value?._id })
-                  }>
-                  <Text
-                    numberOfLines={1}
-                    style={{
-                      backgroundColor: ptColor.white,
-                      padding: 10 * WIDTH_SCALE,
-                      // borderRadius: 20 * WIDTH_SCALE,
-                      // borderColor: '#e056fd',
-                      // borderWidth: 0.5,
-                      fontFamily: Fonts.SansMedium,
-                      marginRight: WIDTH * 0.02,
-                      color: '#e056fd',
-                    }}
-                    ellipsizeMode="middle">
-                    {value?.name}
-                  </Text>
-                </MyHighLightButton>
+                  }>{value?.name}</Chip>
               );
             })}
           </View>
         </ScrollView>
-      ) : null}
+      ) : null} */}
 
       {isVisible ? (
         !isLoading ? (
@@ -236,7 +257,6 @@ export default function Search({ navigation }) {
   );
 }
 
-// không nên chia style như vậy viết trên thẻ lun để tới lúc chỉnh cho dễ chó mò xuống đây lại rối
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -246,6 +266,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.2,
     borderBottomColor: 'rgba(166, 164, 164, 0.1)',
     alignItems: 'center',
+
   },
   searchBar: {
     height: HEADER_HEIGHT,
@@ -262,18 +283,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: '#fff',
-    height: HEIGHT * 0.06,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    height: '70%',
     paddingLeft: WIDTH * 0.06,
     marginRight: WIDTH * 0.03,
     borderRadius: 20,
   },
   searchInput: {
     width: WIDTH * 0.6,
-    color: ptColor.gray2,
-    fontSize: 16 * WIDTH_SCALE,
-    height: HEIGHT * 0.06,
+    color: ptColor.white,
+    fontSize: 18 * WIDTH_SCALE,
     paddingLeft: WIDTH * 0.015,
+    fontFamily: Fonts.SansLight,
+    paddingBottom: 8 * WIDTH_SCALE,
   },
   contentContainer: {
     height: HEIGHT,

@@ -131,18 +131,26 @@ export default function Splash({ navigation }) {
         console.log('1000 userRedux', userRedux);
         const dataFollowRedux = await store.getState().followReducer
         console.log('1001 redux', dataFollowRedux);
-        await getValueToShowIntroduceOrNot((isShow) => {
 
-          if (isShow === false) {
-            if (userRedux.loggedIn) {
-              navigation.navigate(ROUTE_KEY.BottomNavigation)
-            } else {
-              //navigation.navigate(ROUTE_KEY.Login)
-              navigation.navigate(ROUTE_KEY.Login);
-            }
-          }
-          setIsShowIntroduce(isShow);
-        });
+        if (userRedux.loggedIn) {
+          navigation.navigate(ROUTE_KEY.BottomNavigation)
+        } else {
+          //navigation.navigate(ROUTE_KEY.Login)
+          navigation.navigate(ROUTE_KEY.Login);
+        }
+
+        // await getValueToShowIntroduceOrNot((isShow) => {
+
+        //   if (isShow === false) {
+        //     if (userRedux.loggedIn) {
+        //       navigation.navigate(ROUTE_KEY.BottomNavigation)
+        //     } else {
+        //       //navigation.navigate(ROUTE_KEY.Login)
+        //       navigation.navigate(ROUTE_KEY.Login);
+        //     }
+        //   }
+        //   setIsShowIntroduce(isShow);
+        // });
         // notification  video
         setTimeout(() => {
           dataFollowRedux.list.map((e) => {
