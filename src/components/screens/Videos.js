@@ -119,6 +119,7 @@ const Videos = ({ navigation, params, route }) => {
     getVideoByMovie(_id)
       .then(video => {
         setDataVideo(video);
+        setVideoId(video?.items[0]?.link)
         setLoading(false);
         console.log("EPISODES VIDEO: ", video);
       })
@@ -172,7 +173,7 @@ const Videos = ({ navigation, params, route }) => {
       <StatusBar hidden={true} barStyle={'dark-content'} translucent={true} backgroundColor="transparent" />
 
       <View style={{ flex: 1, zIndex: 1 }}>
-        <Player url={url} fullScreen={onFullScreen} height={HEIGHT} />
+        <Player url={videoId} fullScreen={onFullScreen} height={HEIGHT} />
       </View>
 
       <View
@@ -268,9 +269,11 @@ const Videos = ({ navigation, params, route }) => {
                         setIndex(index);
                         setTitle(item.title);
                       }}>
-                      <Text style={{
-                        color: idx === index ? '#0984e3' : 'black',
-                      }}>
+                      <Text
+                        onPress={() => setVideoId(item.link)}
+                        style={{
+                          color: idx === index ? '#0984e3' : 'black',
+                        }}>
                         {index + 1}
                       </Text>
                     </View>
@@ -346,144 +349,3 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 8,
   }
 });
-
-
-// return (
-//   <ScrollView>
-
-//     <StatusBar backgroundColor="#000" barStyle="dark-content" />
-//     <View
-//       style={{
-//         flex: 1,
-//         backgroundColor: '#F2F5FB',
-//       }}>
-//       <View
-//         style={{
-//           margin: 0,
-//           overflow: 'hidden',
-//           backgroundColor: ptColor.divider,
-//         }}>
-//         <Player url={url} fullScreen={onFullScreen} />
-//       </View>
-//       {!fullScreen ? (
-//         <View style={{ marginTop: 0, flex: 1 }}>
-//           {/* Videos of Movie */}
-//           <View style={styles.card}>
-//             <Text style={styles.header}>
-//               {/* [{dataFullMovie?.movie[0]?.language}] -{' '} */}
-//               {dataFullMovie?.movie[0]?.name}{' '}
-//               {/* {title ? title : dataVideo?.items[0]?.title} */}
-//             </Text>
-
-//             <View style={{ width: WIDTH * 0.2, flexDirection: 'row', marginTop: 10 }} >
-//               <Text style={{
-//                 marginRight: 10,
-//                 color: "#e056fd",
-//                 fontFamily: Fonts.SansMedium,
-//                 fontSize: 18
-//               }}>{sqrtStar}</Text>
-//               <StarRating
-//                 activeOpacity={1}
-//                 starStyle={{ width: 23 }}
-//                 starSize={20}
-//                 fullStarColor={'#f1c40f'}
-//                 disabled={false}
-//                 maxStars={5}
-//                 rating={sqrtStar}
-//                 emptyStarColor={'#f1c40f'}
-//               />
-//             </View>
-//             <View style={{ flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-//               <Text style={{
-//                 fontFamily: Fonts.SansLight,
-//                 fontSize: 12,
-//                 color: ptColor.gray2,
-//                 marginTop: 8,
-//               }}>{starCount} người đã đánh giá</Text>
-//               <Text style={{
-//                 color: "#e056fd",
-//                 fontFamily: Fonts.SansMedium,
-//                 fontSize: 12,
-//                 marginTop: 8,
-//                 marginLeft: 8,
-//               }}>
-//                 Tôi muốn đánh giá!
-//               </Text>
-//             </View>
-//             <View style={styles.detailsContainer}>
-//               <Text style={styles.details}>
-//                 {dataFullMovie?.movie[0]?.years}
-//               </Text>
-//               <View style={styles.divider} />
-//               <Text style={styles.details}>
-//                 {dataFullMovie?.movie[0]?.country}
-//               </Text>
-//               <View style={styles.divider} />
-//               <Text style={styles.details}>
-//                 {dataFullMovie?.movie[0]?.language}
-//               </Text>
-//               <View style={styles.divider} />
-//             </View>
-
-//             <View style={{ marginTop: 10 * WIDTH_SCALE }}>
-//               <Text
-//                 style={styles.details}
-//                 numberOfLines={numOfLine}
-//                 ellipsizeMode={'tail'}>
-//                 {dataFullMovie?.movie[0]?.introduction}
-//               </Text>
-//               <Text style={{
-//                 fontFamily: Fonts.SansLight,
-//                 fontSize: 12,
-//                 color: '#e056fd',
-//                 marginTop: 8,
-//               }}
-//                 onPress={() => seeMoreOnPress()}
-//               >
-//                 Xem thêm
-//             </Text>
-//             </View>
-//           </View>
-
-//           {/* Episode of Move */}
-          // <View style={styles.card}>
-          //   <Text style={styles.header}>Chọn tập</Text>
-          //   <Text
-          //     style={{
-          //       fontSize: 14 * WIDTH_SCALE,
-          //       fontFamily: Fonts.Sans,
-          //       marginBottom: 16,
-          //       color: ptColor.gray2,
-          //     }}>
-          //     Cập nhật vào {day} hàng tuần vào lúc {time}
-          //   </Text>
-          //   <View style={{ flex: 1 }}>
-          //     <FlatList
-          //       keyExtractor={(item) => {
-          //         return item._id;
-          //       }}
-          //       data={dataVideo?.items}
-          //       renderItem={({ item, index }) => (
-          //         <View
-          //           style={styles.itemEp}
-          //           onPress={() => {
-          //             setIndex(index);
-          //             setTitle(item.title);
-          //           }}>
-          //           <Text style={{
-          //             color: idx === index ? '#0984e3' : 'black',
-          //           }}>
-          //             {index + 1}
-          //           </Text>
-          //         </View>
-          //       )}
-          //       numColumns={6}
-          //     />
-          //   </View>
-          // </View>
-//         </View>
-//       ) : null
-//       }
-//     </View >
-//   </ScrollView>
-// );

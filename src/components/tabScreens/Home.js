@@ -711,12 +711,7 @@ export default function Home({ navigation }) {
               }}
             >Xem thêm..</Text>
           </View>
-          {/* {allMovieData.map((val, ind) => {
-            if (val?.duration === 10) {
-              let i = 0;
-              return
-            }
-          })} */}
+
         </View>
 
       </Animated.ScrollView>
