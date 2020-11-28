@@ -39,7 +39,7 @@ function MyBottomTab() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={ROUTE_KEY.Category}
         component={Category}
         options={{
@@ -47,7 +47,7 @@ function MyBottomTab() {
             <Icon name="grid" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name={ROUTE_KEY.Follow}
         component={Follow}

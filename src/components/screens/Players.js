@@ -22,16 +22,85 @@ import { Appbar, Card, RadioButton, Modal, Portal, Provider } from 'react-native
 import { ptColor } from '../../constants/styles';
 import { WIDTH_SCALE, HEIGHT_SCALE, WIDTH, HEIGHT, ROUTE_KEY } from '../../constants/constants';
 import { Icon as IconElement } from 'react-native-elements';
-// import songs from "../../constants/data/song";
 import SliderComp from "../views/SliderComp";
 import Controller from '../views/Controller';
+import { getAllMusicByChannelId } from '../../Redux/actions/musicActions'
 const { width, height } = Dimensions.get("window");
+import { MySpinner } from '../views'
 
 export default function Players({ navigation, route }) {
+
+    const { index, list } = route.params
+    console.log("LIST: ", list);
+    const scrollX = useRef(new Animated.Value(0)).current;
+    const [loading, setLoading] = useState(true);
+    const slider = useRef(null);
+    const [songIndex, setSongIndex] = useState(index);
+    const isPlayerReady = useRef(false);
+    // for tranlating the album art
+    const position = useRef(Animated.divide(scrollX, width)).current;
+    const [musicData, setMusicData] = useState(list);
+    const isItFromUser = useRef(true);
+    const playbackState = usePlaybackState();
+
+    const index1 = useRef(0)
+
+    useEffect(() => {
+        //setSongIndex(index);
+        //setMusicData(list);
+
+        scrollX.addListener(({ value }) => {
+            const val = Math.round(value / width);
+            setSongIndex(val);
+        });
+
+        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
+            console.log('8888 -> e : ', e);
+            // let state = await TrackPlayer.getState();
+            // TrackPlayer.skip((index + 1) + "");
+            let trackId = await TrackPlayer.getCurrentTrack();
+            let trackObject = await TrackPlayer.getTrack(trackId);
+            console.log('9999 -> trackId : ', trackId);
+            console.log('9999 -> trackObject : ', trackObject);
+
+        })
+
+        TrackPlayer.setupPlayer().then(async () => {
+            console.log('Player Ready');
+            await TrackPlayer.reset();
+            await TrackPlayer.add(musicData);
+            isPlayerReady.current = true;
+            TrackPlayer.play()
+            await TrackPlayer.updateOptions({
+                stopWithApp: false,
+                alwaysPauseOnInterruption: true,
+                capabilities: [
+                    Capability.Play,
+                    Capability.Pause,
+                    Capability.SkipToNext,
+                    Capability.SkipToPrevious,
+                ],
+            })
+        });
+
+
+        return () => {
+            scrollX.removeAllListeners();
+        };
+    }, []);
+
+    useEffect(() => {
+
+        if (isPlayerReady.current) {
+            TrackPlayer.skip(musicData[songIndex].id)
+        }
+
+    }, [songIndex]);
+
     function Header() {
         const _goBack = () => {
             navigation.goBack()
-            // TrackPlayer.stop()
+            TrackPlayer.pause()
         };
         return (
             <Appbar.Header
@@ -50,67 +119,6 @@ export default function Players({ navigation, route }) {
         )
     }
 
-    const scrollX = useRef(new Animated.Value(0)).current;
-
-    const slider = useRef(null);
-    const [songIndex, setSongIndex] = useState(0);
-    const isPlayerReady = useRef(false);
-    // for tranlating the album art
-    const position = useRef(Animated.divide(scrollX, width)).current;
-
-    const isItFromUser = useRef(true);
-    const playbackState = usePlaybackState();
-    const { index, songs } = route.params
-
-    const index1 = useRef(0)
-    console.log('66666-> index: ', index);
-    useEffect(() => {
-        setSongIndex(index);
-        scrollX.addListener(({ value }) => {
-            const val = Math.round(value / width);
-
-            setSongIndex(val);
-        });
-        TrackPlayer.addEventListener(Event.PlaybackTrackChanged, async (e) => {
-            console.log('8888 -> e : ', e);
-            // let state = await TrackPlayer.getState();
-            // TrackPlayer.skip((index + 1) + "");
-            let trackId = await TrackPlayer.getCurrentTrack();
-            let trackObject = await TrackPlayer.getTrack(trackId);
-            console.log('9999 -> trackId : ', trackId);
-            console.log('9999 -> trackObject : ', trackObject);
-
-        })
-        TrackPlayer.setupPlayer().then(async () => {
-            console.log('Player Ready');
-            await TrackPlayer.reset();
-            await TrackPlayer.add(songs);
-            isPlayerReady.current = true;
-            TrackPlayer.play()
-            await TrackPlayer.updateOptions({
-                stopWithApp: false,
-                alwaysPauseOnInterruption: true,
-                capabilities: [
-                    Capability.Play,
-                    Capability.Pause,
-                    Capability.SkipToNext,
-                    Capability.SkipToPrevious,
-                ],
-            })
-        });
-
-        return () => {
-            scrollX.removeAllListeners();
-        };
-    }, []);
-
-    useEffect(() => {
-
-        if (isPlayerReady.current) {
-            TrackPlayer.skip(songs[songIndex].id)
-        }
-
-    }, [songIndex]);
     const exitPlayer = async () => {
         try {
             await TrackPlayer.stop();
@@ -149,8 +157,8 @@ export default function Players({ navigation, route }) {
                 }}
             >
                 <Animated.Image
-                    source={{ uri: songs[songIndex].thumb }}
-                    style={{ width: 320, height: 320, borderRadius: 5 }}
+                    source={{ uri: item.artwork }}
+                    style={{ width: 300, height: 250, borderRadius: 5 }}
                 />
             </Animated.View>
         );
@@ -160,14 +168,14 @@ export default function Players({ navigation, route }) {
         <SafeAreaView >
             <Header />
             <SafeAreaView style={styles.container}>
-                <SafeAreaView style={{ height: 320 }}>
+                <SafeAreaView style={{ height: 250 }}>
                     <Animated.FlatList
                         ref={slider}
                         horizontal
                         pagingEnabled
                         showsHorizontalScrollIndicator={false}
                         scrollEventThrottle={16}
-                        data={songs}
+                        data={musicData}
                         renderItem={renderItem}
                         keyExtractor={(item) => item.id}
                         onScroll={Animated.event(
@@ -177,9 +185,10 @@ export default function Players({ navigation, route }) {
                     />
                 </SafeAreaView>
                 <View>
-                    <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{songs[songIndex].title}</Text>
-                    <Text style={styles.artist}>{songs[songIndex].id}</Text>
+                    <Text style={styles.title} ellipsizeMode='tail' numberOfLines={1}>{musicData[songIndex].title}</Text>
+                    <Text style={styles.artist} ellipsizeMode='tail' numberOfLines={1}>{musicData[songIndex].artist}</Text>
                 </View>
+
                 <SliderComp />
                 <Controller onNext={goNext} onPrv={goPrv} />
             </SafeAreaView>
@@ -189,7 +198,7 @@ export default function Players({ navigation, route }) {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 28,
+        fontSize: 18,
         textAlign: 'center',
         fontWeight: '600',
         textTransform: 'capitalize',

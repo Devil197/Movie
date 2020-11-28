@@ -9,6 +9,7 @@ import Player from './Player';
 import CastFollowItem from './CastFollowItem'
 import MyCarousel from './MyCarousel'
 import RenderMovie10Min from './RenderMovie10Min'
+import RenderCategory from './RenderCategory'
 export {
   FilmItem,
   CastItem,
@@ -20,5 +21,6 @@ export {
   Player,
   CastFollowItem,
   MyCarousel,
-  RenderMovie10Min
+  RenderMovie10Min,
+  RenderCategory
 };

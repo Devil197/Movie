@@ -166,15 +166,15 @@ const Music = () => {
           </View>
         </View>
       </Animated.View>
-      <ViewPager style={styles.viewPager} initialPage={1}>
+      <ViewPager style={styles.viewPager} initialPage={0}>
+        <View key="0">
+          <PageMusic channel_Id={"5fbfa6c2e35dcd09f0563e80"} />
+        </View>
         <View key="1">
-          <PageMusic id={"5f63279ee02d2a2de853e2ba"} />
+          <PageMusic channel_Id={"5fc1fe661bacf67a403aef10"} />
         </View>
         <View key="2">
-          <PageMusic id={"5f63280be02d2a2de853e2bc"} />
-        </View>
-        <View key="2">
-          <PageMusic id={"5f7c1a72ed32570004cf5f65"} />
+          <PageMusic channel_Id={"5fc1ff101bacf67a403aef11"} />
         </View>
       </ViewPager>
       {/* <View style={{ height: 0.3 * HEIGHT, marginHorizontal: 10 * WIDTH_SCALE, backgroundColor: 'white' }}>

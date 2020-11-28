@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Image, StatusBar, Dimensions, Animated, Easing, ScrollView, TextInput, FlatList, ImageBackground
 } from 'react-native';
-import { Play, Player } from '../views';
+import { Play, Player, RenderCategory } from '../views';
 import { set } from 'react-native-reanimated';
 import Feather from 'react-native-vector-icons/Feather';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -56,7 +56,7 @@ export default function Home({ navigation }) {
   //console.log('1001 USER INFO:', userReducer);
   const [loading, setLoading] = useState(true);
   const [dataCast, setDataCast] = useState();
-  const [allMovieData, setAllMovieData] = useState();
+  //const [movie10Min, setMovie10Min] = useState([]);
   const [dataCartoon, setDataCartoon] = useState();
   const [dataCate, setDataCate] = useState();
   const [dataMovieByCreat, setDataMovieByCreat] = useState();
@@ -65,15 +65,9 @@ export default function Home({ navigation }) {
 
   const [txtValue, setTxtValue] = useState('');
   const offset = new Animated.Value(0);
-
+  var movie10Min = [];
   useEffect(() => {
 
-    // //get cate
-    // getCategory()
-    //   .then((category) => {
-    //     setLoading(false), setDataCate(category);
-    //   })
-    //   .catch((err) => console.log('Failed'));
 
     // // xet data cho cartoon
     // getCartoon()
@@ -100,27 +94,57 @@ export default function Home({ navigation }) {
     //   })
     //   .catch((err) => console.log('failed'));
 
-    handleGetAllMovieAPI();
+    handleGetAllCategoryAPI();
+    //handleGetAllMovieAPI();
     handleGetMovieScoreAPI();
   }, []);
+
+  const handleGetAllCategoryAPI = async () => {
+    await getCategory()
+      .then((category) => {
+        console.log("CATEGORY: ", category);
+        setDataCate(category);
+      })
+      .catch((err) => console.log('Category API: ', err));
+  }
 
   const handleGetAllMovieAPI = async () => {
     await getAllMovie()
       .then((result) => {
-        console.log("MOVIE ALL: ", result?.items);
-        setAllMovieData(result?.items);
+        //console.log("MOVIE ALL: ", result?.items);
+        result?.items.forEach(element => {
+          //console.log("ELE: ", element);
+          if (element?.duration === 10) {
+            if (handleDateOfMovie(element?.create_at) === true) {
+              //setMovie10Min(old => [...old, element]);
+              movie10Min.push(element);
+              //console.log("MOVIE 10 MIN: ", movie10Min);
+            }
+          }
+        })
       })
       .catch((err) => console.log('Failed'));
   }
 
   const handleGetMovieScoreAPI = async () => {
     await getMovieByScore()
-      .then(result => {
+      .then((result) => {
         //console.log("MOVIE BY SCORE: ", result?.items);
         setDataMovieByScore(result?.items);
-        setLoading(false);
       })
       .catch((err) => console.log('MOVIE SCORE: ', err));
+
+    setLoading(false);
+  }
+
+  const handleDateOfMovie = (date) => {
+    let dateData = new Date(date);
+    let now = new Date();
+    if (dateData.getFullYear() === now.getFullYear() && dateData.getMonth() === now.getMonth()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   if (loading) {
@@ -470,7 +494,39 @@ export default function Home({ navigation }) {
             marginTop: 10 * WIDTH_SCALE,
             marginBottom: 25 * WIDTH_SCALE,
           }}>
-          {/* <MyCarousel movieData={dataMovieByScore} navigation={navigation} /> */}
+          <Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 18 * WIDTH_SCALE,
+              paddingLeft: 17 * WIDTH_SCALE,
+              marginBottom: 10 * WIDTH_SCALE,
+              color: ptColor.black
+            }}>
+            PHỔ BIẾN
+          </Text>
+          <MyCarousel movieData={dataMovieByScore} navigation={navigation} />
+        </View>
+
+        {/* Category */}
+        <View
+          style={{
+            marginTop: 10 * WIDTH_SCALE,
+            marginBottom: 25 * WIDTH_SCALE,
+            height: HEIGHT * 0.3,
+          }}>
+          <Text
+            style={{
+              fontFamily: Fonts.SansBold,
+              fontSize: 18 * WIDTH_SCALE,
+              paddingLeft: 17 * WIDTH_SCALE,
+              marginBottom: 10 * WIDTH_SCALE,
+              color: ptColor.black,
+            }}>
+            THỂ LOẠI
+          </Text>
+          {/* <RenderCategory
+            data={dataCate?.items}
+            navigation={navigation} /> */}
         </View>
 
         {/* PHIM XỊN TRONG NĂM */}
@@ -488,7 +544,7 @@ export default function Home({ navigation }) {
               marginBottom: 10 * WIDTH_SCALE,
               color: ptColor.black
             }}>
-            TOP 5 PHIM XỊN CỦA NĂM!
+            TOP XỊN XÒ TRONG NĂM
           </Text>
 
           <FlatList
@@ -632,7 +688,9 @@ export default function Home({ navigation }) {
                         backgroundColor: '#f0ab0a',
                         fontFamily: Fonts.SansMedium,
                         color: '#fff',
-                      }}>IMDB: {val?.score.toFixed(1)}/10</Text>
+                      }}>
+                      IMDB: {val?.score.toFixed(1)}/10
+                        </Text>
 
                     <View style={{ flex: 0.2 }} />
 
@@ -710,6 +768,48 @@ export default function Home({ navigation }) {
                 fontSize: 14 * WIDTH_SCALE,
               }}
             >Xem thêm..</Text>
+          </View>
+
+          <View
+            style={{
+              width: WIDTH,
+            }}
+          >
+
+            {movie10Min.forEach((val, ind) => {
+              console.log("test: ", val + "==" + ind);
+              return (
+                <View
+                  style={{
+                    width: '100%',
+                    height: HEIGHT * 0.25,
+                  }}
+                >
+                  <ImageBackground
+                    source={{ uri: val.cover_img }}
+                    imageStyle={{
+                      height: '100%',
+                      width: '100%',
+                    }}
+                    style={{
+                      flex: 1,
+                      resizeMode: "cover",
+                      justifyContent: "center"
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: '80%',
+                        height: '80%',
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                      }}>
+                      <Text>{val.name}</Text>
+                    </View>
+                  </ImageBackground>
+                </View>
+              )
+            })}
+
           </View>
 
         </View>

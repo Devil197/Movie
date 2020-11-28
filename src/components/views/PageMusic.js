@@ -38,14 +38,14 @@ const height = Dimensions.get('window').height;
 import YoutubePlayer, { YoutubeIframeRef } from "react-native-youtube-iframe";
 import YouTube, { YouTubeStandaloneIOS, YouTubeStandaloneAndroid } from 'react-native-youtube';
 import { ROUTE_KEY } from '../../constants/constants';
-export default function PageMusic({
-    id,
-    // navigation,
-}) {
+import { getAllMusicByChannelId } from '../../Redux/actions/musicActions'
+
+
+export default function PageMusic({ channel_Id }) {
     const navigation = useNavigation();
     const playerRef = useRef();
 
-    const [dataMovie, setDataMovie] = useState();
+    const [musicData, setMusicData] = useState();
     const [loading, setLoading] = useState();
 
     // react native youtube 
@@ -60,76 +60,73 @@ export default function PageMusic({
     const [duration, setDration] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [fullscreen, setFullscreen] = useState(false);
+    const [musicArray, setMusicArray] = useState([]);
 
     useEffect(() => {
+        handleAPI_getAllMusicByChannelId();
+    }, []);
 
-        getMovieByCategories(id)
-            .then((movie) => {
-
-                // console.log('==========', movie.items[1].create_at),
-                setLoading(false),
-                    setDataMovie(movie);
-
-                // setDataTrailer();
+    const handleAPI_getAllMusicByChannelId = async () => {
+        await getAllMusicByChannelId(channel_Id)
+            .then((result) => {
+                //console.log("MUSIC DATA: ", result?.snippet);
+                setMusicData(result?.snippet);
+                result?.snippet.map((val, ind) => {
+                    let newArray = {
+                        id: val?._id,
+                        url: val?.info?.link,
+                        title: val?.info?.title,
+                        artist: 'No Artist In API!',
+                        artwork: val?.info?.thumbnails?.default?.url
+                    }
+                    setMusicArray(musicArray => [...musicArray, newArray])
+                })
             })
             .catch((err) => console.log(err));
-    }, []);
-    // YouTubeStandaloneAndroid.playVideo({
-    //     apiKey: 'AIzaSyAuJ3n_8KEAcR0ip82qAy816VY5sjGBi-s', // Your YouTube Developer API Key
-    //     videoId: 'qSJky2QykM8', // YouTube video ID
-    //     autoplay: true, // Autoplay the video
-    //     startTime: 120, // Starting point of video (in seconds)
-    //     lightboxMode: true,
-    // })
-    //     .then(() => console.log('Standalone Player Exited'))
-    //     .catch(errorMessage => console.error(errorMessage));
-    // console.log('222223 -> data movie by categories... : ', dataMovie);
-    const renderItem = (item) => {
+        setLoading(false);
+    }
+
+    const renderItem = ({ item, index }) => {
 
         return (
-
-            <TouchableOpacity style={[styles.row, { margin: 5, marginTop: 10 }]}
-                // onPress={() =>
-                //     navigation.push(ROUTE_KEY.Details, { _id: c._id })
-                //   }
+            <TouchableOpacity
+                style={[styles.row, { margin: 5, marginTop: 10 }]}
                 onPress={() =>
-                    navigation.push(ROUTE_KEY.Players, { index: item.index, songs: films })
+                    navigation.push(ROUTE_KEY.Players,
+                        {
+                            index: index,
+                            list: musicArray
+                        })
                 }
             >
                 <View style={{ flexDirection: "row" }}>
-                    <Image style={styles.imageC} source={{ uri: item.item.thumb }} />
-
+                    <Image style={styles.imageC} source={{ uri: item.artwork }} />
                     <View style={{ flexDirection: 'column', justifyContent: 'center', width: 0.6 * WIDTH }}>
-                        <Text style={styles.groupItemText} ellipsizeMode='tail' numberOfLines={1}>{item.item.title}</Text>
-                        <Text style={styles.groupItemText} ellipsizeMode='tail' numberOfLines={1}>{item.item.id}</Text>
+                        <Text style={styles.groupItemText} ellipsizeMode='tail' numberOfLines={1}>{item.title}</Text>
+                        <Text style={styles.groupItemText} ellipsizeMode='tail' numberOfLines={1}>{item.artist}</Text>
                     </View>
                 </View>
 
-                <IconElement name="ellipsis-vertical-outline" type='ionicon' color="#999999" size={16 * WIDTH_SCALE} style={{ marginHorizontal: 20 * WIDTH_SCALE }} />
+                <IconElement
+                    name="ellipsis-vertical-outline"
+                    type='ionicon'
+                    color="#999999"
+                    size={16 * WIDTH_SCALE}
+                    style={{ marginHorizontal: 20 * WIDTH_SCALE }} />
 
             </TouchableOpacity >
         )
     }
 
     return (
-        <ScrollView style={styles.container}>
-            {/* <Text>{id}</Text> */}
-            <View style={{ marginTop: 30 * WIDTH_SCALE, }}>
-                {/* <View style={styles.box1}> */}
-                <FlatList
-                    showsVerticalScrollIndicator={false}
-                    // data={dataMovie?.items}
-                    data={films}
-                    keyExtractor={(item) => String(item.id)}
-                    renderItem={(item) => (
-                        renderItem(item)
-                    )}
-                />
-            </View>
-            <View>
-                {/* <Players songs={films} /> */}
-            </View>
-        </ScrollView>
+        <View>
+            <FlatList
+                showsVerticalScrollIndicator={false}
+                data={musicArray}
+                keyExtractor={item => item.id}
+                renderItem={renderItem}
+            />
+        </View>
     );
 }
 const styles = StyleSheet.create({
@@ -167,10 +164,10 @@ const styles = StyleSheet.create({
         margin: 5 * WIDTH_SCALE,
     },
     row: {
+        width: '100%',
         alignItems: "center",
+        justifyContent: "center",
         flexDirection: 'row',
-        justifyContent: "space-between",
-
     },
 
     groupItemText: {
