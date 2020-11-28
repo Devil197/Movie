@@ -1,5 +1,5 @@
-import {REDUX} from '../store/types';
-import {axiosConfig} from '../../utils/api';
+import { REDUX } from '../store/types';
+import { axiosConfig } from '../../utils/api';
 
 // <==== add keyword ne`
 

@@ -77,9 +77,9 @@ export default function Login({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={require('../../assets/icons/gea_logo.png')}
-        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', marginTop: HEIGHT * 0.13 }} />
+        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', marginTop: HEIGHT * 0.13 }} /> */}
 
       <View style={styles.headerTitleContainer}>
         <Text style={styles.title1}>Welcome To</Text>

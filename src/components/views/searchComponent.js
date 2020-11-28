@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {Fonts} from '../../utils/Fonts';
+import { Fonts } from '../../utils/Fonts';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {useDispatch, useSelector} from 'react-redux';
-import {deleteKeywordRedux} from '../../Redux/actions/keywordAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteKeywordRedux } from '../../Redux/actions/keywordAction';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
-import {MyHighLightButton} from '../views';
+import { MyHighLightButton } from '../views';
 import {
   HEIGHT,
   WIDTH,
@@ -19,9 +19,9 @@ import {
   HEADER_HEIGHT,
   WIDTH_SCALE,
 } from '../../constants/constants';
-import {ptColor} from '../../constants/styles';
+import { ptColor } from '../../constants/styles';
 
-export default function searchComponent({setKeywordOnPress}) {
+export default function searchComponent({ setKeywordOnPress }) {
   const keywordInRedux = useSelector((state) => state.keywordReducer?.keyword);
 
   const dispatch = useDispatch();
@@ -44,7 +44,7 @@ export default function searchComponent({setKeywordOnPress}) {
           color={ptColor.gray2}
         />
         <MyHighLightButton
-          style={{flex: 9}}
+          style={{ flex: 9 }}
           onPress={() => setKeywordOnPress(val)}>
           <Text style={styles.txtKeyword}>{val}</Text>
         </MyHighLightButton>
@@ -82,7 +82,7 @@ export default function searchComponent({setKeywordOnPress}) {
       <View style={styles.oldKeyTitleContainer}>
         <Text style={styles.oldKeyTitle}>Từ khóa đã tìm kiếm</Text>
       </View>
-      <ScrollView contentContainerStyle={{flex: 1}}>{mapKeyword}</ScrollView>
+      <ScrollView contentContainerStyle={{ flex: 1 }}>{mapKeyword}</ScrollView>
     </View>
   );
 }
@@ -126,5 +126,5 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingLeft: 20,
   },
-  txtKeyword: {color: ptColor.black, paddingLeft: 7},
+  txtKeyword: { color: ptColor.black, paddingLeft: 7 },
 });

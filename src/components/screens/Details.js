@@ -61,6 +61,8 @@ export default function Details({ navigation, route }) {
   const [isFollow, setFollow] = useState(false);
   //=====
   const _id = route.params._id;
+  console.log('0909 _id deltals ', _id);
+
   const [dataMovie, setDataMovie] = useState();
   const [loading, setLoading] = useState(true);
   const [fullScreen, setFullScreen] = useState(false);

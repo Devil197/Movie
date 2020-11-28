@@ -154,11 +154,11 @@ export default function Splash({ navigation }) {
         // notification  video
         setTimeout(() => {
           dataFollowRedux.list.map((e) => {
-            messaging().subscribeToTopic(e.movie_id._id.toString())
+            messaging().subscribeToTopic(e?.movie_id?._id.toString())
 
           })
           dataFollowRedux.listCast.map((e) => {
-            messaging().subscribeToTopic(e.cast_id._id.toString())
+            messaging().subscribeToTopic(e?.cast_id?._id.toString())
 
           })
 
@@ -296,9 +296,9 @@ export default function Splash({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Image
+      {/* <Image
         source={require('../../assets/icons/gea_logo.png')}
-        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} />
+        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} /> */}
       <View style={{ width: 40, height: 40, borderRadius: 20 }}>
         <SkypeIndicator
           color={ptColor.appColor}

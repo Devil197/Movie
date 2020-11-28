@@ -1,12 +1,12 @@
 import React from 'react';
-import {View, StyleSheet, Text, Image} from 'react-native';
-import {WIDTH, HEIGHT, WIDTH_SCALE} from '../../constants/constants';
-import {Fonts} from '../../utils/Fonts';
-import {ptColor} from '../../constants/styles';
+import { View, StyleSheet, Text, Image } from 'react-native';
+import { WIDTH, HEIGHT, WIDTH_SCALE } from '../../constants/constants';
+import { Fonts } from '../../utils/Fonts';
+import { ptColor } from '../../constants/styles';
 
 const CastItem = (params) => {
   //const cover_image = (item.cover_image === null) ? userAvatar : item.avatar;
-  const {item} = params.item;
+  const { item } = params.item;
   console.log(item);
   let birthday = new Date(item.birthday);
   let year = birthday.getFullYear();
@@ -16,7 +16,7 @@ const CastItem = (params) => {
 
   return (
     <View style={styles.cardView} key={item.id}>
-      <Image style={styles.image} source={{uri: item.cover_image}} />
+      <Image style={styles.image} source={{ uri: item.cover_image }} />
       <View style={styles.textView}>
         <Text style={styles.itemTitle} numberOfLines={1} ellipsizeMode={'tail'}>
           {item.name}
