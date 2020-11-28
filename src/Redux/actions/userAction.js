@@ -1,15 +1,15 @@
-import {GoogleSignin, statusCodes} from '@react-native-community/google-signin';
-import {GOOGLE_CONFIGURE, ASYNC_TYPE} from '../../constants/constants';
+import { GoogleSignin, statusCodes } from '@react-native-community/google-signin';
+import { GOOGLE_CONFIGURE, ASYNC_TYPE } from '../../constants/constants';
 import moment from 'moment';
-import {REDUX} from '../store/types';
-import {Alert} from 'react-native';
-import {AccessToken, LoginManager} from 'react-native-fbsdk';
+import { REDUX } from '../store/types';
+import { Alert } from 'react-native';
+import { AccessToken, LoginManager } from 'react-native-fbsdk';
 
 import axios from 'axios';
 import USER from '../../api/user';
-import {axiosConfig} from '../../utils/api';
-import {MySpinner} from '../../components/views';
-GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+import { axiosConfig } from '../../utils/api';
+import { MySpinner } from '../../components/views';
+GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
 GoogleSignin.configure({
   webClientId:
     '835610037209-t6p9r8dedt7e7m8hh302br39es9ctfe7.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
@@ -108,7 +108,7 @@ export const _addApiLoginGoogle = (googleInfo, dispatch) => {
 export const LoginGoogle = () =>
   new Promise((resolve, reject) => {
     MySpinner.show();
-    GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+    GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
     GoogleSignin.configure(GOOGLE_CONFIGURE);
 
     try {

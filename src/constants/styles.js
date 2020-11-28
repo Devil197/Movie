@@ -1,7 +1,7 @@
-import {ImageBackground} from 'react-native';
-import {StyleSheet, Dimensions} from 'react-native';
+import { ImageBackground } from 'react-native';
+import { StyleSheet, Dimensions } from 'react-native';
 
-var {height, width} = Dimensions.get('window');
+var { height, width } = Dimensions.get('window');
 
 export const ptColor = {
   appColor: '#2FA29C',
@@ -22,6 +22,18 @@ export const ptColor = {
   transparent: 'transparent',
   gray2: '#9e9d9d',
 };
+
+export const pFonts = StyleSheet.create({
+  text: {
+    fontFamily: 'ProductSans-Bold'
+  },
+  desText: {
+    fontFamily: 'ProductSans-Light'
+  },
+  contentText: {
+    fontFamily: 'Roboto-Regular'
+  }
+})
 
 export const styles = StyleSheet.create({
   container: {
