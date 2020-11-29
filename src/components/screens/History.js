@@ -40,13 +40,13 @@ export default function History({ navigation }) {
   const [dataHistory, setDataHistory] = useState();
 
   useEffect(() => {
-    getHistoryByIdUser("5f8a891887f5ef0004f46619").then((history) => {
+    getHistoryByIdUser(userReducer?.userInfo?._id).then((history) => {
       console.log('1001 -> history', history);
       setDataHistory(history);
     }).catch((err) => console.log("Failed", err));
     console.log('da ', dataHistory?.items);
 
-  }, [dataHistory])
+  }, [])
 
   const removeAll = (invite_id) => {
     MySpinner.show()
@@ -93,7 +93,7 @@ export default function History({ navigation }) {
   return (
     <View style={styles.container}>
       <Header />
-      {dataHistory ?
+      {dataHistory[0] ?
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: 'gray' }}>Bạn chưa có history</Text>
         </View>
@@ -109,12 +109,10 @@ export default function History({ navigation }) {
 
                   <MyHighLightButton
                     onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}
-                    style={{ margin: 5 * WIDTH_SCALE, alignItems: 'center', justifyContent: 'flex-start' }}>
-                    <Text>{e?.movie_id?.name}</Text>
-                    <Text>Đã Xem : {e?.duration} s</Text>
-
-                    <Text>{e?.movie_id?.score} lượt xem</Text>
-
+                    style={{ margin: 5 * WIDTH_SCALE, }}>
+                    <Text style={{ textAlign: 'left' }}>{e?.movie_id?.name}</Text>
+                    <Text style={{ textAlign: 'left' }}>Số tập:  {e?.movie_id?.status}</Text>
+                    <Text >Đã xem : {e?.duration} phút</Text>
                   </MyHighLightButton>
                   <View style={{ alignItems: 'center', position: 'absolute', right: 0, width: 30 * WIDTH_SCALE, zIndex: 9999, height: 30 * WIDTH_SCALE }}>
                     <Menu>

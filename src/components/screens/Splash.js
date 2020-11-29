@@ -153,11 +153,12 @@ export default function Splash({ navigation }) {
         // });
         // notification  video
         setTimeout(() => {
-          dataFollowRedux.list.map((e) => {
-            messaging().subscribeToTopic(e?.movie_id?._id.toString())
+          console.log('0808 dataFollowRedux', dataFollowRedux);
+          dataFollowRedux?.list.map((e) => {
+            messaging().subscribeToTopic(e?._id + '')
 
           })
-          dataFollowRedux.listCast.map((e) => {
+          dataFollowRedux?.listCast.map((e) => {
             messaging().subscribeToTopic(e?.cast_id?._id.toString())
 
           })
