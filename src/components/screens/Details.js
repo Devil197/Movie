@@ -152,7 +152,11 @@ export default function Details({ navigation, route }) {
 
   const handleEvalAPI = async () => {
     await getEvalByMovieId(_id).then(result => {
-      setEval(result?.number)
+      if (result?.number === null || result?.number === undefined) {
+        setEval(0)
+      } else {
+        setEval(result?.number)
+      }
     })
   }
 
@@ -292,7 +296,7 @@ export default function Details({ navigation, route }) {
       style={{ backgroundColor: '#fff', flex: 1 }}
       showsVerticalScrollIndicator={false}
       scrollEventThrottle={16}>
-      <StatusBar translucent={false} backgroundColor="#fff" />
+      <StatusBar translucent={false} backgroundColor="#fff" barStyle="dark-content" />
       {/* HEADER */}
       <Animated.View
         style={[styles.headerStyle, { backgroundColor: backgroundColor, transform: [{ translateY: translateY }] }

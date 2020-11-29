@@ -109,7 +109,7 @@ export default function Search({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor={ptColor.white} />
+      <StatusBar backgroundColor={ptColor.white} barStyle="dark-content" />
       <View
         style={{
           top: 0,
@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     alignItems: 'center',
     flexDirection: 'row',
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.2)',
     height: '70%',
     paddingLeft: WIDTH * 0.06,
     marginRight: WIDTH * 0.03,

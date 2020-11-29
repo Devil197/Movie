@@ -31,8 +31,19 @@ const MyCarousel = ({ movieData, navigation }) => {
     };
 
     useEffect(() => {
-        setEntries(movieData);
-    }, []);
+        if (movieData !== undefined) {
+            handleArrayMovie(movieData);
+        }
+    }, [movieData]);
+
+    const handleArrayMovie = async (movieData) => {
+        await movieData.forEach(element => {
+            if (element.score >= 7) {
+                setEntries(movieData => [...movieData, element]);
+            }
+        })
+        //console.log("ENTR: ", entries);
+    }
 
     const handleMovieName = (name) => {
         let lastCharSplitIndex = name.indexOf(']');
@@ -44,42 +55,64 @@ const MyCarousel = ({ movieData, navigation }) => {
     }
 
     const renderItem = ({ item, index }, parallaxProps) => {
-        return (
-            <MyHighLightButton
-                onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
-                style={styles.item}>
-                <ParallaxImage
-                    source={{ uri: item.cover_img }}
-                    containerStyle={styles.imageContainer}
-                    style={styles.image}
-                    parallaxFactor={0}
-                    {...parallaxProps}
-                />
-                <View
-                    style={{
-                        position: 'absolute',
-                        bottom: 0,
-                        backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                        width: '100%',
-                        borderBottomRightRadius: 8,
-                        borderBottomLeftRadius: 8,
-                        height: '10%',
-                        justifyContent: 'center',
-                        paddingLeft: 10,
-                    }}>
+        if (item.score >= 7) {
+            return (
+                <MyHighLightButton
+                    onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
+                    style={styles.item}>
+                    <ParallaxImage
+                        source={{ uri: item.cover_img }}
+                        containerStyle={styles.imageContainer}
+                        style={styles.image}
+                        parallaxFactor={0}
+                        {...parallaxProps}
+                    />
                     <Text
                         style={{
-                            fontFamily: Fonts.SansMedium,
-                            fontSize: 16 * WIDTH_SCALE,
-                            color: '#fff'
+                            position: 'absolute',
+                            width: '20%',
+                            height: '10%',
+                            paddingVertical: 3 * WIDTH_SCALE,
+                            paddingHorizontal: 5 * WIDTH_SCALE,
+                            top: 0,
+                            right: 0,
+                            borderTopRightRadius: 8 * WIDTH_SCALE,
+                            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                            color: '#fff',
+                            textAlign: 'center',
+                            fontFamily: Fonts.SansLight,
+                            fontSize: 16 * WIDTH_SCALE
                         }}
-                        numberOfLines={2}>
-                        {handleMovieName(item.name)} ({item.years})
-          </Text>
-                </View>
+                    >
+                        {item.score.toFixed(1)}
+                    </Text>
+                    <View
+                        style={{
+                            position: 'absolute',
+                            bottom: 0,
+                            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                            width: '100%',
+                            borderBottomRightRadius: 8 * WIDTH_SCALE,
+                            borderBottomLeftRadius: 8 * WIDTH_SCALE,
+                            height: '10%',
+                            justifyContent: 'center',
+                            paddingLeft: 10,
+                        }}>
+                        <Text
+                            style={{
+                                fontFamily: Fonts.SansMedium,
+                                fontSize: 16 * WIDTH_SCALE,
+                                color: '#fff'
+                            }}
+                            numberOfLines={2}>
+                            {handleMovieName(item.name)} ({item.years})</Text>
+                    </View>
 
-            </MyHighLightButton>
-        );
+                </MyHighLightButton>
+            );
+        } else {
+            return null;
+        }
     };
 
     return (
@@ -104,8 +137,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     item: {
-        width: screenWidth - 90,
-        height: screenWidth - 90,
+        width: screenWidth - 110,
+        height: screenWidth - 110,
     },
     imageContainer: {
         flex: 1,

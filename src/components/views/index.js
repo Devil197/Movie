@@ -10,6 +10,9 @@ import CastFollowItem from './CastFollowItem'
 import MyCarousel from './MyCarousel'
 import RenderMovie10Min from './RenderMovie10Min'
 import RenderCategory from './RenderCategory'
+import HomeHeader from './HomeHeader'
+import FeaturesContents from './FeaturesContents'
+import RenderContentsByCategory from './RenderContentsByCategory'
 export {
   FilmItem,
   CastItem,
@@ -22,5 +25,8 @@ export {
   CastFollowItem,
   MyCarousel,
   RenderMovie10Min,
-  RenderCategory
+  RenderCategory,
+  HomeHeader,
+  FeaturesContents,
+  RenderContentsByCategory
 };
