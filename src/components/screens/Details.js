@@ -118,10 +118,10 @@ export default function Details({ navigation, route }) {
 
   const _onDoneRating = async () => {
     hideModal();
-    setLoading(true);
     await ratingAPI(userInfo?._id, _id, defaultRating).then((response) => {
       if (response?.data?.result) {
         setReload(true);
+
         toastAndroid("Cảm ơn bạn đã đánh giá!")
       } else {
         toastAndroid("Lỗi sự cố trong khi xử lý!\nVui lòng thử lại sau.")
@@ -603,7 +603,7 @@ export default function Details({ navigation, route }) {
         <View style={{ flex: 1, flexDirection: 'row' }}>
           <MyHighLightButton
             onPress={() => {
-              showModal()
+              setVisible(!isVisible)
             }}
             style={{ height: '100%', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
             <Icons name={'edit'} size={18 * WIDTH_SCALE} color={'red'} />
@@ -653,8 +653,8 @@ export default function Details({ navigation, route }) {
             height: '80%',
             marginRight: 8 * WIDTH_SCALE
           }}
-          onPress={() => navigation.push(ROUTE_KEY.Videos, { _id: _id })}>
-          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>Xem phim</Text>
+          onPress={() => dataMovie?.movie[0]?.status !== 0 ? navigation.push(ROUTE_KEY.Videos, { _id: _id }) : null}>
+          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>{dataMovie?.movie[0]?.status !== 0 ? 'Play' : 'Update'}</Text>
         </MyHighLightButton>
 
       </View>

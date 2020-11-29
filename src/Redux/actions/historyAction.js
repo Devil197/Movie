@@ -2,12 +2,12 @@
 import { Alert } from 'react-native';
 import { axiosConfig } from '../../utils/api';
 
-export const addHistoryByMovieId = async (movie_id, video_id, duration, user_id) => {
+export const addHistoryByMovieId = async (history) => {
     const json = JSON.stringify({
-        movie_id: movie_id,
-        video_id: video_id,
-        duration: duration,
-        user_id: user_id
+        movie_id: history?.movie_id,
+        video_id: history?.video_id,
+        duration: history?.duration,
+        user_id: history?.user_id
     });
     await axiosConfig
         .post(`/v1/history/add`, json, {
