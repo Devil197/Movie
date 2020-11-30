@@ -62,6 +62,7 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     handleAPI_getMovieByIMDbScore();
+
     handleAPI_getAllCategory();
   }, [])
 
@@ -99,11 +100,13 @@ export default function Home({ navigation }) {
         categoryItemSelected === 0
           ?
           <FeaturesContents
-            highScoreMovies={dataMovieByScore}
+            highScoreMovies={dataMovieByScore} // <<==== Đây là tab NỔI BẬT
             navigation={navigation}
           />
           :
-          <RenderContentsByCategory />
+          <RenderContentsByCategory
+            categoryId={categoryItemSelected} // <===== Đây là tab movies theo loại
+            navigation={navigation} />
       }
 
 

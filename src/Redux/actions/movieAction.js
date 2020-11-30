@@ -126,7 +126,7 @@ export const getMovieByCategories = (_id) =>
         if (response.data.result) {
           resolve(response.data);
         } else {
-          Alert.alert('get movie failed');
+          Alert.alert('get movie by category failed');
         }
       })
       .catch((err) => reject(err));

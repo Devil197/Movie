@@ -61,6 +61,7 @@ export default function PageMusic({ channel_Id }) {
     const [currentTime, setCurrentTime] = useState(0);
     const [fullscreen, setFullscreen] = useState(false);
     const [musicArray, setMusicArray] = useState([]);
+    const [musicPlay, setMusicPlay] = useState([]);
 
     useEffect(() => {
         handleAPI_getAllMusicByChannelId();
@@ -84,6 +85,12 @@ export default function PageMusic({ channel_Id }) {
             })
             .catch((err) => console.log(err));
         setLoading(false);
+    }
+
+    const handlePlayList = () => {
+        if (musicArray !== undefined) {
+            musicArray
+        }
     }
 
     const renderItem = ({ item, index }) => {

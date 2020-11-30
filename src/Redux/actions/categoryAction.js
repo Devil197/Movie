@@ -14,5 +14,3 @@ export const getCategory = () =>
             })
             .catch((err) => reject(err));
     });
-
-

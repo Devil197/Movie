@@ -251,7 +251,7 @@ const Follow = ({ navigation }) => {
         </View>
         <MyHighLightButton
           onPress={() => {
-            setUpdate(!isUpdate)
+            setUpdate(true)
             if (isUpdate === true) {
               setDataUpdate((e) => [])
               setSelectAll(false)
@@ -336,7 +336,14 @@ const Follow = ({ navigation }) => {
             )}
           />
           {isUpdate ?
-            <View style={{ position: 'absolute', bottom: 0, flexDirection: 'row', height: 40 * WIDTH_SCALE, borderWidth: 0.5 }}>
+            <View
+              style={{
+                position: 'absolute',
+                bottom: 50,
+                flexDirection: 'row',
+                height: 40 * WIDTH_SCALE,
+                borderWidth: 0.5
+              }}>
               <TouchableOpacity
                 onPress={() => selectAll ? unSelectedAllFollow() : selectAllFollow()}
                 style={{ flex: 1, width: WIDTH * 0.5, alignItems: 'center', justifyContent: 'center', backgroundColor: '#3b77e7' }}>

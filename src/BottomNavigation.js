@@ -13,10 +13,10 @@ const Tab = createBottomTabNavigator();
 const tabBarOptions = {
   activeTintColor: '#000',
   showLabel: false,
-  keyboardHidesTabBar: true,
-  style: {
-    position: 'absolute',
-  },
+  // keyboardHidesTabBar: true,
+  // style: {
+  //   position: 'absolute',
+  // },
 };
 function MyBottomTab() {
   return (
