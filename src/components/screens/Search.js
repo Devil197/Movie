@@ -10,6 +10,7 @@ import {
   FlatList,
   TouchableWithoutFeedback,
   Easing,
+  ToastAndroid
 } from 'react-native';
 import EvilIcon from 'react-native-vector-icons/EvilIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -93,9 +94,19 @@ export default function Search({ navigation }) {
   };
 
   const handleSearchOnPress = () => {
-    setVisible(true);
-    addKeywordActionRedux(dispatch, keyword);
-    handleGetDataByKeyword(keyword);
+    if (keyword === '') {
+      ToastAndroid.showWithGravityAndOffset(
+        "Vui lòng nhập từ khóa!",
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        0,
+        100
+      );
+    } else {
+      setVisible(true);
+      addKeywordActionRedux(dispatch, keyword);
+      handleGetDataByKeyword(keyword);
+    }
   };
 
   const closeIconOnPress = () => {
