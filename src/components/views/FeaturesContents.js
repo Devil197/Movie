@@ -30,16 +30,18 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
         <ScrollView contentContainerStyle={{ paddingBottom: 80 * WIDTH_SCALE }}>
             <View
                 style={{
-                    marginTop: 10 * WIDTH_SCALE,
-                    width: WIDTH,
-                    height: HEIGHT * 0.5,
+
+
+
                 }}>
                 <Text
                     style={{
-                        fontFamily: Fonts.SansBold,
-                        fontSize: 18 * WIDTH_SCALE,
-                        paddingLeft: 17 * WIDTH_SCALE,
-                        marginVertical: 10 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansMedium,
+                        fontSize: 20,
+                        marginHorizontal: 20
+                        ,
+                        marginVertical: 16,
+
                         color: ptColor.black
                     }}>
                     TOP IMDB 7+</Text>
@@ -50,16 +52,17 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
             {/* PHIM XỊN TRONG NĂM */}
             <View
                 style={{
-                    height: HEIGHT * 0.46,
-                    width: WIDTH,
+
                 }}>
 
                 <Text
                     style={{
-                        fontFamily: Fonts.SansBold,
-                        fontSize: 18 * WIDTH_SCALE,
-                        paddingLeft: 17 * WIDTH_SCALE,
-                        marginBottom: 10 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansMedium,
+                        fontSize: 20,
+                        marginHorizontal: 20
+                        ,
+                        marginVertical: 16,
+
                         color: ptColor.black
                     }}>TOP XỊN XÒ TRONG NĂM</Text>
 
@@ -73,16 +76,16 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                             <MyHighLightButton
                                 onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
                                 style={{
-                                    height: HEIGHT * 0.45,
-                                    width: WIDTH * 0.42,
-                                    paddingLeft: 17 * WIDTH_SCALE,
+
+                                    marginLeft: index == 0 ? 20 : 0
+                                    , marginRight: 20
                                 }}>
 
                                 <ImageBackground
                                     source={{ uri: item.cover_img }}
                                     style={{
-                                        height: HEIGHT * 0.35,
-                                        width: WIDTH * 0.39,
+                                        height: WIDTH / 1.5,
+                                        width: WIDTH / 2,
                                     }}
                                     imageStyle={{
                                         borderRadius: 10 * WIDTH_SCALE,
@@ -92,8 +95,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                                 >
                                     <Text
                                         style={{
-                                            paddingHorizontal: 5 * WIDTH_SCALE,
-                                            paddingVertical: 5 * WIDTH_SCALE,
+
                                             backgroundColor: 'rgba(0,0,0, 0.5)',
                                             position: 'absolute',
                                             zIndex: 12,
@@ -104,7 +106,8 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                                             borderBottomLeftRadius: 10 * WIDTH_SCALE,
                                             borderBottomRightRadius: 10 * WIDTH_SCALE,
                                             fontFamily: Fonts.SansLight,
-                                            fontSize: 14 * WIDTH_SCALE
+                                            fontSize: 14 * WIDTH_SCALE,
+                                            padding: 8
                                         }}>{item.language}</Text>
 
                                     <Text
@@ -261,7 +264,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                 </View>
             </View>
 
-        </ScrollView>
+        </ScrollView >
     )
 }
 

@@ -23,6 +23,7 @@ import { ptColor } from '../../constants/styles';
 import { Fonts } from '../../utils/Fonts';
 import { SkypeIndicator } from 'react-native-indicators';
 import StarRating from 'react-native-star-rating';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function RenderContentsByCategory({ categoryId, navigation }) {
 
@@ -65,98 +66,38 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
 
     const renderItem = ({ item, index }) => {
         return (
-            <View
-                style={{
-                    width: WIDTH,
-                    height: HEIGHT * 0.3,
-                    padding: 10 * WIDTH_SCALE,
-                    marginBottom: 5,
+
+            <TouchableOpacity style={{
+
+                width: WIDTH / 2,
+                height: WIDTH / 1.5,
+
+
+
+
+            }}>
+                <View style={{
+                    flex: 1,
+                    padding: 8,
+
+
                 }}>
-                <Image
-                    source={{ uri: item.cover_img }}
-                    style={{
-                        width: WIDTH * 0.33,
-                        height: '90%',
-                        zIndex: 10,
-                        borderRadius: 8 * WIDTH_SCALE,
-                        position: 'absolute',
-                        top: "5%",
-                        left: '9%',
-                        borderColor: '#fff',
-                        borderWidth: 0.5 * WIDTH_SCALE
-                    }}
-                />
-                <View style={{ flex: 0.8 }} />
-                <View
-                    style={{
-                        flex: 1.2,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        borderRadius: 8 * WIDTH_SCALE,
-                        alignItems: 'flex-end',
-                        padding: 10 * WIDTH_SCALE,
-                    }}
-                >
+                    <Image source={{ uri: item.cover_img }}
 
-                    <Text
                         style={{
-                            color: '#fff',
-                            fontSize: 20 * WIDTH_SCALE,
-                            fontFamily: Fonts.SansMedium,
-                            marginBottom: 5 * WIDTH_SCALE,
-                        }}>{handleMovieName(item.name)}</Text>
+                            flex: 1, borderRadius: 4,
 
-                    <Text
-                        style={{
-                            color: '#fff',
-                            fontSize: 16 * WIDTH_SCALE,
-                            fontFamily: Fonts.SansLight
-                        }}>{item.years}</Text>
+                        }}
+                    />
 
-                    <Text
-                        style={{
-                            color: '#fff',
-                            fontSize: 16 * WIDTH_SCALE,
-                            fontFamily: Fonts.SansLight
-                        }}>{item.country}</Text>
+                    <Text style={{ fontSize: 14, fontFamily: Fonts.SansMedium, marginVertical: 8 }}
+                        numberOfLines={1}
 
-                    {ratingList !== undefined ?
-                        ratingList.map((val, ind) => {
-                            if (ind === index) {
-                                return (
-                                    <View
-                                        style={{
-                                            flexDirection: 'row'
-                                        }}>
-                                        <StarRating
-                                            activeOpacity={1}
-                                            starStyle={{ width: 22 * WIDTH_SCALE }}
-                                            starSize={18}
-                                            fullStarColor={'red'}
-                                            disabled={false}
-                                            maxStars={5}
-                                            rating={val}
-                                            emptyStarColor={'#f1c40f'}
-                                        />
-                                        <Text
-                                            style={{
-                                                color: '#fff',
-                                                fontSize: 16 * WIDTH_SCALE,
-                                                fontFamily: Fonts.SansLight
-                                            }}> {val}</Text>
-                                    </View>
-                                )
-                            }
-                        }) : null}
-
-                    <Text
-                        style={{
-                            color: '#fff',
-                            fontSize: 16 * WIDTH_SCALE,
-                            fontFamily: Fonts.SansLight
-                        }}>{item.language}</Text>
-
+                    >{item.name}</Text>
                 </View>
-            </View>
+
+
+            </TouchableOpacity>
         )
     }
 
@@ -208,13 +149,16 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
     }
 
     return (
-        <View style={{ flex: 1, paddingTop: 15 * WIDTH_SCALE }}>
+        <View style={{ flex: 1, }}>
             {movieList !== undefined ?
                 <FlatList
+                    style={{ marginTop: 16 }}
                     data={movieList}
                     keyExtractor={item => item._id}
                     renderItem={renderItem}
                     showsVerticalScrollIndicator={false}
+                    numColumns={2}
+
                 /> :
                 loadingComponent()
             }

@@ -85,7 +85,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      <StatusBar translucent={false} backgroundColor='rgba(0, 0, 0, 0.3)' barStyle="light-content" />
+      <StatusBar translucent={false} backgroundColor="#000" barStyle="light-content" />
 
       <HomeHeader
         data={categories}

@@ -121,7 +121,7 @@ const MyCarousel = ({ movieData, navigation }) => {
                 ref={carouselRef}
                 sliderWidth={screenWidth}
                 sliderHeight={screenWidth}
-                itemWidth={screenWidth - 60}
+                itemWidth={screenWidth - 40}
                 data={entries}
                 renderItem={renderItem}
                 hasParallaxImages={true}
@@ -137,8 +137,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     item: {
-        width: screenWidth - 110,
-        height: screenWidth - 110,
+        width: screenWidth - 40,
+        height: WIDTH / 1.5,
     },
     imageContainer: {
         flex: 1,
