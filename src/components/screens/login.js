@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback,
   Alert,
   BackHandler,
-  Image,
+  Image, StatusBar
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
 import {
@@ -76,36 +76,42 @@ export default function Login({ navigation }) {
 
 
   return (
-    <View style={styles.container}>
-      {/* <Image
-        source={require('../../assets/icons/gea_logo.png')}
-        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', marginTop: HEIGHT * 0.13 }} /> */}
+    <View style={{ flex: 1 }}>
+      <StatusBar barStyle="light-content" />
+      <ImageBackground
+        source={require('../../assets/icons/login_bg.jpg')}
+        style={styles.container}>
+        <Image
+          source={require('../../assets/icons/LOGO.png')}
+          style={{
+            resizeMode: 'center',
+            marginTop: HEIGHT * 0.1
+          }} />
 
-      <View style={styles.headerTitleContainer}>
-        <Text style={styles.title1}>Welcome To</Text>
-        <View style={{ height: 10 * WIDTH_SCALE }} />
-        <Text style={styles.title2}>GEA</Text>
-      </View>
+        <View style={styles.headerTitleContainer}>
+          {/* <Text style={styles.title1}>ĐĂNG NHẬP</Text> */}
+        </View>
 
-      <View style={styles.loginContainer}>
-        <MyHighLightButton onPress={loginFacebook}>
-          <View style={styles.buttonFB}>
-            <Icons name="sc-facebook" size={24} color="#fff" />
-            <View style={{ width: 10 }} />
-            <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
-          </View>
-        </MyHighLightButton>
+        <View style={styles.loginContainer}>
+          <MyHighLightButton onPress={loginFacebook}>
+            <View style={styles.buttonFB}>
+              <Icons name="sc-facebook" size={24} color="#fff" />
+              <View style={{ width: 10 }} />
+              <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
+            </View>
+          </MyHighLightButton>
 
-        <View style={{ height: 15 }} />
+          <View style={{ height: 15 }} />
 
-        <MyHighLightButton onPress={loginGoogle}>
-          <View style={styles.buttonGG}>
-            <Icons name="sc-google-plus" size={24} color="#fff" />
-            <View style={{ width: 10 }} />
-            <Text style={styles.titleBtnFB}>Sign In With Google</Text>
-          </View>
-        </MyHighLightButton>
-      </View>
+          <MyHighLightButton onPress={loginGoogle}>
+            <View style={styles.buttonFB}>
+              <Icons name="sc-google-plus" size={24} color="#fff" />
+              <View style={{ width: 10 }} />
+              <Text style={styles.titleBtnFB}>Sign In With Google</Text>
+            </View>
+          </MyHighLightButton>
+        </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -122,9 +128,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title1: {
-    color: ptColor.gray2,
+    color: ptColor.white,
     fontSize: 20 * WIDTH_SCALE,
     fontFamily: Fonts.SansLight,
+    textAlign: 'center'
   },
   title2: {
     color: ptColor.black,
@@ -139,13 +146,14 @@ const styles = StyleSheet.create({
   },
   buttonFB: {
     flexDirection: 'row',
-    backgroundColor: '#4267B2',
+    backgroundColor: 'transparent',
     height: 45,
     width: WIDTH * 0.6,
-    borderRadius: 45 / 2,
     justifyContent: 'flex-start',
     paddingLeft: 15,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#fff'
   },
   buttonGG: {
     flexDirection: 'row',
@@ -159,6 +167,6 @@ const styles = StyleSheet.create({
   },
   titleBtnFB: {
     color: '#fff',
-    fontFamily: Fonts.SansLight,
+    fontFamily: Fonts.SansMedium,
   },
 });

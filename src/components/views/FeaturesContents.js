@@ -31,8 +31,6 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
             <View
                 style={{
 
-
-
                 }}>
                 <Text
                     style={{
@@ -44,7 +42,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
 
                         color: ptColor.black
                     }}>
-                    TOP IMDB 7+</Text>
+                    REVIEW PHIM IMDB 8+</Text>
 
                 <MyCarousel movieData={highScoreMovies} navigation={navigation} />
             </View>
@@ -64,7 +62,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                         marginVertical: 16,
 
                         color: ptColor.black
-                    }}>TOP XỊN XÒ TRONG NĂM</Text>
+                    }}>TOP REVIEW PHỔ BIẾN</Text>
 
                 <FlatList
                     showsHorizontalScrollIndicator={false}
@@ -170,7 +168,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                             fontSize: 18 * WIDTH_SCALE,
                             color: ptColor.black,
                             flex: 7,
-                        }}>PHIM MỚI CẬP NHẬT</Text>
+                        }}>REVIEW MỚI NHẤT</Text>
 
                     <Text
                         style={{

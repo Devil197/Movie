@@ -33,12 +33,14 @@ const MyCarousel = ({ movieData, navigation }) => {
     useEffect(() => {
         if (movieData !== undefined) {
             handleArrayMovie(movieData);
+            //setEntries(movieData)
         }
     }, [movieData]);
 
     const handleArrayMovie = async (movieData) => {
         await movieData.forEach(element => {
-            if (element.score >= 7) {
+            if (element.score >= 8) {
+                //console.log(element.score);
                 setEntries(movieData => [...movieData, element]);
             }
         })
@@ -110,8 +112,6 @@ const MyCarousel = ({ movieData, navigation }) => {
 
                 </MyHighLightButton>
             );
-        } else {
-            return null;
         }
     };
 

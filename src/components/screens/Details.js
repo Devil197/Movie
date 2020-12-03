@@ -429,7 +429,7 @@ export default function Details({ navigation, route }) {
             {dataMovie?.movie[0]?.name}
           </Text>
 
-          <View
+          {/* <View
             style={{
               flexDirection: 'row',
               alignItems: 'center',
@@ -445,7 +445,7 @@ export default function Details({ navigation, route }) {
               </Text> : null
             }
 
-          </View>
+          </View> */}
 
           <View
             style={styles.detailChildContainer}>
@@ -654,7 +654,7 @@ export default function Details({ navigation, route }) {
             marginRight: 8 * WIDTH_SCALE
           }}
           onPress={() => dataMovie?.movie[0]?.status !== 0 ? navigation.push(ROUTE_KEY.Videos, { _id: _id }) : null}>
-          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>{dataMovie?.movie[0]?.status !== 0 ? 'Play' : 'Update'}</Text>
+          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>{dataMovie?.movie[0]?.status !== 0 ? 'Play' : 'Updating'}</Text>
         </MyHighLightButton>
 
       </View>

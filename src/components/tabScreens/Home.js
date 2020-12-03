@@ -67,7 +67,7 @@ export default function Home({ navigation }) {
   }, [])
 
   const handleAPI_getMovieByIMDbScore = async () => {
-    await getMovieByScore()
+    await getAllMovie()
       .then((result) => {
         //console.log("MOVIE BY SCORE: ", result?.items);
         setDataMovieByScore(result?.items);
@@ -129,7 +129,7 @@ export default function Home({ navigation }) {
                 style={{
                   padding: 20 * WIDTH_SCALE,
                   backgroundColor: 'rgba(166, 164, 164, 0.4)',
-                  borderRadius: 10,
+                  borderRadius: 30,
                 }}
                 size={40 * WIDTH_SCALE}
               />

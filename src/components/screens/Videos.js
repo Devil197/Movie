@@ -127,11 +127,11 @@ export default function Video({ navigation, route }) {
               <Text>
                 Ngôn ngữ : {movie.language ? movie.language : 'không'}
               </Text>
-              <Text
+              {/* <Text
                 ellipsizeMode={'head'}
                 style={{ ...pFonts.desText, marginBottom: 10 * WIDTH_SCALE, marginTop: 5 * WIDTH_SCALE }}>
                 {movie?.introduction}
-              </Text>
+              </Text> */}
             </View>
             <View style={{ margin: 10 * WIDTH_SCALE, marginTop: 5 * WIDTH_SCALE, backgroundColor: 'white', padding: 10 * WIDTH_SCALE }}>
               <Text

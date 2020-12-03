@@ -35,8 +35,7 @@ import { Chip } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { ROUTE_KEY } from '../../constants/constants';
 
-export default function Search({ navigation, route }) {
-  const __keyword = route.params._keyword;
+export default function Search({ navigation }) {
   const animValue = new Animated.Value(0);
 
   const translateX = animValue.interpolate({
@@ -66,9 +65,6 @@ export default function Search({ navigation, route }) {
     animStart();
     inputRef.current = keyword;
     handleHotMovieAPI();
-    if (__keyword !== '') {
-      handleGetDataByKeyword(__keyword);
-    }
   }, []);
 
   const handleGetDataByKeyword = async (keyword) => {
@@ -211,7 +207,7 @@ export default function Search({ navigation, route }) {
                   fontFamily: Fonts.SansMedium,
                   fontSize: 14 * WIDTH_SCALE,
                 }}>
-                FOUND {dataAfterSearch.length} RESULTS
+                TÌM THẤY {dataAfterSearch.length} KẾT QUẢ
               </Text>
               {dataAfterSearch.length > 0 ? (
                 <FlatList

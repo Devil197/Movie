@@ -67,8 +67,28 @@ export default function HomeHeader({ data, navigation, onItemSelected }) {
         <View style={{ flexDirection: "column" }}>
 
             <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12 }}>
-                <Text style={{ flex: 1 }}>Brand</Text>
-                <TouchableOpacity style={{ backgroundColor: "#eee", borderRadius: 4, width: 40, height: 40, alignItems: "center", justifyContent: "center" }}>
+                <Text
+                    style={{
+                        flex: 1,
+                        fontSize: 30 * WIDTH_SCALE,
+                        fontFamily: Fonts.SansBold,
+                        borderWidth: 1,
+                        borderColor: 'black',
+                        paddingHorizontal: 5 * WIDTH_SCALE,
+                        textAlign: 'center',
+
+                    }}>REVIEW</Text>
+                <View style={{ flex: 1.8 }} />
+                <TouchableOpacity
+                    onPress={() => navigation.navigate(ROUTE_KEY.Search)}
+                    style={{
+                        backgroundColor: "#eee",
+                        borderRadius: 4,
+                        width: 40,
+                        height: 40,
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
                     <Icons name="search" color="#000" size={24} />
                 </TouchableOpacity>
 

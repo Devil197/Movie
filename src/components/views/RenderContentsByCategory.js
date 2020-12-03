@@ -28,7 +28,6 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 export default function RenderContentsByCategory({ categoryId, navigation }) {
 
     const [movieList, setmovieList] = useState()
-    const [ratingList, setRatingList] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -41,10 +40,6 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
             let array = [];
 
             result?.items.forEach(element => {
-
-                getEvalByMovieId(element?.movie_id?._id).then(result => {
-                    setRatingList(ratingList => [...ratingList, result?.number])
-                })
 
                 let temp = {
                     _id: element?.movie_id?._id,
@@ -67,15 +62,12 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
     const renderItem = ({ item, index }) => {
         return (
 
-            <TouchableOpacity style={{
-
-                width: WIDTH / 2,
-                height: WIDTH / 1.5,
-
-
-
-
-            }}>
+            <TouchableOpacity
+                onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
+                style={{
+                    width: WIDTH / 2,
+                    height: WIDTH / 1.5,
+                }}>
                 <View style={{
                     flex: 1,
                     padding: 8,
@@ -101,34 +93,13 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
         )
     }
 
-    //Hàm này cắt phần [Anime] ở đầu tên ra. Chỉ lấy tên phim
-    const handleMovieName = (name) => {
-        let lastCharSplitIndex = name.indexOf(']');
-        let mainName = name.slice(lastCharSplitIndex + 1, name.length);
-        if (mainName.indexOf(' ') === 0) {
-            return mainName.slice(1, mainName.length);
-        }
-        return mainName
-    }
-
-    //Hàm này chỉ lấy phần [Anime]. 2 cái này t bỏ như ở trang Home.
-    const handleMainCatOfMovie = (name) => {
-        let firtChar = name.indexOf('[');
-        let lastCharSplitIndex = name.indexOf(']');
-        if (firtChar === -1 || lastCharSplitIndex === -1) {
-            return 'Movie';
-        }
-        return name.slice(firtChar + 1, lastCharSplitIndex)
-    }
-
     const loadingComponent = () => {
         return (
             <View style={{
-                flex: 1,
                 position: 'absolute',
                 backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 width: WIDTH,
-                height: HEIGHT,
+                height: HEIGHT - 200 * WIDTH_SCALE,
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 9999,
@@ -137,9 +108,9 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
                     <SkypeIndicator
                         color={ptColor.appColor}
                         style={{
-                            padding: 20 * WIDTH_SCALE,
-                            backgroundColor: 'rgba(166, 164, 164, 0.4)',
-                            borderRadius: 10,
+                            padding: 15 * WIDTH_SCALE,
+                            backgroundColor: 'rgba(164, 164, 164, 0.4)',
+                            borderRadius: 30,
                         }}
                         size={40 * WIDTH_SCALE}
                     />
