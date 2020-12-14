@@ -30,7 +30,7 @@ function MyBottomTab() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={ROUTE_KEY.Music}
         component={Music}
         options={{
@@ -38,7 +38,7 @@ function MyBottomTab() {
             <Icon name="music" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
       {/* <Tab.Screen
         name={ROUTE_KEY.Category}
         component={Category}
