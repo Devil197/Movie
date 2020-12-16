@@ -44,6 +44,7 @@ const HEADER_BAR_HEIGHT = 55 * WIDTH_SCALE;
 import { REDUX } from '../../Redux/store/types'
 import { Appbar, useTheme, Card } from 'react-native-paper';
 import { TextInput } from 'react-native';
+import { _getCount_comment_follow_rating } from '../../Redux/actions/statictical'
 
 export default function Details({ navigation, route }) {
   const dispatch = useDispatch()
@@ -84,8 +85,10 @@ export default function Details({ navigation, route }) {
   const [isShowDayUpdateMovie, setIsShowDayUpdateMovie] = useState(true);
   const [comment, setComment] = useState()
   const [userRating, setUserRating] = useState(0);
+  const [newRating, setNewRating] = useState();
   const [commentData, setCommentData] = useState();
   const [ratingData, setRatingData] = useState();
+  const [statictical, setStatictical] = useState();
   //console.log('1001 datamovie ', dataMovie?.movie);
 
   const toastAndroid = (text) => {
@@ -106,11 +109,11 @@ export default function Details({ navigation, route }) {
             <TouchableOpacity
               activeOpacity={0.7}
               key={item}
-              onPress={() => setUserRating(item)}>
+              onPress={() => setNewRating(item)}>
               <Image
                 style={styles.starImageStyle}
                 source={
-                  item <= userRating
+                  item <= newRating
                     ? starImageFilled
                     : starImageCorner
                 }
@@ -126,7 +129,7 @@ export default function Details({ navigation, route }) {
     setLoading(true);
     hideModal()
     if (userRating > 0) {
-      await ratingAPI(userInfo?._id, _id, userRating).then((response) => {
+      await ratingAPI(userInfo?._id, _id, newRating).then((response) => {
         if (response?.data?.result) {
           setReload(true);
           toastAndroid("Cảm ơn bạn đã đánh giá!")
@@ -152,6 +155,7 @@ export default function Details({ navigation, route }) {
 
   const initial = Orientation.getInitialOrientation();
   useEffect(() => {
+
     getFullMovie(_id)
       .then((fullMovie) => {
         setDataMovie(fullMovie);
@@ -163,14 +167,22 @@ export default function Details({ navigation, route }) {
       })
       .catch((err) => console.log('Failed', err));
 
+    handleStaticticalAPI_getCount()
     handleEvalAPI_getAllEval()
     handleEvalAPI_getAllComment()
     handleEvalAPI_getOneComment()
     handleEvalAPI_getOneEval();
     handleEvalAPI_getAverageEval();
-    handleGetAllMovieAPI();
     handleCheckFollowAPI();
   }, [reloadScreen]);
+
+  const handleStaticticalAPI_getCount = async () => {
+    if (_id !== undefined) {
+      await _getCount_comment_follow_rating(_id).then(res => {
+        setStatictical(res);
+      })
+    }
+  }
 
   const handleEvalAPI_getAllEval = async () => {
     if (_id !== undefined) {
@@ -226,14 +238,6 @@ export default function Details({ navigation, route }) {
       })
     })
   }
-
-  // tạm thời.
-  const handleGetAllMovieAPI = async () => {
-    await getAllMovie().then(result => {
-      setAllMovie(result);
-    })
-  }
-  //============
 
   const getDayUpdateMovie = (data) => {
     let getDate = new Date(data);
@@ -346,10 +350,14 @@ export default function Details({ navigation, route }) {
     }
   }
 
-  const showModal = () =>
-    setVisible(true);
-  const hideModal = () =>
-    setVisible(false);
+  const showModal = () => {
+    setVisible(true)
+    setNewRating(userRating)
+  }
+  const hideModal = () => {
+    setVisible(false)
+    setNewRating(userRating)
+  }
 
   const getProfileImage = (_id) => {
     return `https://graph.facebook.com/v9.0/${_id}/picture`
@@ -507,6 +515,7 @@ export default function Details({ navigation, route }) {
                 {dataMovie?.category.map((val, ind) => {
                   return (
                     <Text
+                      key={ind}
                       style={styles.detailData}>{val?.name}</Text>
                   )
                 })}
@@ -536,6 +545,46 @@ export default function Details({ navigation, route }) {
           style={{
             padding: 15 * WIDTH_SCALE,
           }}>
+
+          <View
+            style={{
+              height: HEADER_BAR_HEIGHT * 1.5,
+              width: '100%',
+              flexDirection: 'row',
+              paddingBottom: 15 * WIDTH_SCALE,
+            }}>
+
+            <View
+              style={styles.statictical}
+            >
+              <Text style={styles.staticticalNum}>
+                {statictical?.countComment}
+              </Text>
+              <View style={{ marginVertical: 5 * WIDTH_SCALE, height: 0.5, width: '60%', backgroundColor: ptColor.gray2, alignSelf: 'center' }} />
+              <Text style={styles.staticticalTitle}>Bình luận</Text>
+            </View>
+
+            <View
+              style={styles.statictical}
+            >
+              <Text style={styles.staticticalNum}>
+                {statictical?.countEval}
+              </Text>
+              <View style={{ marginVertical: 5 * WIDTH_SCALE, height: 0.5, width: '60%', backgroundColor: ptColor.gray2, alignSelf: 'center' }} />
+              <Text style={styles.staticticalTitle}>Đánh giá</Text>
+            </View>
+
+            <View
+              style={styles.statictical}
+            >
+              <Text style={styles.staticticalNum}>
+                {statictical?.countFollow}
+              </Text>
+              <View style={{ marginVertical: 5 * WIDTH_SCALE, height: 0.5, width: '60%', backgroundColor: ptColor.gray2, alignSelf: 'center' }} />
+              <Text style={styles.staticticalTitle}>Theo dõi</Text>
+            </View>
+
+          </View>
 
           {/* Trailer Component */}
           <View style={{}}>
@@ -710,7 +759,7 @@ export default function Details({ navigation, route }) {
             marginRight: 8 * WIDTH_SCALE
           }}
           onPress={() => dataMovie?.movie[0]?.status !== 0 ? navigation.push(ROUTE_KEY.Videos, { _id: _id }) : null}>
-          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>{dataMovie?.movie[0]?.status !== 0 ? 'Play' : 'Updating'}</Text>
+          <Text style={{ color: ptColor.white, fontFamily: Fonts.SansLight }}>{dataMovie?.movie[0]?.status !== 0 ? 'XEM PHIM' : 'ĐANG CẬP NHẬT'}</Text>
         </MyHighLightButton>
 
       </View>
@@ -811,6 +860,7 @@ export default function Details({ navigation, route }) {
                   commentData.map((value, index) => {
                     return (
                       <View
+                        key={index}
                         style={{
                           width: WIDTH,
                           justifyContent: 'center',
@@ -854,7 +904,12 @@ export default function Details({ navigation, route }) {
                               ratingData.map((val, ind) => {
                                 if (val?.user_id === value?.user_id?._id) {
                                   return (
-                                    <View style={{ width: WIDTH * 0.25, marginTop: 5 * WIDTH_SCALE }}>
+                                    <View
+                                      key={ind}
+                                      style={{
+                                        width: WIDTH * 0.25,
+                                        marginTop: 5 * WIDTH_SCALE
+                                      }}>
                                       <StarRating
                                         activeOpacity={val?.score}
                                         starStyle={{
@@ -979,4 +1034,23 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginRight: 5 * WIDTH_SCALE,
   },
+  statictical: {
+    height: '100%',
+    width: '25%',
+    marginHorizontal: 15 * WIDTH_SCALE,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  staticticalNum: {
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 18 * WIDTH_SCALE,
+    fontFamily: Fonts.SansMedium,
+  },
+  staticticalTitle: {
+    width: '100%',
+    textAlign: 'center',
+    fontFamily: Fonts.SansLight,
+    fontSize: 14 * WIDTH_SCALE
+  }
 });

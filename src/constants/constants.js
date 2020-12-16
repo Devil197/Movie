@@ -21,6 +21,7 @@ const textInputHeight = 36 * HEIGHT_SCALE;
 const heightButton = 50 * HEIGHT_SCALE;
 const avatarSize = 50 * WIDTH_SCALE;
 const URL = 'https://review10.herokuapp.com';
+
 const API_KEY = {
   1: 'AIzaSyCpU2RlaMjkFN0461dZRv2zfnQEXzUuz6U',
   2: 'AIzaSyAstEmHpjVSNtJZ0sf4HK-CV3gXlTbhsVo',
