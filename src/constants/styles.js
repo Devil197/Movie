@@ -1,5 +1,6 @@
 import { ImageBackground } from 'react-native';
 import { StyleSheet, Dimensions } from 'react-native';
+import { Fonts } from '../utils/Fonts'
 
 var { height, width } = Dimensions.get('window');
 
@@ -25,10 +26,10 @@ export const ptColor = {
 
 export const pFonts = StyleSheet.create({
   text: {
-    fontFamily: 'ProductSans-Bold'
+    fontFamily: Fonts.SansBold
   },
   desText: {
-    fontFamily: 'ProductSans-Light'
+    fontFamily: Fonts.SansLight
   },
   contentText: {
     fontFamily: 'Roboto-Regular'

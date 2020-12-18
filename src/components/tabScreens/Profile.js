@@ -14,13 +14,32 @@ import { asyncUser } from '../../Redux/actions/userAction'
 import { LoginGoogle, LoginFacebook, _addApiLoginFacebook, _addApiLoginGoogle, _asyncUser } from '../../Redux/actions/userAction';
 import { REDUX } from '../../Redux/store/types'
 import { CommonActions, StackActions, NavigationAction } from '@react-navigation/native';
-
+import { LoginManager } from 'react-native-fbsdk'
+import {
+    GoogleSignin,
+    GoogleSigninButton,
+    statusCodes,
+} from '@react-native-community/google-signin';
 export default function Profile({ navigation }) {
     const dispatch = useDispatch();
     const WIDTH_MODAL = WIDTH - 24 * WIDTH_SCALE
     const userReducer = useSelector((state) => state.userReducer)
+    console.log("USER INFO PROFILE: ", userReducer?.googleInfo);
     const [isModal, setIsModal] = useState(false);
     const [isShowUserType, setIsShowUserType] = useState(false)
+
+    const signOut = async () => {
+        if (userReducer?.googleInfo !== undefined || userReducer?.googleInfo !== null || userReducer?.googleInfo !== {}) {
+            try {
+                await GoogleSignin.revokeAccess();
+                await GoogleSignin.signOut();
+            } catch (error) {
+                console.error(error);
+            }
+        } else {
+            await LoginManager.logOut()
+        }
+    };
 
     function logoutUser() {
         Alert.alert('', 'Bạn có muốn đăng xuất ?', [
@@ -32,6 +51,7 @@ export default function Profile({ navigation }) {
             {
                 text: "có", onPress: () => {
                     MySpinner.show()
+                    signOut()
                     setTimeout(() => {
                         dispatch({
                             type: REDUX.CLEAR_DATA,
@@ -100,7 +120,7 @@ export default function Profile({ navigation }) {
                     </MyHighLightButton>
 
 
-                    <TouchableOpacity  onPress={() => navigation.push(ROUTE_KEY.Notification)}>
+                    <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Notification)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="bell" color="#999999" size={16} />
                             <Text style={styles.groupItemText} >Notification</Text>

@@ -68,6 +68,7 @@ export const _addApiLoginGoogle = (googleInfo, dispatch) => {
     google_photo: googleInfo?.photo,
     google_gmail: googleInfo?.gmail,
   });
+  console.log("Check JSON BEFORE PUSH TO API ", json);
   axiosConfig
     .post(`/v1/user/login/g`, json, {
       headers: {
@@ -75,24 +76,10 @@ export const _addApiLoginGoogle = (googleInfo, dispatch) => {
       },
     })
     .then((res) => {
+      console.log("LOGIN GG: ", res?.data);
       if (res.data.result) {
-        console.log('1001 -> login api google ', res.data?.items[0]);
-        if (res.data.items?.facebook_id !== 'not null') {
-          _userAuthSuccessGoogle(dispatch, googleInfo, res.data?._id);
-          const facebookInfo = {
-            id: res.data?.items[0].facebook_id,
-            gmail: res.data?.items[0].facebook_gmail,
-            name: res.data?.items[0].facebook_name,
-            token: res.data?.items[0].facebook_token,
-            photo: res.data?.items[0].facebook_photo,
-          };
-          dispatch({
-            type: REDUX.FACEBOOK_LOGGED_IN,
-            payload: facebookInfo,
-          });
-        } else {
-          _userAuthSuccessGoogle(dispatch, googleInfo, res.data?._id);
-        }
+        console.log('1001 -> login api google ', res?.data?.items[0]);
+        _userAuthSuccessGoogle(dispatch, googleInfo, res?.data?.items[0]);
         MySpinner.hide();
       } else {
         MySpinner.hide();
@@ -101,7 +88,7 @@ export const _addApiLoginGoogle = (googleInfo, dispatch) => {
     })
     .catch((err) => {
       MySpinner.hide();
-      console.log('1001 login facebook api fail ', err);
+      console.log('1001 login google api fail ', err);
     });
 };
 
@@ -160,23 +147,25 @@ export const _addApiLoginFacebook = (facebookInfo, dispatch) => {
       },
     })
     .then((res) => {
+      console.log("FACEBOOK RES: ", res?.data?.items[0]);
       if (res.data.result) {
-        if (res.data.items.google_id !== 'not null') {
-          _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items[0]);
-          const googleInfo = {
-            id: res.data?.items[0].google_id,
-            gmail: res.data?.items[0].google_gmail,
-            name: res.data?.items[0].google_name,
-            token: res.data?.items[0].google_token,
-            photo: res.data?.items[0].google_photo,
-          };
-          dispatch({
-            type: REDUX.GOOGLE_LOGGED_IN,
-            payload: googleInfo,
-          });
-        } else {
-          _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items);
-        }
+        // if (res.data.items.google_id !== null) {
+        //   _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items[0]);
+        //   const googleInfo = {
+        //     id: res.data?.items[0].google_id,
+        //     gmail: res.data?.items[0].google_gmail,
+        //     name: res.data?.items[0].google_name,
+        //     token: res.data?.items[0].google_token,
+        //     photo: res.data?.items[0].google_photo,
+        //   };
+        //   dispatch({
+        //     type: REDUX.GOOGLE_LOGGED_IN,
+        //     payload: googleInfo,
+        //   });
+        // } else {
+        //   _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items);
+        // }
+        _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items[0]);
         MySpinner.hide();
       } else {
         MySpinner.hide();

@@ -54,7 +54,8 @@ const HEADER_HEIGHT = 110 * WIDTH_SCALE;
 const AnimatedIcon = Animated.createAnimatedComponent(Icons);
 
 export default function Home({ navigation }) {
-
+  const userRedux = useSelector((state) => state.userReducer)
+  console.log("USER INFO: ", userRedux);
   const [loading, setLoading] = useState(true)
   const [categories, setCategories] = useState()
   const [categoryItemSelected, setCategoryItemSelected] = useState(0)

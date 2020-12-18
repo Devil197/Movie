@@ -62,14 +62,14 @@ export default function Login({ navigation }) {
 
   const loginFacebook = () => {
     LoginFacebook().then((res) => {
-      console.log('1001 res=> login face ', res);
+      console.log('1001 res => login FB: ', res);
       _addApiLoginFacebook(res, dispatch);
     });
   };
 
   const loginGoogle = () => {
     LoginGoogle().then((res) => {
-      console.log('1001 res=> login go ', res);
+      console.log('1001 res => login GG: ', res);
       _addApiLoginGoogle(res, dispatch);
     });
   };
@@ -97,7 +97,7 @@ export default function Login({ navigation }) {
             <View style={styles.buttonFB}>
               <Icons name="sc-facebook" size={24} color="#fff" />
               <View style={{ width: 10 }} />
-              <Text style={styles.titleBtnFB}>Sign In With Facebook</Text>
+              <Text style={styles.titleBtnFB}>Đăng nhập với Facebook</Text>
             </View>
           </MyHighLightButton>
 
@@ -107,7 +107,7 @@ export default function Login({ navigation }) {
             <View style={styles.buttonFB}>
               <Icons name="sc-google-plus" size={24} color="#fff" />
               <View style={{ width: 10 }} />
-              <Text style={styles.titleBtnFB}>Sign In With Google</Text>
+              <Text style={styles.titleBtnFB}>Đăng nhập với Google</Text>
             </View>
           </MyHighLightButton>
         </View>

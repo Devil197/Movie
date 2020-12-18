@@ -135,7 +135,6 @@ export default function Splash({ navigation }) {
         if (userRedux.loggedIn) {
           navigation.navigate(ROUTE_KEY.BottomNavigation)
         } else {
-          //navigation.navigate(ROUTE_KEY.Login)
           navigation.navigate(ROUTE_KEY.Login);
         }
 

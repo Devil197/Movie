@@ -126,9 +126,8 @@ export default function Details({ navigation, route }) {
   };
 
   const _onDoneRating = async () => {
-    setLoading(true);
     hideModal()
-    if (userRating > 0) {
+    if (newRating > 0) {
       await ratingAPI(userInfo?._id, _id, newRating).then((response) => {
         if (response?.data?.result) {
           setReload(true);
@@ -147,6 +146,7 @@ export default function Details({ navigation, route }) {
       setLoading(false);
     } else {
       toastAndroid("Vui lòng chọn số lượng sao!")
+      setLoading(false);
     }
   }
 
@@ -802,7 +802,7 @@ export default function Details({ navigation, route }) {
                   <Text style={{ marginLeft: 10 * WIDTH_SCALE, fontFamily: Fonts.SansLight }}>Hủy</Text>
                 </MyHighLightButton>
                 <View style={{ flex: 3 }} />
-                <MyHighLightButton
+                <TouchableOpacity
                   style={{
                     borderRadius: 4 * WIDTH_SCALE,
                     justifyContent: 'center',
@@ -810,10 +810,11 @@ export default function Details({ navigation, route }) {
                     flex: 1,
                   }}
                   onPress={() => {
+                    setLoading(true)
                     _onDoneRating()
                   }}>
                   <Text style={{ color: ptColor.black, fontFamily: Fonts.SansBold }}>Gửi</Text>
-                </MyHighLightButton>
+                </TouchableOpacity>
               </View>
 
               <View
@@ -873,7 +874,7 @@ export default function Details({ navigation, route }) {
                             width: WIDTH,
                             padding: 15 * WIDTH_SCALE,
                           }}>
-                          <View style={{ flex: 1 }}>
+                          <View style={{ flex: 1.2 }}>
                             <Image
                               style={{
                                 height: 50,
@@ -890,7 +891,7 @@ export default function Details({ navigation, route }) {
                           </View>
                           <View
                             style={{
-                              flex: 5,
+                              flex: 4.8,
                             }}>
                             <Text
                               style={{
@@ -939,8 +940,10 @@ export default function Details({ navigation, route }) {
                             flexDirection: 'row',
                             paddingHorizontal: 15 * WIDTH_SCALE
                           }}>
+                          <View style={{ flex: 1 }} />
                           <Text
                             style={{
+                              flex: 4,
                               fontFamily: Fonts.SansLight,
                               fontSize: 14 * WIDTH_SCALE,
                               width: '100%',
