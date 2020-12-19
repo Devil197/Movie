@@ -82,6 +82,7 @@ export default function Search({ navigation }) {
       })
       .catch((err) => {
         console.log(err);
+        setLoading(false);
       });
   };
 

@@ -19,10 +19,20 @@ export const _addOneMessage = async (movie_id, user_id, message) => {
     }
 }
 
-export const _getAllChat = (movie_id) =>
+export const _getAllChat = (movie_id, sort) =>
     new Promise((resolve, reject) => {
         axiosConfig
-            .get(`/v3/chat/getAll/${movie_id}`)
+            .get(`/v3/chat/getAll/${movie_id}/${sort}`)
+            .then((response) => {
+                resolve(response.data);
+            })
+            .catch((err) => reject(err));
+    });
+
+export const _getAllChatSortByLike = (movie_id) =>
+    new Promise((resolve, reject) => {
+        axiosConfig
+            .get(`/v3/chat/getByLike/${movie_id}`)
             .then((response) => {
                 resolve(response.data);
             })

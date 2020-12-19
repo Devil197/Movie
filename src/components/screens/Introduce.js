@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useMemo} from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import {
   StyleSheet,
   View,
@@ -16,46 +16,44 @@ import {
   STATUS_BAR_CURRENT_HEIGHT,
   WIDTH_SCALE,
 } from '../../constants/constants';
-import {ROUTE_KEY} from '../../constants/constants';
-import {storeValueIsShowIntroduceOrNot} from '../../utils/IsShowIntroduce';
+import { ROUTE_KEY } from '../../constants/constants';
+import { storeValueIsShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
 
 const slides = [
   {
     key: '1a',
     image: {
       uri:
-        'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
+        'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/Splash%2Fslide_01.png?alt=media&token=88b2b647-b798-4e3f-a16a-ab0a9cd8be94',
     },
   },
   {
     key: '2b',
     image: {
       uri:
-        'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
+        'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/Splash%2Fslide_02.png?alt=media&token=82c4bad0-3fad-4195-97d0-37693d8ffebd',
     },
   },
   {
     key: '3c',
     image: {
       uri:
-        'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
+        "https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/Splash%2Fslide_03.png?alt=media&token=cf59ad46-01e6-4b60-a2a9-8bb8e72b92a1",
     },
   },
 ];
 
-export default function Introduce({turnOffIntroduce}) {
+export default function Introduce({ turnOffIntroduce }) {
   const _onDone = () => {
     storeValueIsShowIntroduceOrNot();
     turnOffIntroduce();
   };
 
-  const _renderItem = ({item}) => {
+  const _renderItem = ({ item }) => {
     return (
       <View style={styles.slide} key={item.key}>
         <StatusBar barStyle="light-content" />
-        <ImageBackground source={item.image} style={styles.image}>
-          <Text style={{color: '#fff', fontSize: 40}}>{item.key}</Text>
-        </ImageBackground>
+        <ImageBackground source={item.image} style={styles.image} resizeMode={'cover'} />
       </View>
     );
   };
@@ -90,7 +88,7 @@ export default function Introduce({turnOffIntroduce}) {
       renderItem={_renderItem}
       renderDoneButton={_renderDoneButton}
       renderNextButton={_renderNextButton}
-      dotStyle={{backgroundColor: '#6b6a69'}}
+      dotStyle={{ backgroundColor: '#6b6a69' }}
       onDone={_onDone}
     />
   );
@@ -103,9 +101,9 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    resizeMode: 'cover',
     justifyContent: 'center',
     width: WIDTH,
+    height: HEIGHT,
     alignItems: 'center',
   },
   buttonCircle: {

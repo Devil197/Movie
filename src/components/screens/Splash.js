@@ -31,7 +31,7 @@ import Introduce from './Introduce';
 import AsyncStorage from '@react-native-community/async-storage';
 import { SkypeIndicator } from 'react-native-indicators';
 import { ptColor } from '../../constants/styles';
-
+import { getIsLoggedIn } from '../../utils/asyncStorage'
 const IMAGE = {
   uri:
     'https://firebasestorage.googleapis.com/v0/b/geapp-d5a80.appspot.com/o/kevin-mueller-0ytwNH74s3A-unsplash.jpg?alt=media&token=14251aed-7d13-44af-a015-929e4d0d4144',
@@ -62,7 +62,9 @@ export const channel = {
 export default function Splash({ navigation }) {
   const dispatch = useDispatch()
   const [isShowIntroduce, setIsShowIntroduce] = useState();
-
+  const userRedux = store.getState().userReducer
+  const isLogin = useSelector((state) => state.userReducer?.loggedIn);
+  console.log('1000 userRedux', userRedux);
   const animOpacity = new Animated.Value(0);
 
   useEffect(() => {
@@ -78,6 +80,28 @@ export default function Splash({ navigation }) {
       navigation.navigate(screen);
     }, 3000);
   }
+
+  // useEffect(() => {
+  //   checkIntro()
+
+  //   return () => console.log('CHECK UNSUB : Splash -> unsubscribe');
+  // }, [isShowIntroduce])
+
+  // const checkIntro = async () => {
+  //   await getValueToShowIntroduceOrNot((isShow) => {
+  //     console.log("IS SHOW INTRODUCE SCREEN: ", isShow);
+  //     if (isShowIntroduce === undefined) {
+  //       setIsShowIntroduce(isShow);
+  //     }
+  //     if (isShow === false) {
+  //       if (userRedux?.loggedIn) {
+  //         timeOut(ROUTE_KEY.Home)
+  //       } else {
+  //         timeOut(ROUTE_KEY.Login)
+  //       }
+  //     }
+  //   });
+  // }
 
   useEffect(() => {
     let unsubscribe = null;
@@ -126,32 +150,18 @@ export default function Splash({ navigation }) {
       })
 
       await persistStore(store, null, async () => {
-
-        const userRedux = store.getState().userReducer
-        console.log('1000 userRedux', userRedux);
         const dataFollowRedux = await store.getState().followReducer
         console.log('1001 redux', dataFollowRedux);
 
-        if (userRedux.loggedIn) {
-          navigation.navigate(ROUTE_KEY.BottomNavigation)
-        } else {
-          navigation.navigate(ROUTE_KEY.Login);
-        }
-
-        // await getValueToShowIntroduceOrNot((isShow) => {
-
-        //   if (isShow === false) {
-        //     if (userRedux.loggedIn) {
-        //       navigation.navigate(ROUTE_KEY.BottomNavigation)
-        //     } else {
-        //       //navigation.navigate(ROUTE_KEY.Login)
-        //       navigation.navigate(ROUTE_KEY.Login);
-        //     }
-        //   }
-        //   setIsShowIntroduce(isShow);
-        // });
         // notification  video
         setTimeout(() => {
+
+          if (isLogin) {
+            navigation.navigate(ROUTE_KEY.Home)
+          } else {
+            navigation.navigate(ROUTE_KEY.Login);
+          }
+
           console.log('0808 dataFollowRedux', dataFollowRedux);
           dataFollowRedux?.list.map((e) => {
             messaging().subscribeToTopic(e?._id + '')
@@ -162,7 +172,7 @@ export default function Splash({ navigation }) {
 
           })
 
-        }, 1000)
+        }, 2000)
       });
 
       setTimeout(() => {
@@ -286,7 +296,6 @@ export default function Splash({ navigation }) {
     }
     initApplicationData()
 
-
     return () => console.log('29148 : Splash -> unsubscribe');
   }, [])
 
@@ -296,9 +305,6 @@ export default function Splash({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <Image
-        source={require('../../assets/icons/gea_logo.png')}
-        style={{ height: HEIGHT * 0.3, width: WIDTH * 0.8, resizeMode: 'stretch', }} /> */}
       <View style={{ width: 40, height: 40, borderRadius: 20 }}>
         <SkypeIndicator
           color={ptColor.appColor}

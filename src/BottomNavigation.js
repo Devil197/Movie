@@ -14,20 +14,25 @@ const tabBarOptions = {
   activeTintColor: '#000',
   showLabel: false,
   // keyboardHidesTabBar: true,
-  // style: {
-  //   position: 'absolute',
-  // },
+  style: {
+    position: 'absolute',
+    bottom: -60,
+
+  },
 };
 function MyBottomTab() {
+
   return (
     <Tab.Navigator tabBarOptions={tabBarOptions}>
       <Tab.Screen
         name={ROUTE_KEY.Film}
         component={Home}
         options={{
+
           tabBarIcon: ({ color, size }) => (
             <Icon name="film" color={color} size={size} />
           ),
+          tabBarVisible: false
         }}
       />
       {/* <Tab.Screen
@@ -51,11 +56,13 @@ function MyBottomTab() {
       <Tab.Screen
         name={ROUTE_KEY.Follow}
         component={Follow}
+
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="heart" color={color} size={size} />
           ),
           tabBarBadge: 1,
+          tabBarVisible: false
         }}
       />
 
@@ -66,6 +73,7 @@ function MyBottomTab() {
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" color={color} size={size} />
           ),
+          tabBarVisible: false
         }}
       />
     </Tab.Navigator>

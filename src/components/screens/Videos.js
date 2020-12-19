@@ -23,11 +23,20 @@ import { addHistoryByMovieId } from '../../Redux/actions/historyAction'
 import { useDispatch, useSelector } from 'react-redux';
 import { REDUX } from "../../Redux/store/types";
 import { TextInput } from "react-native";
-import { _getAllChat, _addOneMessage } from '../../Redux/actions/chatAction'
+import { _getAllChat, _addOneMessage, _getAllChatSortByLike } from '../../Redux/actions/chatAction'
 import Icons from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating';
 import { SkypeIndicator } from 'react-native-indicators';
 import moment from 'moment';
+import { Icon as IconElement } from 'react-native-elements'
+
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+
 const itemWidth = 40 * WIDTH_SCALE
 
 export default function Video({ navigation, route }) {
@@ -43,15 +52,12 @@ export default function Video({ navigation, route }) {
   const [index, setIndex] = useState(0)
   const [chat, setChat] = useState()
   const [chatData, setChatData] = useState()
-  const [ratingData, setRatingData] = useState()
-  const [likeData, setLikeData] = useState()
   const [inputHeight, setInputHeight] = useState(0)
-  const [isLoading, setLoading] = useState(true)
-  const [selectedValue, setSelectedValue] = useState(1)
   const [isLikeList, setIsLikeList] = useState()
   const [isRefreshData, setIsRefreshData] = useState(false)
   const setMenuRef = useRef();
-
+  const [menuTrigger, setMenuTrigger] = useState(0)
+  const [isLoading, setLoading] = useState(true);
   const onStateChange = useCallback((state) => {
     if (state === "ended") {
       setPlaying(false);
@@ -60,6 +66,7 @@ export default function Video({ navigation, route }) {
   }, []);
 
   useEffect(() => {
+
     async function initDataVideo() {
       await getMovieById(_id).then(res => {
         setMovie(res?.items)
@@ -81,21 +88,23 @@ export default function Video({ navigation, route }) {
   }, [])
 
   useEffect(() => {
-    handleChatAPI_getAll();
-  }, [isLoading])
 
-  useEffect(() => {
-    handleChatAPI_getAll();
     handleLikeAPI_isLikeComment()
+    handleChatAPI_getAll();
   }, [isRefreshData])
 
   const handleChatAPI_getAll = async () => {
-    await _getAllChat(_id).then(res => {
-      setChatData(res?.data);
-      setRatingData(res?.ratings);
-      setLikeData(res?.countLike);
-      setLoading(false)
-    })
+    if (menuTrigger !== 0) {
+      await _getAllChat(_id, menuTrigger).then(res => {
+        setChatData(res?.data);
+        setIsRefreshData(false)
+      })
+    } else {
+      await _getAllChatSortByLike(_id).then(res => {
+        setChatData(res?.data);
+        setIsRefreshData(false)
+      })
+    }
   }
 
   const handleLikeAPI_isLikeComment = async () => {
@@ -108,9 +117,11 @@ export default function Video({ navigation, route }) {
   }
 
   const handleChatAPI_addComment = () => {
+    setIsRefreshData(true);
     _addOneMessage(_id, userRedux?.userInfo?._id, chat).then(res => {
       console.log("IS LIKE: ", res?.data);
       if (res?.data !== [] || res?.data != undefined) {
+        setIsRefreshData(false)
         setChat('');
       }
     })
@@ -156,35 +167,6 @@ export default function Video({ navigation, route }) {
 
   }
 
-  const getUserRatingThisMovie = (_userId) => {
-    let rating;
-    if (ratingData !== undefined) {
-      ratingData.map((val, ind) => {
-        if (val?.user_id === _userId) {
-          rating = val?.score;
-        }
-      })
-    }
-    return (
-      <View
-        style={{
-          width: WIDTH * 0.25,
-          marginTop: 5 * WIDTH_SCALE
-        }}>
-        <StarRating
-          activeOpacity={rating}
-          starStyle={{
-          }}
-          starSize={18}
-          fullStarColor={'green'}
-          disabled={false}
-          maxStars={5}
-          rating={rating}
-          emptyStarColor={'#f1c40f'}
-        />
-      </View>
-    )
-  }
 
   function chatIdExists(chat_id) {
     if (isLikeList !== undefined) {
@@ -215,7 +197,7 @@ export default function Video({ navigation, route }) {
                     flex: 1,
                     justifyContent: 'center',
                   }}>
-                  {val?.userInfo?.facebook_photo ?
+                  {val?.userInfo?.facebook_photo || val?.userInfo?.google_photo ?
                     <Image
                       style={{
                         borderRadius: 20,
@@ -253,7 +235,26 @@ export default function Video({ navigation, route }) {
                       ? val?.userInfo?.facebook_name
                       : val?.userInfo?.google_name}
                   </Text>
-                  {getUserRatingThisMovie(val?.userInfo?._id)}
+                  {val?.rating > 0
+                    ? <View
+                      style={{
+                        width: WIDTH * 0.25,
+                        marginTop: 5 * WIDTH_SCALE
+                      }}>
+                      <StarRating
+                        activeOpacity={val?.rating}
+                        starStyle={{
+                        }}
+                        starSize={18}
+                        fullStarColor={'green'}
+                        disabled={false}
+                        maxStars={5}
+                        rating={val?.rating}
+                        emptyStarColor={'#f1c40f'}
+                      />
+                    </View>
+                    : <Text style={{ fontSize: 12 * WIDTH_SCALE }}>Người dùng chưa đánh giá!</Text>
+                  }
                 </View>
 
               </View>
@@ -275,46 +276,39 @@ export default function Video({ navigation, route }) {
                 >
                   {val?.content}
                 </Text>
-                {likeData !== undefined
-                  ? likeData.map((like, indexLike) => {
-                    if (like?.chat_id === val?.chat_id) {
-                      return (
-                        <View
-                          key={indexLike}
-                          style={{
-                            position: 'absolute',
-                            zIndex: 1,
-                            right: 0,
-                            bottom: -10,
-                            backgroundColor: ptColor.gray2,
-                            borderRadius: 15,
-                            flexDirection: 'row',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <Icons
-                            name={'heart'}
-                            size={14}
-                            color={'#fff'}
-                            style={{
-                              padding: 2,
-                              backgroundColor: 'red',
-                              borderRadius: 10,
-                            }} />
-                          <Text
-                            style={{
-                              fontSize: 12,
-                              color: '#fff',
-                              marginLeft: 5,
-                              marginRight: 5,
-                              ...pFonts.contentText
-                            }}
-                          >{like?.count}</Text>
-                        </View>
-                      )
-                    }
-                  }) : null
+                {val?.sumLike > 0
+                  ? <View
+                    style={{
+                      position: 'absolute',
+                      zIndex: 1,
+                      right: 0,
+                      bottom: -10,
+                      backgroundColor: ptColor.gray2,
+                      borderRadius: 15,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Icons
+                      name={'heart'}
+                      size={14}
+                      color={'#fff'}
+                      style={{
+                        padding: 2,
+                        backgroundColor: 'red',
+                        borderRadius: 10,
+                      }} />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        color: '#fff',
+                        marginLeft: 5,
+                        marginRight: 5,
+                        ...pFonts.contentText
+                      }}
+                    >{val?.sumLike}</Text>
+                  </View> : null
                 }
 
               </View>
@@ -326,8 +320,7 @@ export default function Video({ navigation, route }) {
                   flexDirection: 'row'
                 }}>
 
-                {chatIdExists(val?.chat_id)
-                  ?
+                {chatIdExists(val?.chat_id) ?
                   <TouchableWithoutFeedback
                     onPress={() => handleLikeAPI_likeCommentOnPress(val?.chat_id)}
                   >
@@ -352,7 +345,7 @@ export default function Video({ navigation, route }) {
                   </TouchableWithoutFeedback>
                 }
 
-                <TouchableWithoutFeedback
+                < TouchableWithoutFeedback
                   onPress={() => showReplyComment()}
                 >
                   <Text
@@ -395,215 +388,289 @@ export default function Video({ navigation, route }) {
   const showMenu = () => setMenuRef.current.show()
   const hideMenu = () => setMenuRef.current.hide()
 
-  if (isLoading) {
-    return (
-      <View style={{
-        flex: 1,
-        position: 'absolute',
-        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-        width: WIDTH,
-        height: HEIGHT,
-        justifyContent: 'center',
-        alignItems: 'center',
-        zIndex: 9999,
-      }}>
-        <View style={{ width: 60, height: 60, borderRadius: 20 }}>
-          <SkypeIndicator
-            color={ptColor.appColor}
-            style={{
-              padding: 20 * WIDTH_SCALE,
-              backgroundColor: 'rgba(166, 164, 164, 0.4)',
-              borderRadius: 10,
-            }}
-            size={40 * WIDTH_SCALE}
-          />
-        </View>
-      </View>
-    )
-  }
-
   return (
-    <ViewPager
-      style={{ flex: 1, overflow: 'hidden', backgroundColor: null }} initialPage={0} orientation={'horizontal'}
-      showPageIndicator={true}
-      ref={viewPagerRef}
-
-    >
-
-      <ScrollView showsVerticalScrollIndicator={false} key={1} style={{ flex: 1 }}>
-        <View style={{ borderBottomLeftRadius: 10 * WIDTH_SCALE, borderBottomRightRadius: 10 * WIDTH_SCALE, margin: 0 }}>
-          <YoutubePlayer
-            height={isFullScreen ? HEIGHT : 240 * WIDTH_SCALE}
-            width={WIDTH}
-            play={playing}
-            //onPlaybackRateChange={(e) => console.log('0808 play e', e)}
-            onPlaybackQualityChange={(e) => console.log('0808 play change ', e)}
-            videoId={data[index]?.link}
-            onChangeState={onStateChange}
-            showClosedCaptions={false}
-            preventFullScreen={false}
-            //onReady={(e) => console.log('0808 onReady', e)}
-            onChangeState={(e) => outVideo(e)}
-            onError={() => Alert.alert('Cảnh Báo', 'Tập phim hiện tại đã bị xóa hoặc hiện tại không thể xem !')}
-            onFullScreenChange={(e) => {
-              //console.log('1001 fullscreen ', e);
-              if (e) {
-                setIsFullScreen(e)
-                Orientation.lockToLandscape()
-
-              } else {
-                setIsFullScreen(e)
-                Orientation.lockToPortrait()
-              }
-
-            }}
-          />
+    <View style={{ flex: 1 }}>
+      {isLoading ?
+        <View style={{
+          height: HEIGHT,
+          width: WIDTH,
+          position: 'absolute',
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+          top: 0,
+          left: 0,
+        }}>
+          <View style={{ width: 60, height: 60, borderRadius: 20, }}>
+            <SkypeIndicator
+              color={ptColor.appColor}
+              style={{
+                padding: 20 * WIDTH_SCALE,
+                backgroundColor: 'rgba(166, 164, 164, 0.4)',
+                borderRadius: 30,
+              }}
+              size={30 * WIDTH_SCALE}
+            />
+          </View>
         </View>
+        : null
+      }
+      <ViewPager
+        style={{ flex: 1, overflow: 'hidden', backgroundColor: null }} initialPage={0} orientation={'horizontal'}
+        showPageIndicator={true}
+        ref={viewPagerRef}>
 
-        {isFullScreen ?
-          null
-          :
-          <View style={{ marginTop: 0 }}>
-            <View
-              style={{
-                margin: 10 * WIDTH_SCALE,
-                backgroundColor: 'white',
-                padding: 10 * WIDTH_SCALE
-              }}>
-              <Text
-                style={{
-                  ...pFonts.text,
-                  fontSize: 20 * WIDTH_SCALE,
-                  marginBottom: 15 * WIDTH_SCALE,
-                }}
-              >
-                DANH SÁCH TẬP PHIM
-              </Text>
-              <View style={{ flexDirection: 'row' }} >
-                {data !== undefined
-                  ? data.map((item, index) => {
-                    return (
-                      <MyHighLightButton
-                        key={item?._id}
-                        onPress={() => {
-                          MySpinner.show()
-                          setIndex(item.index)
-                          setTimeout(() => {
-                            MySpinner.hide()
-                          }, 1000 * 0.5)
-                        }}
-                        style={{
-                          width: '100%',
-                          height: 40 * WIDTH_SCALE,
-                          alignContent: 'center',
-                          justifyContent: 'center',
-                          marginBottom: 5 * WIDTH_SCALE,
-                          borderWidth: 0.5,
-                          borderRadius: 8 * WIDTH_SCALE
-                        }}>
-                        <Text style={{ textAlign: 'center', color: item.index === index ? ptColor.white : ptColor.appColor }}>
-                          {item?.title}
-                        </Text>
-                      </MyHighLightButton>
-                    )
-                  })
-                  : null
+        <ScrollView showsVerticalScrollIndicator={false} key={1} style={{ flex: 1 }}>
+
+          <View style={{ borderBottomLeftRadius: 10 * WIDTH_SCALE, borderBottomRightRadius: 10 * WIDTH_SCALE, margin: 0 }}>
+            <YoutubePlayer
+              height={isFullScreen ? HEIGHT : 240 * WIDTH_SCALE}
+              width={WIDTH}
+              play={playing}
+              //onPlaybackRateChange={(e) => console.log('0808 play e', e)}
+              onPlaybackQualityChange={(e) => console.log('0808 play change ', e)}
+              videoId={data[index]?.link}
+              onChangeState={onStateChange}
+              showClosedCaptions={false}
+              preventFullScreen={false}
+              onReady={(e) => {
+                console.log('0808 onReady', e)
+                setLoading(false)
+              }}
+              onChangeState={(e) => outVideo(e)}
+              onError={() => Alert.alert('Cảnh Báo', 'Tập phim hiện tại đã bị xóa hoặc hiện tại không thể xem !')}
+              onFullScreenChange={(e) => {
+                //console.log('1001 fullscreen ', e);
+                if (e) {
+                  setIsFullScreen(e)
+                  Orientation.lockToLandscape()
+
+                } else {
+                  setIsFullScreen(e)
+                  Orientation.lockToPortrait()
                 }
-              </View>
-            </View>
-            <View
-              style={{
-                margin: 10 * WIDTH_SCALE,
-                marginTop: 5 * WIDTH_SCALE,
-                backgroundColor: 'white',
-                padding: 10 * WIDTH_SCALE,
-                minHeight: HEIGHT * 0.49
-              }}>
-              <Text
+
+              }}
+            />
+          </View>
+
+          {isFullScreen ?
+            null
+            :
+            <View style={{ marginTop: 0 }}>
+              <View
                 style={{
-                  ...pFonts.text,
-                  fontSize: 20 * WIDTH_SCALE,
-                  marginBottom: 25 * WIDTH_SCALE,
-                  borderBottomWidth: 0.5,
-                  borderBottomColor: ptColor.gray2,
-                  paddingBottom: 10 * WIDTH_SCALE,
-                }}
-              >
-                BÌNH LUẬN
+                  margin: 10 * WIDTH_SCALE,
+                  backgroundColor: 'white',
+                  padding: 10 * WIDTH_SCALE
+                }}>
+                <Text
+                  style={{
+                    ...pFonts.text,
+                    fontSize: 20 * WIDTH_SCALE,
+                    marginBottom: 15 * WIDTH_SCALE,
+                  }}
+                >
+                  DANH SÁCH TẬP PHIM
+              </Text>
+                <View style={{}} >
+                  {data !== undefined
+                    ? data.map((item, ind) => {
+
+                      return (
+                        <MyHighLightButton
+                          key={item?._id}
+                          onPress={() => {
+                            setLoading(true)
+                            setIndex(ind)
+                            setTimeout(() => {
+                              setLoading(false)
+                            }, 1000 * 0.5)
+                          }}
+                          style={{
+                            width: '100%',
+                            height: 40 * WIDTH_SCALE,
+                            alignContent: 'center',
+                            justifyContent: 'center',
+                            marginBottom: 5 * WIDTH_SCALE,
+                            borderWidth: 0.75,
+                            borderRadius: 8 * WIDTH_SCALE,
+                            borderColor: ind === index ? ptColor.appColor : ptColor.black
+                          }}>
+                          <Text style={{
+                            fontSize: 16 * WIDTH_SCALE,
+                            textAlign: 'center',
+                            color: ind === index ? ptColor.appColor : ptColor.black
+                          }}>
+                            {item?.title}
+                          </Text>
+                        </MyHighLightButton>
+                      )
+                    })
+                    : null
+                  }
+                </View>
+              </View>
+              <View
+                style={{
+                  marginHorizontal: 10 * WIDTH_SCALE,
+                  backgroundColor: 'white',
+                  padding: 10 * WIDTH_SCALE,
+                  minHeight: HEIGHT * 0.49
+                }}>
+                <Text
+                  style={{
+                    ...pFonts.text,
+                    fontSize: 20 * WIDTH_SCALE,
+                    marginBottom: 25 * WIDTH_SCALE,
+                    borderBottomWidth: 0.5,
+                    borderBottomColor: ptColor.gray2,
+                    paddingBottom: 10 * WIDTH_SCALE,
+                  }}
+                >
+                  BÌNH LUẬN
               </Text>
 
-              {/* TEXT INPUT CHATTING */}
-              <View
-                style={{
-                  width: '100%',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}
-              >
-                <TextInput
-                  value={chat}
-                  onChangeText={(txt) => setChat(txt)}
-                  onContentSizeChange={e => {
-                    setInputHeight(e.nativeEvent.contentSize.height)
-                  }}
-                  multiline={true}
-                  placeholder={'Bạn muốn nói gì?'}
+                {/* TEXT INPUT CHATTING */}
+                <View
                   style={{
-                    borderColor: ptColor.gray2,
-                    borderWidth: 0.5,
-                    borderRadius: 20 * WIDTH_SCALE,
-                    paddingLeft: 10 * WIDTH_SCALE,
-                    height: inputHeight,
-                    width: '90%',
-                    marginRight: '3%'
+                    width: '100%',
+                    flexDirection: 'row',
+                    alignItems: 'center',
                   }}
-                />
+                >
+                  <TextInput
+                    value={chat}
+                    onChangeText={(txt) => setChat(txt)}
+                    // onContentSizeChange={e => {
+                    //   setInputHeight(e.nativeEvent.contentSize.height)
+                    // }}
+                    multiline={true}
+                    placeholder={'Bạn muốn nói gì?'}
+                    style={{
+                      borderColor: ptColor.gray2,
+                      borderWidth: 0.5,
+                      borderRadius: 20 * WIDTH_SCALE,
+                      paddingLeft: 10 * WIDTH_SCALE,
+                      width: '90%',
+                      marginRight: '3%',
+                    }}
+                  />
 
-                <Icons
-                  onPress={() => handleChatAPI_addComment()}
-                  name='send' size={20 * WIDTH_SCALE}
-                  color={'red'} />
+                  <Icons
+                    onPress={() => handleChatAPI_addComment()}
+                    name='send' size={20 * WIDTH_SCALE}
+                    color={'red'} />
 
-              </View>
+                </View>
 
-              <View
-                style={{
-                  width: '100%',
-                  marginTop: 15 * WIDTH_SCALE,
-                }}
-              >
-
-                <View style={{
-                  alignSelf: 'center',
-                  width: '100%',
-                  height: 0.2,
-                  backgroundColor: ptColor.gray2,
-                  marginBottom: 15 * WIDTH_SCALE
-                }} />
 
                 <View
                   style={{
                     width: '100%',
-                    height: 30 * WIDTH_SCALE,
-                    justifyContent: 'flex-end',
-                    paddingHorizontal: 20 * WIDTH_SCALE,
-                  }}>
+                    marginTop: 10 * WIDTH_SCALE
+                  }}
+                >
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      position: 'absolute',
+                      right: 0,
+                      width: WIDTH * 0.3,
+                      zIndex: 9999,
+                      height: 40 * WIDTH_SCALE,
+                      top: 0,
+                    }}>
+                    <Menu>
+                      <MenuTrigger
+                        style={{
+                          padding: 20 * WIDTH_SCALE,
+                          flexDirection: 'row',
+                        }}
+                      >
+                        <Text style={{ marginRight: 10 * WIDTH_SCALE }}>{menuTrigger === 1 ? "Cũ nhất"
+                          : menuTrigger === -1 ? "Mới nhất"
+                            : "Nổi bật"
+                        }</Text>
+                        <IconElement name="chevron-down" type="feather" color={ptColor.black} size={24 * WIDTH_SCALE} />
+                      </MenuTrigger>
+                      <MenuOptions>
+                        <MenuOption
+                          style={{
+                            height: 40 * WIDTH_SCALE,
+                            justifyContent: 'center',
+                            padding: 10,
+                            alignItems: 'flex-end',
+                            borderBottomColor: ptColor.gray,
+                            borderBottomWidth: 0.5
+                          }}
+                          onSelect={() => { setMenuTrigger(1); setIsRefreshData(true) }}>
+                          <Text>Cũ nhất</Text>
+                        </MenuOption>
+                        <MenuOption
+                          style={{
+                            height: 40 * WIDTH_SCALE,
+                            justifyContent: 'center',
+                            padding: 10,
+                            alignItems: 'flex-end',
+                            borderBottomColor: ptColor.gray,
+                            borderBottomWidth: 0.5
+                          }}
+                          onSelect={() => { setMenuTrigger(-1); setIsRefreshData(true) }}>
+                          <Text>Mới nhất</Text>
+                        </MenuOption>
+                        <MenuOption
+                          style={{
+                            height: 40 * WIDTH_SCALE,
+                            justifyContent: 'center',
+                            padding: 10,
+                            alignItems: 'flex-end',
+                            borderBottomColor: ptColor.gray,
+                            borderBottomWidth: 0.5
+                          }}
+                          onSelect={() => { setMenuTrigger(0); setIsRefreshData(true) }}>
+                          <Text>Nổi bật</Text>
+                        </MenuOption>
+                      </MenuOptions>
+                    </Menu>
 
-                  {/* HERE IS GET COMMENT BY CREATE DATE */}
+                  </View>
 
+                  <View style={{ height: 50 * WIDTH_SCALE, width: '100%' }} />
+
+                  {!isRefreshData
+                    ? <ChatData />
+                    : <View
+                      style={{
+                        marginTop: 10 * WIDTH_SCALE,
+                        width: '100%',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}
+                    >
+                      <View style={{ width: 30, height: 30, borderRadius: 15, }}>
+                        <SkypeIndicator
+                          color={ptColor.appColor}
+                          style={{
+                            padding: 20 * WIDTH_SCALE,
+                            backgroundColor: 'rgba(166, 164, 164, 0.4)',
+                            borderRadius: 30,
+                          }}
+                          size={15 * WIDTH_SCALE}
+                        />
+                      </View>
+                    </View>
+                  }
                 </View>
 
-                <ChatData />
 
               </View>
-
-
             </View>
-          </View>
-        }
+          }
+        </ScrollView>
+      </ViewPager >
 
-      </ScrollView>
-    </ViewPager >
-
+    </View>
   );
 }

@@ -24,7 +24,7 @@ export default function Profile({ navigation }) {
     const dispatch = useDispatch();
     const WIDTH_MODAL = WIDTH - 24 * WIDTH_SCALE
     const userReducer = useSelector((state) => state.userReducer)
-    console.log("USER INFO PROFILE: ", userReducer?.googleInfo);
+    console.log("USER INFO PROFILE: ", userReducer);
     const [isModal, setIsModal] = useState(false);
     const [isShowUserType, setIsShowUserType] = useState(false)
 
@@ -75,10 +75,24 @@ export default function Profile({ navigation }) {
             >
                 <StatusBar backgroundColor="#fff" barStyle="dark-content" translucent={false} />
 
-                <Text style={styles.pageTitle}>Me</Text>
+                <View
+                    style={{
+                        width: WIDTH,
+                        height: 50 * WIDTH_SCALE,
+                        flexDirection: 'row',
+                        paddingHorizontal: 10 * WIDTH_SCALE,
+                        alignItems: 'center'
+                    }}>
+                    <Icon
+                        name={'chevron-left'}
+                        size={24 * WIDTH_SCALE}
+                        color={'#000'}
+                        onPress={() => navigation.goBack()} />
+                    <Text style={styles.pageTitle}>Quản lý</Text>
+                </View>
                 <View style={[styles.row, styles.box]}>
                     <Image style={styles.image} source={{ uri: !isShowUserType && userReducer.facebookInfo.photo !== undefined ? userReducer?.facebookInfo?.photo : userReducer?.googleInfo?.photo }} />
-                    <Text style={styles.name}>Hi !,   {!isShowUserType && userReducer.facebookInfo.name !== undefined ? userReducer.facebookInfo?.name : userReducer.googleInfo?.name}</Text>
+                    <Text style={styles.name}>Hi ! {!isShowUserType && userReducer.facebookInfo.name !== undefined ? userReducer.facebookInfo?.name : userReducer.googleInfo?.name}</Text>
                     <TouchableOpacity style={{ alignItems: 'center', alignSelf: 'flex-end' }}>
                         {
                             !isShowUserType && userReducer.facebookInfo?.name !== undefined ?
@@ -100,12 +114,12 @@ export default function Profile({ navigation }) {
                 </View>
 
                 <View style={styles.group}>
-                    <Text style={styles.groupTitle}>Information</Text>
+                    <Text style={styles.groupTitle}>Thông tin</Text>
 
                     <MyHighLightButton onPress={() => setIsModal(true)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="user" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >My Account</Text>
+                            <Text style={styles.groupItemText} >Thông tin của tôi</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </MyHighLightButton>
@@ -114,7 +128,7 @@ export default function Profile({ navigation }) {
                     <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.History)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="bookmark" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >History</Text>
+                            <Text style={styles.groupItemText} >Lịch sử</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </MyHighLightButton>
@@ -123,18 +137,26 @@ export default function Profile({ navigation }) {
                     <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Notification)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="bell" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >Notification</Text>
+                            <Text style={styles.groupItemText} >Thông báo</Text>
+                            <Icon name="chevron-right" />
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => navigation.push(ROUTE_KEY.Follow)}>
+                        <View style={[styles.row, styles.groupItem]}>
+                            <Icon name="bookmark" color="#999999" size={16} />
+                            <Text style={styles.groupItemText} >Theo dõi</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </TouchableOpacity>
                 </View>
                 <View style={styles.group}>
-                    <Text style={styles.groupTitle}>Settings</Text>
+                    <Text style={styles.groupTitle}>Hệ thống</Text>
 
                     <MyHighLightButton onPress={() => navigation.push(ROUTE_KEY.Setting)}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="settings" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >App settings</Text>
+                            <Text style={styles.groupItemText} >Cài đặt</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </MyHighLightButton>
@@ -145,23 +167,15 @@ export default function Profile({ navigation }) {
                     <TouchableOpacity>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="alert-circle" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >Help & info</Text>
+                            <Text style={styles.groupItemText} >Trợ giúp</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </TouchableOpacity>
 
-
-                    <TouchableOpacity>
-                        <View style={[styles.row, styles.groupItem]}>
-                            <Icon name="phone-call" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >Hotline</Text>
-                            <Icon name="chevron-right" />
-                        </View>
-                    </TouchableOpacity>
                     <TouchableOpacity onPress={logoutUser}>
                         <View style={[styles.row, styles.groupItem]}>
                             <Icon name="log-out" color="#999999" size={16} />
-                            <Text style={styles.groupItemText} >Sign out</Text>
+                            <Text style={styles.groupItemText} >Đăng xuất</Text>
                             <Icon name="chevron-right" />
                         </View>
                     </TouchableOpacity>
@@ -300,9 +314,8 @@ const styles = StyleSheet.create({
     container: { backgroundColor: "#fff", flex: 1 },
     pageTitle: {
         fontSize: 20 * WIDTH_SCALE,
-        padding: 16 * WIDTH_SCALE,
-        textAlign: "center",
-        fontFamily: Fonts.SansMedium
+        fontFamily: Fonts.SansMedium,
+        right: - WIDTH * 0.3,
     },
     row: {
         alignItems: "center",

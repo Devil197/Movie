@@ -5,7 +5,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Image, StatusBar, Dimensions, Animated, Easing, ScrollView, TextInput, FlatList, ImageBackground
+  Image, StatusBar, Dimensions, Animated, Easing, ScrollView, TextInput, FlatList, ImageBackground, BackHandler, Alert
 } from 'react-native';
 import { Play, Player, RenderCategory } from '../views';
 import { set } from 'react-native-reanimated';
@@ -51,7 +51,7 @@ import { SkypeIndicator } from 'react-native-indicators';
 
 const IMAGE_SIZE = 45 * WIDTH_SCALE;
 const HEADER_HEIGHT = 110 * WIDTH_SCALE;
-const AnimatedIcon = Animated.createAnimatedComponent(Icons);
+//const AnimatedIcon = Animated.createAnimatedComponent(Icons);
 
 export default function Home({ navigation }) {
   const userRedux = useSelector((state) => state.userReducer)
@@ -60,28 +60,48 @@ export default function Home({ navigation }) {
   const [categories, setCategories] = useState()
   const [categoryItemSelected, setCategoryItemSelected] = useState(0)
   const [dataMovieByScore, setDataMovieByScore] = useState();
-
   useEffect(() => {
-    handleAPI_getMovieByIMDbScore();
 
+    handleAPI_getMovieByIMDbScore();
     handleAPI_getAllCategory();
+
   }, [])
 
-  const handleAPI_getMovieByIMDbScore = async () => {
-    await getAllMovie()
+  useEffect(() => {
+    const backAction = () => {
+      if (navigation.isFocused()) {
+        Alert.alert("Lạy chúa!", "Bạn muốn thoát khỏi đây ư?", [
+          {
+            text: "Xem tiếp",
+            onPress: () => null,
+            style: "cancel"
+          },
+          { text: "Ừm", onPress: () => BackHandler.exitApp() }
+        ]);
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, []);
+
+  const handleAPI_getMovieByIMDbScore = () => {
+    getAllMovie()
       .then((result) => {
-        //console.log("MOVIE BY SCORE: ", result?.items);
         setDataMovieByScore(result?.items);
       })
-      .catch((err) => console.log('MOVIE SCORE: ', err));
   }
 
-  const handleAPI_getAllCategory = async () => {
-    await getCategory().then(result => {
-      //console.log("CATEGORY: ", result?.items);
+  const handleAPI_getAllCategory = () => {
+    getCategory().then(result => {
       setCategories(result?.items);
+      setLoading(false);
     })
-    setLoading(false);
   }
 
   return (
@@ -132,7 +152,7 @@ export default function Home({ navigation }) {
                   backgroundColor: 'rgba(166, 164, 164, 0.4)',
                   borderRadius: 30,
                 }}
-                size={40 * WIDTH_SCALE}
+                size={30 * WIDTH_SCALE}
               />
             </View>
           </View>

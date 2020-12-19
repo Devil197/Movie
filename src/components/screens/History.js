@@ -36,17 +36,19 @@ import { FlatList } from 'react-native-gesture-handler';
 export default function History({ navigation }) {
 
   const userReducer = useSelector((state) => state.userReducer)
-  // console.log('image,: ', userReducer);
+  //console.log('History: ', userReducer);
   const [dataHistory, setDataHistory] = useState();
 
   useEffect(() => {
-    getHistoryByIdUser(userReducer?.userInfo?._id).then((history) => {
+    handleHistoryAPI_getHistory()
+  }, [])
+
+  const handleHistoryAPI_getHistory = async () => {
+    await getHistoryByIdUser(userReducer?.userInfo?._id).then((history) => {
       console.log('1001 -> history', history);
       setDataHistory(history);
     }).catch((err) => console.log("Failed", err));
-    console.log('da ', dataHistory?.items);
-
-  }, [])
+  }
 
   const removeAll = (invite_id) => {
     MySpinner.show()
@@ -83,7 +85,7 @@ export default function History({ navigation }) {
           color={ptColor.black}
           size={24}
         />
-        <Text style={{ fontSize: 18 * WIDTH_SCALE }}>History</Text>
+        <Text style={{ fontSize: 18 * WIDTH_SCALE }}>Lịch sử xem phim</Text>
         <View style={{ width: '10%' }} />
       </Appbar.Header>
     )
@@ -93,7 +95,7 @@ export default function History({ navigation }) {
   return (
     <View style={styles.container}>
       <Header />
-      {dataHistory[0] ?
+      {dataHistory === undefined ?
         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
           <Text style={{ color: 'gray' }}>Bạn chưa có history</Text>
         </View>
@@ -101,7 +103,7 @@ export default function History({ navigation }) {
         <>
           {dataHistory?.items.map((e, i) => {
             return (
-              <Card style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
+              <Card key={i} style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
                 <View style={{ flexDirection: 'row', margin: 10 * WIDTH_SCALE }} >
                   <MyHighLightButton onPress={() => navigation.navigate(ROUTE_KEY.Details, { _id: e?.movie_id?._id })}>
                     <Image source={{ uri: e?.movie_id?.cover_img }} style={{ width: WIDTH * 0.4, height: 100 * WIDTH_SCALE }} resizeMode={'cover'} />

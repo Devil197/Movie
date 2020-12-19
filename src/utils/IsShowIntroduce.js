@@ -20,7 +20,7 @@ export const getValueToShowIntroduceOrNot = async (isShow) => {
         if (value === null) {
           isShow(true);
         } else {
-          isShow(JSON.parse(value));
+          isShow(false);
         }
       }
     });

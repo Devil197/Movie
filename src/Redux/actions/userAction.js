@@ -4,7 +4,7 @@ import moment from 'moment';
 import { REDUX } from '../store/types';
 import { Alert } from 'react-native';
 import { AccessToken, LoginManager } from 'react-native-fbsdk';
-
+import { setIsLoggedIn } from '../../utils/asyncStorage'
 import axios from 'axios';
 import USER from '../../api/user';
 import { axiosConfig } from '../../utils/api';
@@ -57,6 +57,7 @@ const _userAuthSuccessFacebook = (dispatch, facebookInfo, userInfo) => {
     type: REDUX.ADD_USER_INFO,
     payload: userInfo,
   });
+
 };
 
 export const _addApiLoginGoogle = (googleInfo, dispatch) => {
@@ -166,6 +167,7 @@ export const _addApiLoginFacebook = (facebookInfo, dispatch) => {
         //   _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items);
         // }
         _userAuthSuccessFacebook(dispatch, facebookInfo, res.data?.items[0]);
+
         MySpinner.hide();
       } else {
         MySpinner.hide();

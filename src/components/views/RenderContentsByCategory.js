@@ -28,7 +28,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 export default function RenderContentsByCategory({ categoryId, navigation }) {
 
     const [movieList, setmovieList] = useState()
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         handleAPI_getMoviesByCategory()
@@ -56,6 +56,7 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
                 setmovieList(array)
                 setLoading(false);
             }
+
         })
     }
 
@@ -97,9 +98,8 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
         return (
             <View style={{
                 position: 'absolute',
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
                 width: WIDTH,
-                height: HEIGHT - 200 * WIDTH_SCALE,
+                height: HEIGHT,
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 9999,
@@ -112,7 +112,7 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
                             backgroundColor: 'rgba(164, 164, 164, 0.4)',
                             borderRadius: 30,
                         }}
-                        size={40 * WIDTH_SCALE}
+                        size={30 * WIDTH_SCALE}
                     />
                 </View>
             </View>

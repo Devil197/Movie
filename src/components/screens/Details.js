@@ -126,11 +126,11 @@ export default function Details({ navigation, route }) {
   };
 
   const _onDoneRating = async () => {
+    setReload(true);
     hideModal()
     if (newRating > 0) {
       await ratingAPI(userInfo?._id, _id, newRating).then((response) => {
         if (response?.data?.result) {
-          setReload(true);
           toastAndroid("Cảm ơn bạn đã đánh giá!")
           setLoading(false);
         } else {
@@ -299,7 +299,7 @@ export default function Details({ navigation, route }) {
       setFollow(false);
       dispatch({
         type: REDUX.DELETE_FOLLOW,
-        payload: followMovie?.movie
+        payload: dataMovie?.movie[0]
       })
     })
   }
@@ -330,7 +330,7 @@ export default function Details({ navigation, route }) {
           setFollow(true);
           dispatch({
             type: REDUX.ADD_FOLLOW,
-            payload: dataMovie?.movie
+            payload: dataMovie?.movie[0]
           })
         } else {
           console.log("THEO DOIX: ", response);
@@ -928,7 +928,6 @@ export default function Details({ navigation, route }) {
                               })
                               : null
                             }
-
 
                           </View>
                         </View>

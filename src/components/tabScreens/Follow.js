@@ -25,6 +25,7 @@ import { Appbar, useTheme } from 'react-native-paper';
 import ViewPager from '@react-native-community/viewpager';
 import update from 'react-addons-update';
 import { useIsFocused } from '@react-navigation/native';
+import Icons from 'react-native-vector-icons/Feather'
 
 const Follow = ({ navigation }) => {
   const isFocused = useIsFocused();
@@ -42,6 +43,7 @@ const Follow = ({ navigation }) => {
   console.log('1000 follow redux', followReducer);
   const userId = user?.userInfo?._id;
   console.log('1000 userId', userId);
+
   useEffect(() => {
     getDataFromAPIMovieFollow();
     getDataFromAPICastFollow()
@@ -52,7 +54,7 @@ const Follow = ({ navigation }) => {
     if (dataUpdate.length > 0) {
       MySpinner.show()
       followReducer?.list?.map((e, i) => {
-        dataItem = dataUpdate.find((e1) => e.movie_id._id === e1._id)
+        dataItem = dataUpdate.find((e1) => e._id === e1._id)
       })
       dataUpdate.map((e) => {
         deleteFollowAPI(userId, e.movie_id._id, followType.movie).then(res => {
@@ -234,8 +236,6 @@ const Follow = ({ navigation }) => {
     setUpdate(false)
   }
 
-
-
   function Header() {
     const _goBack = () => navigation.goBack();
     return (
@@ -246,24 +246,39 @@ const Follow = ({ navigation }) => {
           <Text style={styles.pageTitle}></Text>
         </View>
 
-        <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
-          <Text style={styles.pageTitle}>Follow</Text>
-        </View>
-        <MyHighLightButton
-          onPress={() => {
-            setUpdate(true)
-            if (isUpdate === true) {
-              setDataUpdate((e) => [])
-              setSelectAll(false)
-            }
-          }}
+        <View
           style={{
-            justifyContent: 'center', alignItems: 'flex-end', flex: 1, height: '50%'
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: WIDTH,
+            flexDirection: "row",
+            paddingTop: 5 * WIDTH_SCALE
           }}>
-          < Text style={{ marginRight: 20 * WIDTH_SCALE, fontSize: 16 * WIDTH_SCALE }}>
-            {isUpdate ? 'Hủy' : 'Sửa'}
-          </Text>
-        </MyHighLightButton >
+          <Icons
+            onPress={() => navigation.goBack()}
+            name={'chevron-left'}
+            size={20 * WIDTH_SCALE}
+            color={'#000'}
+            style={{ marginLeft: 10 * WIDTH_SCALE }}
+          />
+          <Text style={styles.pageTitle}>Đã theo dõi</Text>
+          <MyHighLightButton
+            onPress={() => {
+              setUpdate(true)
+              if (isUpdate === true) {
+                setDataUpdate((e) => [])
+                setSelectAll(false)
+              }
+            }}
+            style={{
+              justifyContent: 'center', alignItems: 'flex-end', flex: 1, height: '50%'
+            }}>
+            < Text style={{ marginRight: 20 * WIDTH_SCALE, fontSize: 16 * WIDTH_SCALE }}>
+              {isUpdate ? 'Hủy' : 'Sửa'}
+            </Text>
+          </MyHighLightButton >
+        </View>
+
       </Appbar.Header >
     );
   }
@@ -273,14 +288,13 @@ const Follow = ({ navigation }) => {
     <View style={styles.container}>
       <StatusBar translucent={false} backgroundColor="#fff" />
       <Header />
-      <View
+      {/* <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-around',
           margin: 0,
           padding: 0
-        }}
-      >
+        }}>
         <TouchableOpacity
           onPress={() => scrollViewPagerAction()}
           style={{
@@ -307,7 +321,7 @@ const Follow = ({ navigation }) => {
           }}>
           <Text>Cast</Text>
         </TouchableOpacity>
-      </View>
+      </View> */}
 
       <ViewPager style={{ flex: 1 }} initialPage={scrollViewPager ? 1 : 0} orientation={'horizontal'}
         showPageIndicator={true}
@@ -339,7 +353,7 @@ const Follow = ({ navigation }) => {
             <View
               style={{
                 position: 'absolute',
-                bottom: 50,
+                bottom: 0,
                 flexDirection: 'row',
                 height: 40 * WIDTH_SCALE,
                 borderWidth: 0.5
@@ -413,5 +427,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: Fonts.SansMedium,
     textAlign: 'center',
+    flex: 6
   },
 });

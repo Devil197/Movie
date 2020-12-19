@@ -9,7 +9,8 @@ import {
   TouchableWithoutFeedback,
   Alert,
   BackHandler,
-  Image, StatusBar
+  Image, StatusBar,
+  SafeAreaView
 } from 'react-native';
 import Icons from 'react-native-vector-icons/EvilIcons';
 import {
@@ -21,6 +22,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { Fonts } from '../../utils/Fonts';
 import { ROUTE_KEY } from '../../constants/constants';
+import { SkypeIndicator } from 'react-native-indicators';
 import {
   LoginButton,
   AccessToken,
@@ -49,14 +51,13 @@ export default function Login({ navigation }) {
   console.log(isLogin);
 
   const user = useSelector((state) => state.userReducer);
+  const [isLoading, setLoading] = useState(true)
 
   useEffect(() => {
-    MySpinner.show();
     if (isLogin) {
-      navigation.push(ROUTE_KEY.BottomNavigation);
-      MySpinner.hide();
+      navigation.push(ROUTE_KEY.Home);
     } else {
-      MySpinner.hide();
+      setLoading(false)
     }
   }, [isLogin]);
 
@@ -74,9 +75,26 @@ export default function Login({ navigation }) {
     });
   };
 
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <View style={{ width: 40, height: 40, borderRadius: 20 }}>
+          <SkypeIndicator
+            color={ptColor.appColor}
+            style={{
+              padding: 16 * WIDTH_SCALE,
+              backgroundColor: 'rgba(166, 164, 164, 0.4)',
+              borderRadius: 10,
+            }}
+            size={20 * WIDTH_SCALE}
+          />
+        </View>
+      </View>
+    );
+  }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, marginTop: Platform.OS === 'android' ? 25 : 0 }}>
       <StatusBar barStyle="light-content" />
       <ImageBackground
         source={require('../../assets/icons/login_bg.jpg')}
@@ -84,12 +102,15 @@ export default function Login({ navigation }) {
         <Image
           source={require('../../assets/icons/LOGO.png')}
           style={{
-            resizeMode: 'center',
-            marginTop: HEIGHT * 0.1
+            resizeMode: 'contain',
+            marginTop: HEIGHT * 0.1 * WIDTH_SCALE,
+            height: WIDTH * 0.2,
+            width: WIDTH * 0.2,
           }} />
 
         <View style={styles.headerTitleContainer}>
-          {/* <Text style={styles.title1}>ĐĂNG NHẬP</Text> */}
+          {/* <Text style={styles.title1}>Hấp dẫn nhất</Text>
+          <Text style={styles.title2}>Tiết kiệm nhất</Text> */}
         </View>
 
         <View style={styles.loginContainer}>
@@ -124,18 +145,18 @@ const styles = StyleSheet.create({
   },
   headerTitleContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
   },
   title1: {
     color: ptColor.white,
-    fontSize: 20 * WIDTH_SCALE,
-    fontFamily: Fonts.SansLight,
+    fontSize: 25 * WIDTH_SCALE,
+    fontFamily: Fonts.SansBold,
     textAlign: 'center'
   },
   title2: {
-    color: ptColor.black,
-    fontSize: 30 * WIDTH_SCALE,
+    color: ptColor.white,
+    fontSize: 25 * WIDTH_SCALE,
     fontFamily: Fonts.SansBold,
   },
   loginContainer: {
@@ -148,12 +169,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'transparent',
     height: 45,
-    width: WIDTH * 0.6,
     justifyContent: 'flex-start',
     paddingLeft: 15,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#fff'
+    borderColor: '#fff',
+    width: WIDTH * 0.8,
   },
   buttonGG: {
     flexDirection: 'row',
