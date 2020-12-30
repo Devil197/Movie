@@ -94,8 +94,8 @@ export default function Login({ navigation }) {
   }
 
   return (
-    <View style={{ flex: 1, marginTop: Platform.OS === 'android' ? 25 : 0 }}>
-      <StatusBar barStyle="light-content" />
+    <View style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" />
       <ImageBackground
         source={require('../../assets/icons/login_bg.jpg')}
         style={styles.container}>
@@ -168,13 +168,13 @@ const styles = StyleSheet.create({
   buttonFB: {
     flexDirection: 'row',
     backgroundColor: 'transparent',
-    height: 45,
+    height: 45 * WIDTH_SCALE,
     justifyContent: 'flex-start',
-    paddingLeft: 15,
+    paddingLeft: 15 * WIDTH_SCALE,
     alignItems: 'center',
-    borderWidth: 1,
+    borderWidth: 1 * WIDTH_SCALE,
     borderColor: '#fff',
-    width: WIDTH * 0.8,
+    width: WIDTH * 0.7 * WIDTH_SCALE,
   },
   buttonGG: {
     flexDirection: 'row',
@@ -189,5 +189,6 @@ const styles = StyleSheet.create({
   titleBtnFB: {
     color: '#fff',
     fontFamily: Fonts.SansMedium,
+    fontSize: 16 * WIDTH_SCALE
   },
 });

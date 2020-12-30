@@ -41,7 +41,7 @@ import { getValueToShowIntroduceOrNot } from '../../utils/IsShowIntroduce';
 import { getNewNotification, setNewNotification, clearNewNotification } from '../../utils/asyncStorage'
 import { REDUX } from '../../Redux/store/types';
 import { getItemsFollowByUserId } from '../../Redux/actions/followAction';
-
+import { _checkLikeComment } from '../../Redux/actions/likeAction'
 async function requestUserPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
@@ -105,6 +105,7 @@ export default function Splash({ navigation }) {
 
   useEffect(() => {
     let unsubscribe = null;
+
     async function initApplicationData() {
 
       let fcmToken = null;
@@ -150,6 +151,7 @@ export default function Splash({ navigation }) {
       })
 
       await persistStore(store, null, async () => {
+
         const dataFollowRedux = await store.getState().followReducer
         console.log('1001 redux', dataFollowRedux);
 

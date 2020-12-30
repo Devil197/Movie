@@ -22,7 +22,7 @@ export const getAllMovie = () =>
 export const getCartoon = () =>
   new Promise((resolve, reject) => {
     axiosConfig
-      .get('/v3/movie/get/category/5f7c1a72ed32570004cf5f65')
+      .get('/v3/movie/get/category/5fb3769cea40192e0c866b8a')
       .then((response) => {
         if (response.data.result) {
           resolve(response.data);
@@ -90,10 +90,10 @@ export const getMovieById = (_id) =>
       .catch((err) => reject(err));
   });
 
-export const getMovieByCreatAt = () =>
+export const getMovieByCreatAt = (limit) =>
   new Promise((resolve, reject) => {
     axiosConfig
-      .get('/v3/movie/get/create_at')
+      .get(`/v3/movie/get/create_at?limit=${limit}`)
       .then((response) => {
         if (response.data.result) {
           resolve(response.data);

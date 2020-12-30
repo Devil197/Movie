@@ -71,7 +71,7 @@ export default function searchComponent({ setKeywordOnPress }) {
           color={'rgba(166, 164, 164, 0.8)'}
         />
         <Text style={styles.txtWithoutKeywords}>
-          Enter your keyword to search!
+          Nhập từ khóa!
         </Text>
       </View>
     );

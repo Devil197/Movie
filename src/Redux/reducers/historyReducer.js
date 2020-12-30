@@ -36,7 +36,7 @@ const historyReducer = (state = initialState, action) => {
             }
         }
 
-        case REDUX.REMOVE_KEYWORD: {
+        case REDUX.REMOVE_HISTORY: {
             return {
                 ...state,
                 list: [...state.list.filter((e, i) => e.movie_id !== action.payload.movie_id)],

@@ -60,11 +60,12 @@ export default function Home({ navigation }) {
   const [categories, setCategories] = useState()
   const [categoryItemSelected, setCategoryItemSelected] = useState(0)
   const [dataMovieByScore, setDataMovieByScore] = useState();
+  const [cartoonData, setCartoonData] = useState()
   useEffect(() => {
 
+    handleAPI_getCartoons()
     handleAPI_getMovieByIMDbScore();
     handleAPI_getAllCategory();
-
   }, [])
 
   useEffect(() => {
@@ -90,17 +91,23 @@ export default function Home({ navigation }) {
     return () => backHandler.remove();
   }, []);
 
-  const handleAPI_getMovieByIMDbScore = () => {
-    getAllMovie()
+  const handleAPI_getMovieByIMDbScore = async () => {
+    await getAllMovie()
       .then((result) => {
         setDataMovieByScore(result?.items);
       })
   }
 
-  const handleAPI_getAllCategory = () => {
-    getCategory().then(result => {
+  const handleAPI_getAllCategory = async () => {
+    await getCategory().then(result => {
       setCategories(result?.items);
       setLoading(false);
+    })
+  }
+
+  const handleAPI_getCartoons = async () => {
+    await getCartoon().then(result => {
+      setCartoonData(result?.items)
     })
   }
 
@@ -121,6 +128,7 @@ export default function Home({ navigation }) {
         categoryItemSelected === 0
           ?
           <FeaturesContents
+            cartoons={cartoonData}
             highScoreMovies={dataMovieByScore} // <<==== Đây là tab NỔI BẬT
             navigation={navigation}
           />

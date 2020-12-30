@@ -12,6 +12,7 @@ import {
   Setting,
   Notification,
   Actor,
+  ViewMore,
   Players,
 } from './components/screens';
 import {
@@ -51,6 +52,7 @@ function StackNavigator() {
       <Stack.Screen name={ROUTE_KEY.Home} component={Home} />
       <Stack.Screen name={ROUTE_KEY.Profile} component={Profile} />
       <Stack.Screen name={ROUTE_KEY.Follow} component={Follow} />
+      <Stack.Screen name={ROUTE_KEY.ViewMore} component={ViewMore} />
     </Stack.Navigator>
   );
 }

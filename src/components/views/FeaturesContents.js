@@ -6,7 +6,7 @@ import { Fonts } from '../../utils/Fonts'
 import { ptColor } from '../../constants/styles';
 import { MyHighLightButton } from '../views';
 
-export default function FeaturesContents({ highScoreMovies, navigation }) {
+export default function FeaturesContents({ highScoreMovies, cartoons, navigation }) {
 
     const handleMovieName = (name) => {
         let lastCharSplitIndex = name.indexOf(']');
@@ -42,7 +42,7 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
 
                         color: ptColor.black
                     }}>
-                    REVIEW PHIM IMDB 8+</Text>
+                    IMDB 8+</Text>
 
                 <MyCarousel movieData={highScoreMovies} navigation={navigation} />
             </View>
@@ -56,13 +56,13 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                 <Text
                     style={{
                         fontFamily: Fonts.SansMedium,
-                        fontSize: 20,
+                        fontSize: 18 * WIDTH_SCALE,
                         marginHorizontal: 20
                         ,
                         marginVertical: 16,
 
                         color: ptColor.black
-                    }}>TOP REVIEW PHỔ BIẾN</Text>
+                    }}>PHỔ BIẾN</Text>
 
                 <FlatList
                     showsHorizontalScrollIndicator={false}
@@ -74,9 +74,8 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                             <MyHighLightButton
                                 onPress={() => navigation.push(ROUTE_KEY.Details, { _id: item._id })}
                                 style={{
-
-                                    marginLeft: index == 0 ? 20 : 0
-                                    , marginRight: 20
+                                    marginLeft: index == 0 ? 20 : 0,
+                                    marginRight: 20
                                 }}>
 
                                 <ImageBackground
@@ -168,9 +167,10 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                             fontSize: 18 * WIDTH_SCALE,
                             color: ptColor.black,
                             flex: 7,
-                        }}>REVIEW MỚI NHẤT</Text>
+                        }}>MỚI NHẤT</Text>
 
                     <Text
+                        onPress={() => navigation.push(ROUTE_KEY.ViewMore, { sort: -1 })}
                         style={{
                             fontFamily: Fonts.SansLight,
                             fontSize: 14 * WIDTH_SCALE,
@@ -261,6 +261,76 @@ export default function FeaturesContents({ highScoreMovies, navigation }) {
                     }
                 </View>
             </View>
+
+            {/* CARTOONS */}
+            {/* <View style={{ marginTop: 25 * WIDTH_SCALE, marginHorizontal: 15 * WIDTH_SCALE }}>
+                <View style={{
+                    marginBottom: 10 * WIDTH_SCALE,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                }}>
+                    <Text
+                        style={{
+                            fontFamily: Fonts.SansBold,
+                            fontSize: 18 * WIDTH_SCALE,
+                            color: ptColor.black,
+                            flex: 7,
+                        }}>HOẠT HÌNH</Text>
+
+                    <Text
+                        onPress={() => navigation.push(ROUTE_KEY.ViewMore, { sort: 0 })}
+                        style={{
+                            fontFamily: Fonts.SansLight,
+                            fontSize: 14 * WIDTH_SCALE,
+                        }}
+                    >Xem thêm..</Text>
+                </View>
+                <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+                    {cartoons !== undefined ?
+                        cartoons.map((val, ind) => {
+                            console.log(val);
+                            if (ind < 6) {
+                                return (
+                                    <MyHighLightButton
+                                        onPress={() => navigation.push(ROUTE_KEY.Details, { _id: val?._id })}
+                                        key={val?._id}
+                                        style={{
+                                            marginVertical: 10 * WIDTH_SCALE,
+                                            width: WIDTH * 0.7,
+                                            height: HEIGHT * 0.45,
+                                            backgroundColor: 'rgba(247, 247, 245, 0.6)',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                        }}>
+
+                                        <Image
+                                            source={{ uri: val?.movie_id?.cover_img }}
+                                            style={{
+                                                height: '70%',
+                                                width: '60%',
+                                                marginBottom: 5 * WIDTH_SCALE,
+
+                                                shadowColor: "#000",
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 7,
+                                                },
+                                                shadowOpacity: 0.43,
+                                                shadowRadius: 9.51,
+
+                                                elevation: 15,
+                                            }}
+                                        />
+
+                                        <Text>{val?.movie_id?.name}</Text>
+
+                                    </MyHighLightButton>)
+                            }
+                        })
+                        : null
+                    }
+                </View>
+            </View> */}
 
         </ScrollView >
     )

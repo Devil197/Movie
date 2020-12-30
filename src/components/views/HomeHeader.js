@@ -18,7 +18,7 @@ export default function HomeHeader({ data, navigation, onItemSelected }) {
     const userInfo = useSelector((state) => state.userReducer.userInfo)
     const [selected, setSelected] = useState(0);
     const [categoriesList, setCategoriesList] = useState(initialList);
-    console.log("HOME HEADER: ", userInfo);
+    //console.log("HOME HEADER: ", userInfo);
 
     useEffect(() => {
         if (data !== undefined) {
@@ -79,7 +79,7 @@ export default function HomeHeader({ data, navigation, onItemSelected }) {
                         paddingHorizontal: 5 * WIDTH_SCALE,
                         textAlign: 'center',
 
-                    }}>REVIEW</Text>
+                    }}>MOVIE-10</Text>
 
                 <View style={{ flex: 0.5, marginHorizontal: 10 * WIDTH_SCALE }} />
 

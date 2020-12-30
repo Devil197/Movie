@@ -37,11 +37,13 @@ import Icons from 'react-native-vector-icons/Feather'
 import FollowIcons from 'react-native-vector-icons/Entypo'
 import StarRating from 'react-native-star-rating';
 import { getEvalByMovieId, ratingAPI, newComment, getOneEval, getOneComment, getAllComment, getAllEval } from '../../Redux/actions/evalAction';
+import { _getMovieViewsAPI } from '../../Redux/actions/countViews'
 import { SkypeIndicator } from 'react-native-indicators';
 import { useSelector, useDispatch } from 'react-redux';
+import { REDUX } from '../../Redux/store/types'
 import { getItemsFollowByUserId, followMovie, deleteFollowAPI } from '../../Redux/actions/followAction';
 const HEADER_BAR_HEIGHT = 55 * WIDTH_SCALE;
-import { REDUX } from '../../Redux/store/types'
+
 import { Appbar, useTheme, Card } from 'react-native-paper';
 import { TextInput } from 'react-native';
 import { _getCount_comment_follow_rating } from '../../Redux/actions/statictical'
@@ -84,6 +86,7 @@ export default function Details({ navigation, route }) {
   const starImageCorner = require('../../assets/icons/star_corner.png');
   const [isShowDayUpdateMovie, setIsShowDayUpdateMovie] = useState(true);
   const [comment, setComment] = useState()
+  const [newCommenttxt, setNewComment] = useState()
   const [userRating, setUserRating] = useState(0);
   const [newRating, setNewRating] = useState();
   const [commentData, setCommentData] = useState();
@@ -132,18 +135,18 @@ export default function Details({ navigation, route }) {
       await ratingAPI(userInfo?._id, _id, newRating).then((response) => {
         if (response?.data?.result) {
           toastAndroid("Cảm ơn bạn đã đánh giá!")
-          setLoading(false);
         } else {
           toastAndroid("Lỗi sự cố trong khi xử lý!\nVui lòng thử lại sau.")
         }
       })
 
-      if (comment !== undefined || comment !== '') {
-        await newComment(userInfo?._id, _id, comment).then(res => {
-
+      if (newCommenttxt !== undefined || newCommenttxt !== '') {
+        await newComment(userInfo?._id, _id, newCommenttxt).then(res => {
+          if (res?.result) {
+            setComment(newCommenttxt)
+          }
         })
       }
-      setLoading(false);
     } else {
       toastAndroid("Vui lòng chọn số lượng sao!")
       setLoading(false);
@@ -156,25 +159,31 @@ export default function Details({ navigation, route }) {
   const initial = Orientation.getInitialOrientation();
   useEffect(() => {
 
-    getFullMovie(_id)
-      .then((fullMovie) => {
-        setDataMovie(fullMovie);
-        setTrailer(fullMovie?.movie[0]?.trailer);
-        getDayUpdateMovie(fullMovie?.movie[0]?.create_at)
-        setLoading(false);
-        setReload(false);
-        handleShowDayUpdate(fullMovie);
-      })
-      .catch((err) => console.log('Failed', err));
+    async function handleGetMovieDetailAPI() {
+      await getFullMovie(_id)
+        .then((fullMovie) => {
+          setDataMovie(fullMovie);
+          setTrailer(fullMovie?.movie[0]?.trailer);
+          getDayUpdateMovie(fullMovie?.movie[0]?.create_at)
+          setLoading(false);
+          setReload(false);
+          handleShowDayUpdate(fullMovie);
+        })
+        .catch((err) => console.log('Failed', err));
+    }
+    handleGetMovieDetailAPI()
 
     handleStaticticalAPI_getCount()
     handleEvalAPI_getAllEval()
     handleEvalAPI_getAllComment()
-    handleEvalAPI_getOneComment()
     handleEvalAPI_getOneEval();
     handleEvalAPI_getAverageEval();
     handleCheckFollowAPI();
   }, [reloadScreen]);
+
+  useEffect(() => {
+    handleEvalAPI_getOneComment()
+  }, [])
 
   const handleStaticticalAPI_getCount = async () => {
     if (_id !== undefined) {
@@ -369,7 +378,7 @@ export default function Details({ navigation, route }) {
       showsVerticalScrollIndicator={false}
       scrollEventThrottle={16}>
 
-      <StatusBar showHideTransition="slide" />
+      <StatusBar showHideTransition="slide" hidden={true} />
       {/* HEADER */}
       <Animated.View
         style={[styles.headerStyle, { backgroundColor: backgroundColor, transform: [{ translateY: translateY }] }
@@ -558,10 +567,10 @@ export default function Details({ navigation, route }) {
               style={styles.statictical}
             >
               <Text style={styles.staticticalNum}>
-                {statictical?.countComment}
+                {dataMovie !== undefined ? dataMovie?.views : 0}
               </Text>
               <View style={{ marginVertical: 5 * WIDTH_SCALE, height: 0.5, width: '60%', backgroundColor: ptColor.gray2, alignSelf: 'center' }} />
-              <Text style={styles.staticticalTitle}>Bình luận</Text>
+              <Text style={styles.staticticalTitle}>Lượt xem</Text>
             </View>
 
             <View
@@ -787,7 +796,7 @@ export default function Details({ navigation, route }) {
                 style={{
                   flexDirection: 'row',
                 }}>
-                <MyHighLightButton
+                <TouchableOpacity
                   onPress={() => hideModal()}
                   style={{
                     flex: 1,
@@ -800,7 +809,7 @@ export default function Details({ navigation, route }) {
                 >
                   <Icons name="x" size={18 * WIDTH_SCALE} color={ptColor.black} />
                   <Text style={{ marginLeft: 10 * WIDTH_SCALE, fontFamily: Fonts.SansLight }}>Hủy</Text>
-                </MyHighLightButton>
+                </TouchableOpacity>
                 <View style={{ flex: 3 }} />
                 <TouchableOpacity
                   style={{
@@ -826,9 +835,9 @@ export default function Details({ navigation, route }) {
               >
                 <CustomRatingBar />
                 <TextInput
-                  value={comment}
+                  value={newCommenttxt}
                   onChangeText={(txt) => {
-                    setComment(txt)
+                    setNewComment(txt)
                   }}
                   style={{
                     marginTop: 20 * WIDTH_SCALE,
@@ -845,8 +854,6 @@ export default function Details({ navigation, route }) {
               </View>
 
             </View>
-
-            <View style={{ height: 1, width: WIDTH, backgroundColor: ptColor.gray }} />
 
             <View
               style={{

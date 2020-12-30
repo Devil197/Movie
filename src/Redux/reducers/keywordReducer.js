@@ -1,4 +1,4 @@
-import {REDUX} from '../store/types';
+import { REDUX } from '../store/types';
 import update from 'react-addons-update';
 const initialState = {
   keyword: [],
@@ -31,14 +31,13 @@ const keywordReducer = (state = initialState, action) => {
         keyword: newKeyword,
       };
     }
-    case REDUX.REMOVE_KEYWORD: {
-      return {
-        ...state,
-        keyword: [...state.keyword.filter((keyword, index) => index !== action.payload)],
-      };
-    }
+
+    case REDUX.REMOVE_KEYWORD: return {
+      keyword: state.keyword.filter((keyword, index) => index !== action.payload),
+    };
+
     case REDUX.ADD_KEYWORD: {
-      const tmp = update(state?.keyword, {$push: [action.payload]});
+      const tmp = update(state?.keyword, { $push: [action.payload] });
       return {
         ...state,
         keyword: tmp,

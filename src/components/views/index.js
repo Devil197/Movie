@@ -13,6 +13,7 @@ import RenderCategory from './RenderCategory'
 import HomeHeader from './HomeHeader'
 import FeaturesContents from './FeaturesContents'
 import RenderContentsByCategory from './RenderContentsByCategory'
+import ViewMoreItem from './ViewMoreItem'
 export {
   FilmItem,
   CastItem,
@@ -28,5 +29,6 @@ export {
   RenderCategory,
   HomeHeader,
   FeaturesContents,
-  RenderContentsByCategory
+  RenderContentsByCategory,
+  ViewMoreItem
 };

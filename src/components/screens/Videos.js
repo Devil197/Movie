@@ -7,7 +7,7 @@ import {
   Image,
   StatusBar,
   TouchableWithoutFeedback,
-  Animated
+  Animated, ToastAndroid
 } from "react-native";
 import YoutubePlayer from "react-native-youtube-iframe";
 import Orientation from 'react-native-orientation'
@@ -29,7 +29,7 @@ import StarRating from 'react-native-star-rating';
 import { SkypeIndicator } from 'react-native-indicators';
 import moment from 'moment';
 import { Icon as IconElement } from 'react-native-elements'
-
+import { _setMovieViewsAPI } from '../../Redux/actions/countViews'
 import {
   Menu,
   MenuOptions,
@@ -63,7 +63,7 @@ export default function Video({ navigation, route }) {
       setPlaying(false);
       Alert.alert("video has finished playing!");
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
 
@@ -89,22 +89,28 @@ export default function Video({ navigation, route }) {
 
   useEffect(() => {
 
-    handleLikeAPI_isLikeComment()
     handleChatAPI_getAll();
+    handleLikeAPI_isLikeComment()
   }, [isRefreshData])
 
   const handleChatAPI_getAll = async () => {
     if (menuTrigger !== 0) {
       await _getAllChat(_id, menuTrigger).then(res => {
-        setChatData(res?.data);
-        setIsRefreshData(false)
-      })
+        if (res?.status) {
+          setChatData(res?.data);
+          setIsRefreshData(false)
+        }
+      }).catch(err => { console.log("ERROR GET COMMENT: ", menuTrigger + " => " + err) })
     } else {
       await _getAllChatSortByLike(_id).then(res => {
-        setChatData(res?.data);
-        setIsRefreshData(false)
-      })
+        console.log("API: ", menuTrigger + " => " + res?.data);
+        if (res?.status) {
+          setChatData(res?.data);
+          setIsRefreshData(false)
+        }
+      }).catch(err => { console.log("ERROR GET COMMENT: ", menuTrigger + " => " + err) })
     }
+    setIsRefreshData(false)
   }
 
   const handleLikeAPI_isLikeComment = async () => {
@@ -112,6 +118,10 @@ export default function Video({ navigation, route }) {
       console.log("LIKE DATA: ", res?.data);
       if (res?.status === 1) {
         setIsLikeList(res?.data);
+        // dispatch({
+        //   type: REDUX.LIKE_LIST_SET,
+        //   payload: res.data
+        // })
       }
     })
   }
@@ -121,21 +131,35 @@ export default function Video({ navigation, route }) {
     _addOneMessage(_id, userRedux?.userInfo?._id, chat).then(res => {
       console.log("IS LIKE: ", res?.data);
       if (res?.data !== [] || res?.data != undefined) {
-        setIsRefreshData(false)
+        //setIsRefreshData(false)
         setChat('');
       }
     })
   }
 
+  const toastAndroid = (text) => {
+    ToastAndroid.showWithGravityAndOffset(
+      text,
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      0,
+      100
+    );
+  }
+
   const handleLikeAPI_likeCommentOnPress = (chat_id) => {
-    setIsRefreshData(true)
-    _likeComment(userRedux?.userInfo?._id, chat_id).then(res => {
-      if (res?.status === 1) {
-        setIsRefreshData(false);
-      }
-    }).catch(err => {
-      console.log("LIKE and UNLIKE: ", err);
-    })
+    if (isRefreshData) {
+      toastAndroid("Bạn thao tác quá dữ dội,\nVui lòng đợi trong giây lát.")
+    } else {
+      setIsRefreshData(true)
+      _likeComment(userRedux?.userInfo?._id, chat_id).then(res => {
+        if (res?.status === 1) {
+
+        }
+      }).catch(err => {
+        console.log("LIKE and UNLIKE: ", err);
+      })
+    }
   }
 
   //====================== END API HANDLE ========================
@@ -154,7 +178,8 @@ export default function Video({ navigation, route }) {
     }
     console.log('0808 history ', newHistory);
     if (type === 'playing') {
-      await addHistoryByMovieId(newHistory).then(res => console.log(res)).catch(err => console.log(err))
+      await addHistoryByMovieId(newHistory).then(res => console.log(res)).catch(err => console.log(err));
+      await _setMovieViewsAPI(_id).then(res => console.log(res)).catch(err => console.log(err))
     }
 
   }
@@ -381,7 +406,7 @@ export default function Video({ navigation, route }) {
             </View >
           )
         })
-        : <Text>Chưa có bình luận nào!</Text>
+        : <Text style={{ width: '100%', textAlign: 'center', color: ptColor.gray2 }}> Chưa có bình luận nào!</Text>
     )
   }
 
@@ -569,9 +594,32 @@ export default function Video({ navigation, route }) {
                 <View
                   style={{
                     width: '100%',
-                    marginTop: 10 * WIDTH_SCALE
-                  }}
-                >
+                    marginTop: 10 * WIDTH_SCALE,
+                  }}>
+
+                  {isRefreshData
+                    ? <View
+                      style={{
+                        height: 40 * WIDTH_SCALE,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <View style={{ width: 30, height: 30, borderRadius: 15, }}>
+                        <SkypeIndicator
+                          color={ptColor.appColor}
+                          style={{
+                            padding: 20 * WIDTH_SCALE,
+                            backgroundColor: 'rgba(166, 164, 164, 0.4)',
+                            borderRadius: 30,
+                          }}
+                          size={15 * WIDTH_SCALE}
+                        />
+                      </View>
+                    </View>
+                    : null
+                  }
+
                   <View
                     style={{
                       alignItems: 'center',
@@ -639,29 +687,8 @@ export default function Video({ navigation, route }) {
 
                   <View style={{ height: 50 * WIDTH_SCALE, width: '100%' }} />
 
-                  {!isRefreshData
-                    ? <ChatData />
-                    : <View
-                      style={{
-                        marginTop: 10 * WIDTH_SCALE,
-                        width: '100%',
-                        justifyContent: 'center',
-                        alignItems: 'center'
-                      }}
-                    >
-                      <View style={{ width: 30, height: 30, borderRadius: 15, }}>
-                        <SkypeIndicator
-                          color={ptColor.appColor}
-                          style={{
-                            padding: 20 * WIDTH_SCALE,
-                            backgroundColor: 'rgba(166, 164, 164, 0.4)',
-                            borderRadius: 30,
-                          }}
-                          size={15 * WIDTH_SCALE}
-                        />
-                      </View>
-                    </View>
-                  }
+                  <ChatData />
+
                 </View>
 
 

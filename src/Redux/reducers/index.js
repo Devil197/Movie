@@ -7,6 +7,7 @@ import keywordReducer from './keywordReducer'
 import notificationReducer from './notificationReducer'
 import followReducer from './followReducer'
 import historyReducer from './historyReducer'
+import likeReducer from './likeReducer';
 
 const reducers = combineReducers({
   userReducer: persistReducer(
@@ -44,6 +45,13 @@ const reducers = combineReducers({
     },
     historyReducer,
   ),
+  likeReducer: persistReducer(
+    {
+      key: 'likeReducer',
+      storage: AsyncStorage,
+    },
+    likeReducer,
+  )
 
 });
 // Exports

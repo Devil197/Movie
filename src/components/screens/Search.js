@@ -35,7 +35,7 @@ import { SkypeIndicator } from 'react-native-indicators';
 import { Chip } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { ROUTE_KEY } from '../../constants/constants';
-
+import KeyWords from '../views/searchComponent';
 export default function Search({ navigation }) {
   const animValue = new Animated.Value(0);
 
@@ -174,40 +174,11 @@ export default function Search({ navigation }) {
 
       <View style={{ height: 65 * WIDTH_SCALE, width: WIDTH }} />
 
-      {/* {!isVisible ? (
-        <ScrollView contentContainerStyle={styles.hotKeyWordContainer}>
-          <Text
-            style={{
-              color: ptColor.gray2,
-              fontFamily: Fonts.SansMedium,
-              fontSize: 14 * WIDTH_SCALE,
-            }}>
-            POPULAR KEYWORD
-          </Text>
-          <View
-            style={{
-              marginVertical: 15 * WIDTH_SCALE,
-              alignSelf: 'flex-start'
-            }}>
-            {hotContentsData.map((value, index) => {
-              return (
-                <Chip
-                  style={{
-                    backgroundColor: 'transparent',
-                    borderRadius: 20 * WIDTH_SCALE,
-                    borderColor: '#f0ab0a',
-                    marginVertical: 5 * WIDTH_SCALE,
-                  }}
-                  key={value?._id}
-                  icon="movie"
-                  onPress={() =>
-                    navigation.push(ROUTE_KEY.Details, { _id: value?._id })
-                  }>{value?.name}</Chip>
-              );
-            })}
-          </View>
+      {keyword === '' && !isVisible
+        ? <ScrollView contentContainerStyle={styles.keyWordContainer}>
+          <KeyWords setKeywordOnPress={val => setKeyword(val)} />
         </ScrollView>
-      ) : null} */}
+        : null}
 
       {isVisible ? (
         !isLoading ? (

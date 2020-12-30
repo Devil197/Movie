@@ -73,6 +73,7 @@ const ROUTE_KEY = {
   Introduce: 'Introduce',
   Actor: 'Actor',
   Players: 'Players',
+  ViewMore: 'ViewMore'
 };
 
 export {

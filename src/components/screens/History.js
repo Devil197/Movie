@@ -38,19 +38,21 @@ export default function History({ navigation }) {
   const userReducer = useSelector((state) => state.userReducer)
   //console.log('History: ', userReducer);
   const [dataHistory, setDataHistory] = useState();
-
+  const [isLoading, setLoading] = useState(true)
   useEffect(() => {
     handleHistoryAPI_getHistory()
-  }, [])
+  }, [isLoading])
 
   const handleHistoryAPI_getHistory = async () => {
     await getHistoryByIdUser(userReducer?.userInfo?._id).then((history) => {
       console.log('1001 -> history', history);
-      setDataHistory(history);
+      setDataHistory(history?.items);
+      setLoading(false)
     }).catch((err) => console.log("Failed", err));
   }
 
   const removeAll = (invite_id) => {
+    setLoading(true)
     MySpinner.show()
     deleteHistoryByInvite_ID(invite_id).then(res => {
       MySpinner.hide()
@@ -61,6 +63,7 @@ export default function History({ navigation }) {
   }
 
   const remove = (id) => {
+    setLoading(true)
     MySpinner.show()
     deleteHistoryByID(id).then(res => {
       console.log(res);
@@ -94,14 +97,12 @@ export default function History({ navigation }) {
 
   return (
     <View style={styles.container}>
+
       <Header />
-      {dataHistory === undefined ?
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-          <Text style={{ color: 'gray' }}>Bạn chưa có history</Text>
-        </View>
-        :
+
+      {dataHistory !== undefined ?
         <>
-          {dataHistory?.items.map((e, i) => {
+          {dataHistory.map((e, i) => {
             return (
               <Card key={i} style={{ marginBottom: 10 * WIDTH_SCALE, marginTop: i === 0 ? 10 * WIDTH_SCALE : 0 }}>
                 <View style={{ flexDirection: 'row', margin: 10 * WIDTH_SCALE }} >
@@ -123,10 +124,10 @@ export default function History({ navigation }) {
                       </MenuTrigger>
                       <MenuOptions>
                         <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }} onSelect={() => remove(e?._id)}>
-                          <Text>Xóa Khỏi Lịch Sử Xem</Text>
+                          <Text>Xóa</Text>
                         </MenuOption>
                         <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center' }} onSelect={() => removeAll('5f8a891887f5ef0004f46619')}>
-                          <Text>Xóa Tất Cả Lịch Sử Xem </Text>
+                          <Text>Xóa Tất Cả</Text>
                         </MenuOption>
                         <MenuOption style={{ height: 40 * WIDTH_SCALE, justifyContent: 'center', margin: 0 }}>
                           <Text>Share</Text>
@@ -140,6 +141,10 @@ export default function History({ navigation }) {
             )
           })}
         </>
+        :
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ color: 'gray' }}>Bạn chưa có history</Text>
+        </View>
       }
 
     </View>

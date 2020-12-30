@@ -8,4 +8,5 @@ import Setting from './Setting';
 import Notification from './Notification';
 import Actor from './Actor';
 import Players from './Players';
-export { Login, Videos, Splash, Details, History, Search, Setting, Notification, Actor, Players };
+import ViewMore from './ViewMore'
+export { Login, Videos, Splash, Details, History, Search, Setting, Notification, Actor, Players, ViewMore };

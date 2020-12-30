@@ -103,8 +103,9 @@ export default function RenderContentsByCategory({ categoryId, navigation }) {
                 justifyContent: 'center',
                 alignItems: 'center',
                 zIndex: 9999,
+                bottom: HEIGHT * 0.5
             }}>
-                <View style={{ width: 60, height: 60, borderRadius: 20 }}>
+                <View style={{ width: 40, height: 40, borderRadius: 20 }}>
                     <SkypeIndicator
                         color={ptColor.appColor}
                         style={{

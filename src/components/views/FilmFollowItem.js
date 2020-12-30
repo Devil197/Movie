@@ -11,6 +11,7 @@ import { ptColor } from '../../constants/styles';
 const { width } = Dimensions.get('window');
 
 const FilmFollowItem = React.memo(({ navigation, params, update, followReducer, checkedItemUpdate, selectAll, dispatch }) => {
+
   console.log('1000 parmars ', params.item);
   const item = params.item.movie_id;
   const [checked, setChecked] = useState(selectAll ? selectAll : false)
